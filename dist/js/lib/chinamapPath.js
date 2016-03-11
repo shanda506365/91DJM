@@ -1,9 +1,9 @@
 ﻿define(function(require, exports, module) {
-    return function() {
+    return function(window) {
 
-        var china = [];
+        window.china = [];
 
-        function paintMap(R) {
+        window.paintMap= function(R) {
             var attr = {
                 "fill": "#97d6f5",
                 "stroke": "#eee",
