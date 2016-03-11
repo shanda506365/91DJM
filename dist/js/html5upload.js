@@ -1,1 +1,0 @@
-"use strict";define(function(require,exports,module){var H5FIleUpload=React.createClass({displayName:"H5FIleUpload",render:function(){return React.createElement("div",{className:"h5fileupload"})}});module.exports=H5FIleUpload});

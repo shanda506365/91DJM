@@ -37,8 +37,7 @@
             }
         }
     }
-    R.version = "2.1.0";
-    console.log(eve);
+    R.version = "2.1.0"; 
     R.eve = eve;
     var loaded,
         separator = /[, ]+/,
