@@ -1,0 +1,1 @@
+"use strict";define(function(require,exports,module){var Line=React.createClass({displayName:"Line",render:function(){return React.createElement("div",{className:"container line"},React.createElement("div",{className:"dline"}),React.createElement("div",{className:"linebutton text-center"},"标准化套餐"),React.createElement("div",{className:"dline"}))}});module.exports=Line});
