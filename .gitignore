@@ -9,3 +9,4 @@ package.json
 *.html
 /upload/*
 .idea/*
+/system/storage/cache
