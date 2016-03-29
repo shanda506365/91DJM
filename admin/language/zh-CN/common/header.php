@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']        = 'OpenCart';
+$_['heading_title']        = '搭积木';
 
 // Text
 $_['text_order']           = '订单管理';
