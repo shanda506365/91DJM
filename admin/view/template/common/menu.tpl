@@ -15,7 +15,7 @@
       <li><a href="<?php echo $option; ?>"><?php echo $text_option; ?></a></li>
       <li><a href="<?php echo $manufacturer; ?>"><?php echo $text_manufacturer; ?></a></li>
       <li><a href="<?php echo $download; ?>"><?php echo $text_download; ?></a></li>
-      <li><a href="<?php echo $review; ?>"><?php echo $text_review; ?></a></li>
+      <!--<li><a href="<?php echo $review; ?>"><?php echo $text_review; ?></a></li>-->
       <li><a href="<?php echo $information; ?>"><?php echo $text_information; ?></a></li>
       <li><a href="<?php echo $factory; ?>">积木工厂</a></li>
       <li><a href="<?php echo $case; ?>">案例展示</a></li>
