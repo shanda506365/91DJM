@@ -361,6 +361,22 @@ class ControllerDesignBanner extends Controller {
             $data['description'] = '';
         }
 
+        if (isset($this->request->post['image_width'])) {
+            $data['image_width'] = $this->request->post['image_width'];
+        } elseif (!empty($banner_info)) {
+            $data['image_width'] = $banner_info['image_width'];
+        } else {
+            $data['image_width'] = '';
+        }
+
+        if (isset($this->request->post['image_height'])) {
+            $data['image_height'] = $this->request->post['image_height'];
+        } elseif (!empty($banner_info)) {
+            $data['image_height'] = $banner_info['image_height'];
+        } else {
+            $data['image_height'] = '';
+        }
+
 		$this->load->model('localisation/language');
 
 		$data['languages'] = $this->model_localisation_language->getLanguages();

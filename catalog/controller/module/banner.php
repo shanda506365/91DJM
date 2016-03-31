@@ -32,4 +32,6 @@ class ControllerModuleBanner extends Controller {
 			return $this->load->view('default/template/module/banner.tpl', $data);
 		}
 	}
+
+
 }

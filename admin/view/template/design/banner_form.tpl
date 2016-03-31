@@ -49,9 +49,21 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-status">说明：</label>
+            <label class="col-sm-2 control-label" for="input-description">说明：</label>
             <div class="col-sm-10">
               <input type="text" name="description" value="<?php echo $description; ?>" id="input-name" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-image-width">图片宽：</label>
+            <div class="col-sm-10">
+              <input type="text" name="image_width" value="<?php echo $image_width; ?>" id="input-name" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-image-height">图片高：</label>
+            <div class="col-sm-10">
+              <input type="text" name="image_height" value="<?php echo $image_height; ?>" id="input-name" class="form-control" />
             </div>
           </div>
           <table id="images" class="table table-striped table-bordered table-hover">
