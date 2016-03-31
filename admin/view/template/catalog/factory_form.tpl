@@ -53,7 +53,7 @@
                   </select>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group hidden">
                 <label class="col-sm-2 control-label" for="input-status">选择地区</label>
                 <div class="col-sm-10">
                   <select name="china_area_id" id="input-status" class="form-control">
