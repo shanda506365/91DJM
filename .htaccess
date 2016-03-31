@@ -21,7 +21,10 @@ RewriteRule ^system/download/(.*) /index.php?route=error/not_found [L]
 
 # RewriteRule ^/$	/index.php?route=common/home [L]
 
-RewriteRule ^account/(login|register|account|edit|password|address|wishlist|order|logout)$	/index.php?route=account/$1 [L]
+RewriteRule ^account/(login|register|account|edit|password|address|wishlist|order|logout)$ index.php?route=account/$1 [L]
+
+# RewriteRule ^register.html$ index.php?route=account/register[L]
+
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
