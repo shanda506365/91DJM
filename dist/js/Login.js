@@ -1,0 +1,1 @@
+"use strict";define(function(require,exports,module){var Login=React.createClass({displayName:"Login",render:function(){return React.createElement("div",null)}});$(function(){ReactDOM.render(React.createElement(Login,null),$(".htmlbody").get(0))})});
