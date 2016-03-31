@@ -8,5 +8,3 @@
 package.json
 *.html
 /upload/*
-*.php
-/data/*
