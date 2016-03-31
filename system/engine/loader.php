@@ -71,6 +71,10 @@ final class Loader {
 		// $this->event->trigger('pre.view.' . str_replace('/', '.', $template), $data);
 
 		$file = DIR_TEMPLATE . $template;
+        //周辉添加，如果没有新增的模版，都可以调用网站的皮肤目录
+        if (!file_exists($file)) {
+            $file = DIR_ROOT . DIR_FRONT . '/view/theme/' . $template;
+        }
 
 		if (file_exists($file)) {
 			extract($data);
