@@ -9,7 +9,7 @@ define('DIR_FRONT', 'catalog');
 
 // DIR
 //define('DIR_ROOT', 'E:/djm/');
-deinfe(dirname(__FILE__) . '/');
+define('DIR_ROOT', dirname(__FILE__) . '/');
 
 define('DIR_APPLICATION',   DIR_ROOT . DIR_FRONT . '/');
 define('DIR_SYSTEM',        DIR_ROOT . 'system/');
