@@ -8,7 +8,8 @@ define('HTTPS_SERVER', 'http://djm.com/admin/');
 define('HTTPS_CATALOG', 'http://djm.com/');
 
 // DIR
-define('DIR_ROOT', 'E:/djm/');
+//define('DIR_ROOT', 'E:/djm/');
+define('DIR_ROOT', dirname(__FILE__) . '/../');
 define('DIR_FRONT', 'catalog');
 
 define('DIR_APPLICATION',  DIR_ROOT . 'admin/');
