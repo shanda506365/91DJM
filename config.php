@@ -17,7 +17,9 @@ define('DIR_LANGUAGE',      DIR_ROOT . DIR_FRONT . '/language/');
 //define('DIR_TEMPLATE',      DIR_ROOT . DIR_FRONT . '/view/theme/');
 define('DIR_TEMPLATE',      DIR_ROOT . 'dist/');
 define('DIR_CONFIG',        DIR_ROOT . 'system/config/');
-define('DIR_IMAGE',         'E:/djm/image/');
+//define('DIR_IMAGE',         'E:/djm/image/');
+define('DIR_IMAGE',         dirname(__FILE__) . '/image/');
+
 define('DIR_CACHE',         DIR_ROOT . 'system/storage/cache/');
 define('DIR_DOWNLOAD',      DIR_ROOT . 'system/storage/download/');
 define('DIR_LOGS',          DIR_ROOT . 'system/storage/logs/');
