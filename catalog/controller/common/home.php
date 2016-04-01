@@ -25,6 +25,14 @@ class ControllerCommonHome extends Controller {
         $this->load->model('design/banner');
         $data['data_img'] = $this->model_design_banner->banner_to_json(7);
 
+        $data['data_floor1'] = $this->model_design_banner->banner_to_json(9);
+
+        $data['data_floor1_r'] = $this->model_design_banner->banner_to_json(10);
+
+        $data['data_floor2'] = $this->model_design_banner->banner_to_json(11);
+
+        $data['data_floor2_r'] = $this->model_design_banner->banner_to_json(12);
+
         $data['data_thumbview'] = $this->model_design_banner->banner_to_json(13);
 
         $this->response->setOutput($this->load->view('index.html', $data));
