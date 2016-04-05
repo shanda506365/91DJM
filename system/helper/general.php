@@ -24,3 +24,11 @@ function log_message($level = 'error', $message, $php_error = FALSE)
     fwrite($handle, date('Y-m-d G:i:s') . ' - ' . print_r($message, true) . "\n");
     fclose($handle);
 }
+
+function cover_telephone($telephone) {
+    $return = trim($telephone);
+    if (strlen($telephone) == 11) {
+        $return = substr($telephone, 0, 3) . '****' . substr($telephone, 7, 4);
+    }
+    return $return;
+}
