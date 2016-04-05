@@ -24,11 +24,16 @@ function log_message($level = 'error', $message, $php_error = FALSE)
     fwrite($handle, date('Y-m-d G:i:s') . ' - ' . print_r($message, true) . "\n");
     fclose($handle);
 }
-
+//电话号码隐藏中间4位
 function cover_telephone($telephone) {
     $return = trim($telephone);
     if (strlen($telephone) == 11) {
         $return = substr($telephone, 0, 3) . '****' . substr($telephone, 7, 4);
     }
     return $return;
+}
+//json输出
+function output_json($arr) {
+    echo json_encode($arr);
+    exit;
 }

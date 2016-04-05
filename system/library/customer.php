@@ -1,6 +1,8 @@
 <?php
 class Customer {
 	private $customer_id;
+    private $nick_name;
+    private $picture;
 	private $firstname;
 	private $lastname;
 	private $customer_group_id;
@@ -21,6 +23,8 @@ class Customer {
 
 			if ($customer_query->num_rows) {
 				$this->customer_id = $customer_query->row['customer_id'];
+                $this->nick_name = $customer_query->row['nick_name'];
+                $this->picture = $customer_query->row['picture'];
 				$this->firstname = $customer_query->row['firstname'];
 				$this->lastname = $customer_query->row['lastname'];
 				$this->customer_group_id = $customer_query->row['customer_group_id'];
@@ -42,7 +46,7 @@ class Customer {
 			}
 		}
 	}
-
+/*
 	public function login($email, $password, $override = false) {
 		if ($override) {
 			$customer_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE LOWER(email) = '" . $this->db->escape(utf8_strtolower($email)) . "' AND status = '1'");
@@ -70,11 +74,43 @@ class Customer {
 			return false;
 		}
 	}
+*/
+    public function login($telephone, $password, $override = false) {
+        if ($override) {
+            $customer_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE LOWER(telephone) = '" . $this->db->escape(utf8_strtolower($telephone)) . "' AND status = '1'");
+        } else {
+            $customer_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE LOWER(telephone) = '" . $this->db->escape(utf8_strtolower($telephone)) . "' AND (password = SHA1(CONCAT(salt, SHA1(CONCAT(salt, SHA1('" . $this->db->escape($password) . "'))))) OR password = '" . $this->db->escape(md5($password)) . "') AND status = '1' AND approved = '1'");
+        }
+
+        if ($customer_query->num_rows) {
+            $this->session->data['customer_id'] = $customer_query->row['customer_id'];
+
+            $this->customer_id = $customer_query->row['customer_id'];
+            $this->nick_name = $customer_query->row['nick_name'];
+            $this->picture = $customer_query->row['picture'];
+            $this->firstname = $customer_query->row['firstname'];
+            $this->lastname = $customer_query->row['lastname'];
+            $this->customer_group_id = $customer_query->row['customer_group_id'];
+            $this->email = $customer_query->row['email'];
+            $this->telephone = $customer_query->row['telephone'];
+            $this->fax = $customer_query->row['fax'];
+            $this->newsletter = $customer_query->row['newsletter'];
+            $this->address_id = $customer_query->row['address_id'];
+
+            $this->db->query("UPDATE " . DB_PREFIX . "customer SET ip = '" . $this->db->escape($this->request->server['REMOTE_ADDR']) . "' WHERE customer_id = '" . (int)$this->customer_id . "'");
+
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 	public function logout() {
 		unset($this->session->data['customer_id']);
 
 		$this->customer_id = '';
+        $this->nick_name = '';
+        $this->picture = '';
 		$this->firstname = '';
 		$this->lastname = '';
 		$this->customer_group_id = '';
@@ -92,6 +128,14 @@ class Customer {
 	public function getId() {
 		return $this->customer_id;
 	}
+
+    public function getNickName() {
+        return $this->nick_name;
+    }
+
+    public function getPicture() {
+        return $this->picture;
+    }
 
 	public function getFirstName() {
 		return $this->firstname;
