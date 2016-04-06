@@ -8,6 +8,8 @@
 class ControllerFactoryFactory extends Controller {
     public function index() {
 
+        $this->load->language('factory/factory');
+
         $this->load->model('catalog/factory');
 
         $data = array(
@@ -26,7 +28,13 @@ class ControllerFactoryFactory extends Controller {
             );
         }
 
-        echo json_encode($result);
-        exit;
+        $data['meta_title'] = $this->language->get('meta_title');
+        $data['meta_description'] = $this->language->get('meta_description');
+        $data['meta_keyword'] = $this->language->get('meta_keyword');
+
+        $data["data_province"] = json_encode($result);
+//        echo json_encode($result);
+//        exit;
+        $this->response->setOutput($this->load->view('jdfactory.html', $data));
     }
 }
