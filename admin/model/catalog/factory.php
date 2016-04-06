@@ -12,6 +12,7 @@ class ModelCatalogFactory extends Model
         $this->event->trigger('pre.admin.factory.add', $data);
 
         $factory = array(
+            'area_name' => $data['area_name'],
             'factory_name' => $data['factory_name'],
             'province_code' => $data['province_code'],
             'china_area_id' => $data['china_area_id'],
@@ -28,6 +29,7 @@ class ModelCatalogFactory extends Model
 
     function update($factory_id, $data) {
         $factory = array(
+            'area_name' => $data['area_name'],
             'factory_name' => $data['factory_name'],
             'province_code' => $data['province_code'],
             'china_area_id' => $data['china_area_id'],

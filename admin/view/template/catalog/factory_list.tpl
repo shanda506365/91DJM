@@ -53,7 +53,7 @@
                 </div>
               </div>
               <div class="col-sm-4">
-                <div class="form-group">
+                <div class="form-group hidden">
                   <label class="control-label" for="input-status">地区</label>
                   <select name="filter_china_area_id" id="select-china-area-id" class="form-control">
                     <option value="">全部</option>
@@ -82,7 +82,7 @@
                   <a href="<?php echo $sort_title; ?>">工厂名字</a>
                   <?php } ?></td>
                 <td class="text-left">省</td>
-                <td class="text-left">地区</td>
+                <td class="text-left">地名</td>
                 <td class="text-right"><?php if ($sort == 'i.sort_order') { ?>
                   <a href="<?php echo $sort_sort_order; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_sort_order; ?></a>
                   <?php } else { ?>
@@ -101,8 +101,8 @@
                   <input type="checkbox" name="selected[]" value="<?php echo $factory['factory_id']; ?>" />
                   <?php } ?></td>
                 <td class="text-left"><?php echo $factory['factory_name']; ?></td>
+                <td class="text-left"><?php echo $factory['province_name']; ?></td>
                 <td class="text-left"><?php echo $factory['area_name']; ?></td>
-                <td class="text-left"><?php echo $factory['china_area_name']; ?></td>
                 <td class="text-right"><?php echo $factory['sort_order']; ?></td>
                 <td class="text-right"><a href="<?php echo $factory['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
               </tr>
