@@ -37,3 +37,10 @@ function output_json($arr) {
     echo json_encode($arr);
     exit;
 }
+//短信日志
+function log_sms($message)
+{
+    $handle = fopen(DIR_LOGS . 'error_sms.log', 'a');
+    fwrite($handle, date('Y-m-d H:i:s') . ' - ' . print_r($message, true) . "\n");
+    fclose($handle);
+}
