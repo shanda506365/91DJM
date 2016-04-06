@@ -27,4 +27,4 @@ define('DIR_MODIFICATION', DIR_ROOT . 'system/storage/modification/');
 define('DIR_UPLOAD',        DIR_ROOT . 'system/storage/upload/');
 
 // DB
-require_once(DIR_ROOT . 'config_db.php');
+require_once(DIR_ROOT . 'config_common.php');
