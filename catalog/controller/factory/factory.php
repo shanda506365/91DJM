@@ -22,7 +22,7 @@ class ControllerFactoryFactory extends Controller {
 
         $result = array();
         foreach($factories as $factory) {
-            $result[][$factory["province_code"]] = array(
+            $result[$factory["province_code"]][] = array(
                 "area_name" => $factory["area_name"],
                 "factory_name" => $factory["factory_name"]
             );
