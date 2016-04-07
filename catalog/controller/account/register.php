@@ -42,9 +42,10 @@ class ControllerAccountRegister extends Controller {
         $data['data_banner'] = $this->model_design_banner->banner_to_json(14);
 
         //获取短信验证码的网址
-        $data['url_sms'] = "/index.php?route=account/register/getSmsMessage";
+        $data['url_random'] = $this->url->link('account/register/getSmsRandom', '', 'SSL');
+        $data['url_register'] = $this->url->link('account/register/doRegister', '', 'SSL');
 
-        $this->load->view('register.html', $data);
+        $this->response->setOutput($this->load->view('register.html', $data));
 	}
 
 	private function validate() {
@@ -109,31 +110,6 @@ class ControllerAccountRegister extends Controller {
 		return !$this->error;
 	}
 
-	public function customfield() {
-		$json = array();
-
-		$this->load->model('account/custom_field');
-
-		// Customer Group
-		if (isset($this->request->get['customer_group_id']) && is_array($this->config->get('config_customer_group_display')) && in_array($this->request->get['customer_group_id'], $this->config->get('config_customer_group_display'))) {
-			$customer_group_id = $this->request->get['customer_group_id'];
-		} else {
-			$customer_group_id = $this->config->get('config_customer_group_id');
-		}
-
-		$custom_fields = $this->model_account_custom_field->getCustomFields($customer_group_id);
-
-		foreach ($custom_fields as $custom_field) {
-			$json[] = array(
-				'custom_field_id' => $custom_field['custom_field_id'],
-				'required'        => $custom_field['required']
-			);
-		}
-
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
-	}
-
     public function getSmsRandom() {
         $mobile = trim($this->request->get['mobile']);
 
@@ -154,6 +130,7 @@ class ControllerAccountRegister extends Controller {
 
             }
         }
+        output_success("验证码发送成功！");
         //$this->session->data['payment_address'] =
     }
 
@@ -220,6 +197,8 @@ class ControllerAccountRegister extends Controller {
         );
 
         $this->model_account_activity->addActivity('login', $activity_data);
+
+        unset($this->session->data['register_code']);
 
         output_success("注册成功！");
     }

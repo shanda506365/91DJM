@@ -21,11 +21,12 @@ RewriteRule ^system/download/(.*) /index.php?route=error/not_found [L]
 
 # RewriteRule ^/$	/index.php?route=common/home [L]
 
-RewriteRule ^account/(login|register|account|edit|password|address|wishlist|order|logout)$ index.php?route=account/$1 [L]
+RewriteRule ^factory$ index.php?route=factory/factory [L]
+
+
+# RewriteRule ^account/(login|register|account|edit|password|address|wishlist|order|logout)$ index.php?_route_=account/$1 [L]
 
 # RewriteRule ^register.html$ index.php?route=account/register[L]
-
-RewriteRule ^(factory)/(.*)$ index.php?route=$1/$2 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

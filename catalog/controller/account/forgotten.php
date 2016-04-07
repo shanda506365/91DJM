@@ -127,4 +127,32 @@ class ControllerAccountForgotten extends Controller {
 
 		return !$this->error;
 	}
+
+    public function getSmsRandom() {
+        $mobile = trim($this->request->get['mobile']);
+
+        if (is_mobile($mobile) == false) {
+            output_error("电话号码必须11位数");
+        }
+
+        $this->load->helper("sms");
+        $code = strtolower(token(6));
+        $this->session->data['forgotten_code'] = $code;
+        $pars = array(
+            "code" => $code,
+            "product" => "搭积木"
+        );
+        $result = send_sms($mobile, $pars, SMS_TPL_REGISTER, date("Y-m-d H:i:s"));
+        if ($result) {
+            if ($result->success) {
+
+            }
+        }
+        output_success("验证码发送成功！");
+        //$this->session->data['payment_address'] =
+    }
+
+    public function doForgotten() {
+        unset($this->session->data['forgotten_code']);
+    }
 }
