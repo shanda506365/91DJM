@@ -56,7 +56,7 @@ class ModelCatalogAttributeGroup extends Model {
 		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
 			$sql .= " ORDER BY " . $data['sort'];
 		} else {
-			$sql .= " ORDER BY agd.name";
+			$sql .= " ORDER BY ag.sort_order";
 		}
 
 		if (isset($data['order']) && ($data['order'] == 'DESC')) {
