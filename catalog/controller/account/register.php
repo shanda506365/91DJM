@@ -39,7 +39,10 @@ class ControllerAccountRegister extends Controller {
 
         //广告加载
         $this->load->model('design/banner');
-        $data['data_img'] = $this->model_design_banner->banner_to_json(14);
+        $data['data_banner'] = $this->model_design_banner->banner_to_json(14);
+
+        //获取短信验证码的网址
+        $data['url_sms'] = "/index.php?route=account/register/getSmsMessage";
 
         $this->load->view('register.html', $data);
 	}
