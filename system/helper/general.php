@@ -37,10 +37,35 @@ function output_json($arr) {
     echo json_encode($arr);
     exit;
 }
+//json输出成功信息
+function output_success($msg) {
+    $data = array(
+        "success" => true,
+        "message" => $msg
+    );
+    echo json_encode($data);
+    exit;
+}
+//json输出错误信息
+function output_error($msg) {
+    $data = array(
+        "success" => false,
+        "message" => $msg
+    );
+    echo json_encode($data);
+    exit;
+}
 //短信日志
 function log_sms($message)
 {
     $handle = fopen(DIR_LOGS . 'error_sms.log', 'a');
     fwrite($handle, date('Y-m-d H:i:s') . ' - ' . print_r($message, true) . "\n");
     fclose($handle);
+}
+
+function is_mobile($mobile) {
+    if(preg_match("/^1\d{10}$/", $mobile)){
+        return true;
+    }
+    return false;
 }

@@ -26,9 +26,9 @@
       <div class="panel-body">
         <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-banner" class="form-horizontal">
           <div class="form-group required">
-            <label class="col-sm-2 control-label" for="input-name"><?php echo $entry_name; ?></label>
+            <label class="col-sm-2 control-label" for="input-name">广告位名称：</label>
             <div class="col-sm-10">
-              <input type="text" name="name" value="<?php echo $name; ?>" placeholder="<?php echo $entry_name; ?>" id="input-name" class="form-control" />
+              <input type="text" name="name" value="<?php echo $name; ?>" placeholder="广告位名称" id="input-name" class="form-control" />
               <?php if ($error_name) { ?>
               <div class="text-danger"><?php echo $error_name; ?></div>
               <?php } ?>
@@ -51,25 +51,26 @@
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-description">说明：</label>
             <div class="col-sm-10">
-              <input type="text" name="description" value="<?php echo $description; ?>" id="input-name" class="form-control" />
+              <input type="text" name="description" value="<?php echo $description; ?>" id="input-description" class="form-control" />
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-image-width">图片宽：</label>
             <div class="col-sm-10">
-              <input type="text" name="image_width" value="<?php echo $image_width; ?>" id="input-name" class="form-control" />
+              <input type="text" name="image_width" value="<?php echo $image_width; ?>" id="input-image-width" class="form-control" />
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-image-height">图片高：</label>
             <div class="col-sm-10">
-              <input type="text" name="image_height" value="<?php echo $image_height; ?>" id="input-name" class="form-control" />
+              <input type="text" name="image_height" value="<?php echo $image_height; ?>" id="input-image-height" class="form-control" />
             </div>
           </div>
           <table id="images" class="table table-striped table-bordered table-hover">
             <thead>
               <tr>
                 <td class="text-left"><?php echo $entry_title; ?></td>
+                <td class="text-left">描述</td>
                 <td class="text-left"><?php echo $entry_link; ?></td>
                 <td class="text-left"><?php echo $entry_image; ?></td>
                 <td class="text-right"><?php echo $entry_sort_order; ?></td>
@@ -88,6 +89,9 @@
                   <div class="text-danger"><?php echo $error_banner_image[$image_row][$language['language_id']]; ?></div>
                   <?php } ?>
                   <?php } ?></td>
+                <td class="text-left"><?php foreach ($languages as $language) { ?>
+                    <textarea class="form-control" style="width: 300px;height:80px;" name="banner_image[<?php echo $image_row; ?>][banner_image_description][<?php echo $language['language_id']; ?>][description]"><?php echo isset($banner_image['banner_image_description'][$language['language_id']]) ? $banner_image['banner_image_description'][$language['language_id']]['description'] : ''; ?></textarea>
+                  <?php } ?></td>
                 <td class="text-left" style="width: 30%;"><input type="text" name="banner_image[<?php echo $image_row; ?>][link]" value="<?php echo $banner_image['link']; ?>" placeholder="<?php echo $entry_link; ?>" class="form-control" /></td>
                 <td class="text-left"><a href="" id="thumb-image<?php echo $image_row; ?>" data-toggle="image" directory="ad" class="img-thumbnail"><img src="<?php echo $banner_image['thumb']; ?>" alt="" title="" data-placeholder="<?php echo $placeholder; ?>" /></a>
                   <input type="hidden" name="banner_image[<?php echo $image_row; ?>][image]" value="<?php echo $banner_image['image']; ?>" id="input-image<?php echo $image_row; ?>" /></td>
@@ -99,7 +103,7 @@
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="4"></td>
+                <td colspan="5"></td>
                 <td class="text-left"><button type="button" onclick="addImage();" data-toggle="tooltip" title="<?php echo $button_banner_add; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
               </tr>
             </tfoot>

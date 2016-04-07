@@ -35,15 +35,22 @@ function send_sms($mobile, $pars, $tpl, $extend = "") {
     $resp = $c->execute($req);
 //    echo '<pre>';
 //    print_r($resp);
-//    if ($resp->result->success == true) {
-//        echo '发送成功';
-//    }
-//    exit;
+//如果有错误
+//    stdClass Object
+//    (
+//        [code] => 15
+//    [msg] => Remote service error
+//    [sub_code] => isv.BUSINESS_LIMIT_CONTROL
+//    [sub_msg] => 触发业务流控
+//    [request_id] => r4l9wpv0j4f3
+//)
     //记录错误日志
-    if ($resp->result->success == false) {
-        log_sms($resp->result);
+    if (property_exists($resp, "code")) {
+        log_sms($mobile . " : " . $resp->code . " : " . $resp->msg);
+        return false;
+    } else {
+        return $resp->result;
     }
-    return $resp->result;
 }
 
 /*
