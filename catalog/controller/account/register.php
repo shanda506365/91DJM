@@ -12,85 +12,7 @@ class ControllerAccountRegister extends Controller {
 		//$this->document->setTitle($this->language->get('heading_title'));
         $data['meta_title'] = $this->language->get('heading_title');
 
-		$this->load->model('account/customer');
-
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-			$customer_id = $this->model_account_customer->addCustomer($this->request->post);
-
-			// Clear any previous login attempts for unregistered accounts.
-			$this->model_account_customer->deleteLoginAttempts($this->request->post['email']);
-
-			$this->customer->login($this->request->post['email'], $this->request->post['password']);
-
-			unset($this->session->data['guest']);
-
-			// Add to activity log
-			$this->load->model('account/activity');
-
-			$activity_data = array(
-				'customer_id' => $customer_id,
-				'name'        => $this->request->post['firstname'] . ' ' . $this->request->post['lastname']
-			);
-
-			$this->model_account_activity->addActivity('register', $activity_data);
-
-			$this->response->redirect($this->url->link('account/success'));
-		}
-
-		$data['breadcrumbs'] = array();
-
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_home'),
-			'href' => $this->url->link('common/home')
-		);
-
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_account'),
-			'href' => $this->url->link('account/account', '', 'SSL')
-		);
-
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_register'),
-			'href' => $this->url->link('account/register', '', 'SSL')
-		);
-
 		$data['heading_title'] = $this->language->get('heading_title');
-
-        if (isset($this->error['exist'])) {
-            $json = array(
-                'success' => false,
-                'msg' => $this->error['exist'],
-                'code' => 99
-            );
-            output_json($json);
-        }
-
-        if (isset($this->error['telephone'])) {
-            $json = array(
-                'success' => false,
-                'msg' => $this->error['telephone'],
-                'code' => 99
-            );
-            output_json($json);
-        }
-
-        if (isset($this->error['password'])) {
-            $json = array(
-                'success' => false,
-                'msg' => $this->error['password'],
-                'code' => 99
-            );
-            output_json($json);
-        }
-
-        if (isset($this->error['confirm'])) {
-            $json = array(
-                'success' => false,
-                'msg' => $this->error['confirm'],
-                'code' => 99
-            );
-            output_json($json);
-        }
 
 		$data['action'] = $this->url->link('account/register', '', 'SSL');
 
@@ -108,75 +30,16 @@ class ControllerAccountRegister extends Controller {
 			}
 		}
 
-		if (isset($this->request->post['customer_group_id'])) {
-			$data['customer_group_id'] = $this->request->post['customer_group_id'];
-		} else {
-			$data['customer_group_id'] = $this->config->get('config_customer_group_id');
-		}
-
-		if (isset($this->request->post['firstname'])) {
-			$data['firstname'] = $this->request->post['firstname'];
-		} else {
-			$data['firstname'] = '';
-		}
-
-		if (isset($this->request->post['telephone'])) {
-			$data['telephone'] = $this->request->post['telephone'];
-		} else {
-			$data['telephone'] = '';
-		}
-
-		if (isset($this->request->post['password'])) {
-			$data['password'] = $this->request->post['password'];
-		} else {
-			$data['password'] = '';
-		}
-
-		if (isset($this->request->post['confirm'])) {
-			$data['confirm'] = $this->request->post['confirm'];
-		} else {
-			$data['confirm'] = '';
-		}
-
-		if (isset($this->request->post['newsletter'])) {
-			$data['newsletter'] = $this->request->post['newsletter'];
-		} else {
-			$data['newsletter'] = '';
-		}
-
-		// Captcha
-		if ($this->config->get($this->config->get('config_captcha') . '_status') && in_array('register', (array)$this->config->get('config_captcha_page'))) {
-			$data['captcha'] = $this->load->controller('captcha/' . $this->config->get('config_captcha'), $this->error);
-		} else {
-			$data['captcha'] = '';
-		}
-
-		if ($this->config->get('config_account_id')) {
-			$this->load->model('catalog/information');
-
-			$information_info = $this->model_catalog_information->getInformation($this->config->get('config_account_id'));
-
-			if ($information_info) {
-				$data['text_agree'] = sprintf($this->language->get('text_agree'), $this->url->link('information/information/agree', 'information_id=' . $this->config->get('config_account_id'), 'SSL'), $information_info['title'], $information_info['title']);
-			} else {
-				$data['text_agree'] = '';
-			}
-		} else {
-			$data['text_agree'] = '';
-		}
-
-		if (isset($this->request->post['agree'])) {
-			$data['agree'] = $this->request->post['agree'];
-		} else {
-			$data['agree'] = false;
-		}
-
 //		$data['column_left'] = $this->load->controller('common/column_left');
 //		$data['column_right'] = $this->load->controller('common/column_right');
 //		$data['content_top'] = $this->load->controller('common/content_top');
 //		$data['content_bottom'] = $this->load->controller('common/content_bottom');
 //		$data['footer'] = $this->load->controller('common/footer');
 //		$data['header'] = $this->load->controller('common/header');
+
+        //广告加载
+        $this->load->model('design/banner');
+        $data['data_img'] = $this->model_design_banner->banner_to_json(14);
 
         $this->load->view('register.html', $data);
 	}
