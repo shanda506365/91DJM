@@ -33,8 +33,12 @@ class ControllerFactoryFactory extends Controller {
         $data['meta_keyword'] = $this->language->get('meta_keyword');
 
         $data["data_province"] = json_encode($result);
+
+        //广告加载
+        $this->load->model('design/banner');
+        $data['data_img'] = $this->model_design_banner->banner_to_json(7);
 //        echo json_encode($result);
 //        exit;
-        $this->response->setOutput($this->load->view('jdfactory.html', $data));
+        $this->response->setOutput($this->load->view('jmfactory.html', $data));
     }
 }

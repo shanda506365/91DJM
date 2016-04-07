@@ -25,6 +25,8 @@ RewriteRule ^account/(login|register|account|edit|password|address|wishlist|orde
 
 # RewriteRule ^register.html$ index.php?route=account/register[L]
 
+RewriteRule ^(factory)/(.*)$ index.php?route=$1/$2 [L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} !.*\.(ico|gif|jpg|jpeg|png|js|css)
