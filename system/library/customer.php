@@ -1,6 +1,7 @@
 <?php
 class Customer {
 	private $customer_id;
+    private $mobile;
     private $nick_name;
     private $picture;
 	private $firstname;
@@ -23,6 +24,7 @@ class Customer {
 
 			if ($customer_query->num_rows) {
 				$this->customer_id = $customer_query->row['customer_id'];
+                $this->mobile = $customer_query->row['mobile'];
                 $this->nick_name = $customer_query->row['nick_name'];
                 $this->picture = $customer_query->row['picture'];
 				$this->firstname = $customer_query->row['firstname'];
@@ -75,17 +77,20 @@ class Customer {
 		}
 	}
 */
-    public function login($telephone, $password, $override = false) {
+    public function login($mobile, $password, $override = false) {
         if ($override) {
-            $customer_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE LOWER(telephone) = '" . $this->db->escape(utf8_strtolower($telephone)) . "' AND status = '1'");
+            $customer_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE LOWER(mobile) = '" . $this->db->escape(utf8_strtolower($mobile)) . "' AND status = '1'");
         } else {
-            $customer_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE LOWER(telephone) = '" . $this->db->escape(utf8_strtolower($telephone)) . "' AND (password = SHA1(CONCAT(salt, SHA1(CONCAT(salt, SHA1('" . $this->db->escape($password) . "'))))) OR password = '" . $this->db->escape(md5($password)) . "') AND status = '1' AND approved = '1'");
+            //$customer_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE LOWER(mobile) = '" . $this->db->escape(utf8_strtolower($mobile)) . "' AND (password = SHA1(CONCAT(salt, SHA1(CONCAT(salt, SHA1('" . $this->db->escape($password) . "'))))) OR password = '" . $this->db->escape(md5($password)) . "') AND status = '1' AND approved = '1'");
+            $salt = $this->getSalt($mobile);
+            $customer_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE LOWER(mobile) = '" . $this->db->escape(utf8_strtolower($mobile)) . "' AND password = '" . md5($password . $salt) . "') AND status = '1' AND approved = '1'");
         }
 
         if ($customer_query->num_rows) {
             $this->session->data['customer_id'] = $customer_query->row['customer_id'];
 
             $this->customer_id = $customer_query->row['customer_id'];
+            $this->mobile = $customer_query->row['mobile'];
             $this->nick_name = $customer_query->row['nick_name'];
             $this->picture = $customer_query->row['picture'];
             $this->firstname = $customer_query->row['firstname'];
@@ -109,6 +114,7 @@ class Customer {
 		unset($this->session->data['customer_id']);
 
 		$this->customer_id = '';
+        $this->mobile = '';
         $this->nick_name = '';
         $this->picture = '';
 		$this->firstname = '';
@@ -128,6 +134,10 @@ class Customer {
 	public function getId() {
 		return $this->customer_id;
 	}
+
+    public function getMobile() {
+        return $this->mobile;
+    }
 
     public function getNickName() {
         return $this->nick_name;
@@ -180,4 +190,10 @@ class Customer {
 
 		return $query->row['total'];
 	}
+
+    public function getSalt($mobile) {
+        $query = $this->db->query("SELECT salt FROM " . DB_PREFIX . "customer WHERE mobile = '" . $mobile . "'");
+
+        return $query->row['salt'];
+    }
 }
