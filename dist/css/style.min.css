@@ -1081,12 +1081,12 @@ textarea {
   line-height: inherit;
 }
 a {
-  color: #f41717;
+  color: #dc214c;
   text-decoration: none;
 }
 a:hover,
 a:focus {
-  color: #b60909;
+  color: #991735;
   text-decoration: underline;
 }
 a:focus {
@@ -3433,7 +3433,7 @@ fieldset[disabled] .btn-danger.active {
   background-color: #ffffff;
 }
 .btn-link {
-  color: #f41717;
+  color: #dc214c;
   font-weight: normal;
   border-radius: 0;
 }
@@ -3454,7 +3454,7 @@ fieldset[disabled] .btn-link {
 }
 .btn-link:hover,
 .btn-link:focus {
-  color: #b60909;
+  color: #991735;
   text-decoration: underline;
   background-color: transparent;
 }
@@ -4029,7 +4029,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav .open > a:hover,
 .nav .open > a:focus {
   background-color: #eeeeee;
-  border-color: #f41717;
+  border-color: #dc214c;
 }
 .nav .nav-divider {
   height: 1px;
@@ -4716,16 +4716,16 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   padding: 8px 15px;
   margin-bottom: 20px;
   list-style: none;
-  background-color: #f5f5f5;
+  background-color: transparent;
   border-radius: 4px;
 }
 .breadcrumb > li {
   display: inline-block;
 }
 .breadcrumb > li + li:before {
-  content: "/\00a0";
+  content: ">\00a0";
   padding: 0 5px;
-  color: #cccccc;
+  color: #dc214c;
 }
 .breadcrumb > .active {
   color: #777777;
@@ -4746,7 +4746,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   padding: 6px 12px;
   line-height: 1.42857143;
   text-decoration: none;
-  color: #f41717;
+  color: #dc214c;
   background-color: #ffffff;
   border: 1px solid #dddddd;
   margin-left: -1px;
@@ -4767,7 +4767,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 .pagination > li > a:focus,
 .pagination > li > span:focus {
   z-index: 3;
-  color: #b60909;
+  color: #991735;
   background-color: #eeeeee;
   border-color: #dddddd;
 }
@@ -4965,7 +4965,7 @@ a.badge:focus {
 }
 .list-group-item.active > .badge,
 .nav-pills > .active > a > .badge {
-  color: #f41717;
+  color: #dc214c;
   background-color: #ffffff;
 }
 .list-group-item > .badge {
@@ -5038,7 +5038,7 @@ a.badge:focus {
 a.thumbnail:hover,
 a.thumbnail:focus,
 a.thumbnail.active {
-  border-color: #f41717;
+  border-color: #dc214c;
 }
 .thumbnail .caption {
   padding: 9px;
