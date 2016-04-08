@@ -31,7 +31,7 @@ RewriteRule ^example$ index.php?route=example/example [L]
 
 RewriteRule ^account/(login|register|account|edit|password|address|wishlist|order|logout)$ index.php?route=account/$1 [L]
 
-RewriteRule ^information/(introduce|issues|support).html$ index.php?route=information/information/$1 [L]
+RewriteRule ^information/(introduce|issues|support)$ index.php?route=information/information/$1 [L]
 
 # RewriteRule ^register.html$ index.php?route=account/register[L]
 
