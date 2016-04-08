@@ -36,4 +36,13 @@ class Url {
 
 		return $url;
 	}
+
+    public function link_static($route, $secure = false) {
+        if (!$secure) {
+            $url = $this->domain;
+        } else {
+            $url = $this->ssl;
+        }
+        return $url . $route;
+    }
 }
