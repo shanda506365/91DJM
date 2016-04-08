@@ -29,7 +29,7 @@ RewriteRule ^factory$ index.php?route=factory/factory [L]
 RewriteRule ^example$ index.php?route=example/example [L]
 
 
-RewriteRule ^account/(login|register|account|edit|password|address|wishlist|order|logout)$ index.php?route=account/$1 [L]
+RewriteRule ^account/(login|register|forgotpass|account|edit|password|address|wishlist|order|logout)$ index.php?route=account/$1 [L]
 
 RewriteRule ^information/(introduce|issues|support)$ index.php?route=information/information/$1 [L]
 
