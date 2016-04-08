@@ -28,9 +28,16 @@ class ControllerExampleExample extends Controller {
     public function ajaxPage() {
         $this->load->model('catalog/case');
 
+        $page = $this->request->get['page'];
+        if (!is_numeric($page)) {
+            $page = 0;
+        }
+
+        $page_size = 12;
+
         $data = array(
-            "start" => 0,
-            "limit" => 12,
+            "start" => $page * $page_size,
+            "limit" => $page_size,
             "sort" => "sort_order",
             "order" => "ASC"
         );
