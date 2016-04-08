@@ -138,7 +138,7 @@ class ControllerAccountRegister extends Controller {
 
         $this->load->model('account/customer');
 
-        $mobile = trim($this->request->get['mobile']);
+        $mobile = trim($this->request->post['mobile']);
 
         if (is_mobile($mobile) == false) {
             output_error("电话号码必须11位数！");
