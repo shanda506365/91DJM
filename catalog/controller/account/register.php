@@ -10,7 +10,7 @@ class ControllerAccountRegister extends Controller {
 		$this->load->language('account/register');
 
 		//$this->document->setTitle($this->language->get('heading_title'));
-        $data['meta_title'] = $this->language->get('heading_title');
+        $data['meta_title'] = $this->language->get('heading_title') . ' - ' . $this->config->get('config_name');
 
 		$data['heading_title'] = $this->language->get('heading_title');
 

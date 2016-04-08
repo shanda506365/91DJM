@@ -102,4 +102,34 @@ class ControllerInformationInformation extends Controller {
 
 		$this->response->setOutput($output);
 	}
+
+    public function introduce() {
+        $data['meta_title'] = '平台介绍 - '.$this->config->get('config_name');
+
+        //广告加载
+        $this->load->model('design/banner');
+        $data['data_img'] = $this->model_design_banner->banner_to_json(7);
+
+        $this->response->setOutput($this->load->view('introduce.html', $data));
+    }
+
+    public function issues() {
+        $data['meta_title'] = '常见问题 - '.$this->config->get('config_name');
+
+        //广告加载
+        $this->load->model('design/banner');
+        $data['data_img'] = $this->model_design_banner->banner_to_json(7);
+
+        $this->response->setOutput($this->load->view('issues.html', $data));
+    }
+
+    public function support() {
+        $data['meta_title'] = '保障体系 - '.$this->config->get('config_name');
+
+        //广告加载
+        $this->load->model('design/banner');
+        $data['data_img'] = $this->model_design_banner->banner_to_json(7);
+
+        $this->response->setOutput($this->load->view('support.html', $data));
+    }
 }

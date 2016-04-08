@@ -15,9 +15,9 @@ RewriteRule ^css/(.*)$	/dist/css/$1 [L]
 RewriteRule ^js/(.*)$	/dist/js/$1 [L]
 RewriteRule ^images/(.*)$	/dist/images/$1 [L]
 
-RewriteRule ^account/css/(.*)$	/dist/css/$1 [L]
-RewriteRule ^account/js/(.*)$	/dist/js/$1 [L]
-RewriteRule ^account/images/(.*)$	/dist/images/$1 [L]
+RewriteRule ^(account|information|order)/css/(.*)$	/dist/css/$2 [L]
+RewriteRule ^(account|information|order)/js/(.*)$	/dist/js/$2 [L]
+RewriteRule ^(account|information|order)/images/(.*)$	/dist/images/$2 [L]
 
 RewriteRule ^sitemap.xml$ index.php?route=feed/google_sitemap [L]
 RewriteRule ^googlebase.xml$ index.php?route=feed/google_base [L]
@@ -29,6 +29,8 @@ RewriteRule ^factory$ index.php?route=factory/factory [L]
 
 
 RewriteRule ^account/(login|register|account|edit|password|address|wishlist|order|logout)$ index.php?route=account/$1 [L]
+
+RewriteRule ^information/(introduce|issues|support).html$ index.php?route=information/information/$1 [L]
 
 # RewriteRule ^register.html$ index.php?route=account/register[L]
 
