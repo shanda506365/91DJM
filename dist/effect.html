@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
-    <title>91DJM</title>
+    <title><?php echo $meta_title; ?></title>
     <link rel="stylesheet" type="text/css" href="css/style.min.css">     
     <link rel="stylesheet" type="text/css" href="css/bannerswip.css">
     <link rel="stylesheet" type="text/css" href="css/noless.css"> 
@@ -31,12 +31,10 @@
 
 <body>
     <div class="htmlbody container-fluid"   
-    data-img='[{"src":"http:\/\/djm.com\/image\/cache\/catalog\/ad\/A05-1200x500.jpg","des":"\u6d4b\u8bd5\u4e00","link":""},{"src":"http:\/\/djm.com\/image\/cache\/catalog\/ad\/A06-1200x500.jpg","des":"\u6d4b\u8bd5\u4e8c","link":""},{"src":"http:\/\/djm.com\/image\/cache\/catalog\/ad\/A07-1200x500.jpg","des":"\u6d4b\u8bd5\u4e09","link":""}]'
+    data-img='<?php echo $data_img; ?>'
     data-ajax-url="../testData.json"
     data-ajax-thumbsUp="../testData1.json"
-    data-category='[{"filter_group_id":"1","filter":[{"filter_id":"11","name":"现代"},{"filter_id":"12","name":"简约"},{"filter_id":"12","name":"奢华"},{"filter_id":"13","name":"人文"},{"filter_id":"14","name":"工业"},{"filter_id":"15","name":"城市"},{"filter_id":"16","name":"其他"}],"name":"按风格"},{"filter_group_id":"2","filter":[{"filter_id":"21","name":"制造业"}],"name":"按行业"}
-    ,{"filter_group_id":"3","filter":[{"filter_id":"31","name":"木质材质"}],"name":"按材质"}
-    ,{"filter_group_id":"4","filter":[{"filter_id":"32","name":"10——50㎥"}],"name":"按面积"}]'
+    data-category='<?php echo $filters; ?>'
 
     data-imglist='{"suc":"true","data":[{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"},{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"},{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"},{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"},{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"},{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"},{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"},{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"},{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"},{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"},{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"},{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"}],"code":"111","msg":"tt","total":"13"}'
 ></div>
