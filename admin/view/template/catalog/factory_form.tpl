@@ -53,6 +53,12 @@
                   </select>
                 </div>
               </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-keyword">地名</label>
+                <div class="col-sm-10">
+                  <input type="text" name="area_name" value="<?php echo $area_name; ?>" id="input-area-name" class="form-control" />
+                </div>
+              </div>
               <div class="form-group hidden">
                 <label class="col-sm-2 control-label" for="input-status">选择地区</label>
                 <div class="col-sm-10">

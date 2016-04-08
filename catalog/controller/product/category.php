@@ -5,6 +5,10 @@ class ControllerProductCategory extends Controller {
 
 		$this->load->model('catalog/category');
 
+//        echo '<pre>';
+//        $temp = $this->model_catalog_category->getCategoryFilters(57);
+//        echo json_encode($temp, JSON_UNESCAPED_SLASHES);exit;
+
 		$this->load->model('catalog/product');
 
 		$this->load->model('tool/image');

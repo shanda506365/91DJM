@@ -132,11 +132,11 @@ class ControllerCatalogFactory extends Controller {
             $filter_province_code = null;
         }
 
-        if (isset($this->request->get['filter_china_area_id'])) {
-            $filter_china_area_id = $this->request->get['filter_china_area_id'];
-        } else {
-            $filter_china_area_id = null;
-        }
+//        if (isset($this->request->get['filter_china_area_id'])) {
+//            $filter_china_area_id = $this->request->get['filter_china_area_id'];
+//        } else {
+//            $filter_china_area_id = null;
+//        }
 
         if (isset($this->request->get['sort'])) {
             $sort = $this->request->get['sort'];
@@ -192,7 +192,7 @@ class ControllerCatalogFactory extends Controller {
         $filter_data = array(
             'filter_factory_name' => $filter_factory_name,
             'filter_province_code' => $filter_province_code,
-            'filter_china_area_id' => $filter_china_area_id,
+//            'filter_china_area_id' => $filter_china_area_id,
             'sort'  => $sort,
             'order' => $order,
             'start' => ($page - 1) * $this->config->get('config_limit_admin'),
@@ -210,8 +210,8 @@ class ControllerCatalogFactory extends Controller {
             $data['factories'][] = array(
                 'factory_id' => $result['factory_id'],
                 'factory_name'          => $result['factory_name'],
-                'area_name'             => $area['area_name'],
-                'china_area_name'      => $china_area['china_area_name'],
+                'province_name'             => $area['area_name'],
+                'area_name'      => $result['area_name'],
                 'sort_order'     => $result['sort_order'],
                 'edit'           => $this->url->link('catalog/factory/edit', 'token=' . $this->session->data['token'] . '&factory_id=' . $result['factory_id'] . $url, 'SSL')
             );
@@ -288,7 +288,7 @@ class ControllerCatalogFactory extends Controller {
 
         $data['filter_factory_name'] = $filter_factory_name;
         $data['filter_province_code'] = $filter_province_code;
-        $data['filter_china_area_id'] = $filter_china_area_id;
+//        $data['filter_china_area_id'] = $filter_china_area_id;
 
         $data['sort'] = $sort;
         $data['order'] = $order;
@@ -416,6 +416,15 @@ class ControllerCatalogFactory extends Controller {
         } else {
             $data['province_code'] = '510000';
         }
+
+        if (isset($this->request->post['area_name'])) {
+            $data['area_name'] = $this->request->post['area_name'];
+        } elseif (!empty($factory_info)) {
+            $data['area_name'] = $factory_info['area_name'];
+        } else {
+            $data['area_name'] = '';
+        }
+
 
         if (isset($this->request->post['china_area_id'])) {
             $data['china_area_id'] = $this->request->post['china_area_id'];

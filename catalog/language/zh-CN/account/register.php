@@ -32,17 +32,18 @@ $_['entry_password']       = '输入密码：';
 $_['entry_confirm']        = '确认密码：';
 
 // Error
-$_['error_exists']         = '警告： 该邮箱地址已被注册、请换一个电子邮箱！';
+//$_['error_exists']         = '警告： 该邮箱地址已被注册、请换一个电子邮箱！';
+$_['error_exists']         = '该手机号已被注册！';
 $_['error_firstname']      = '名字必须在1到32字符之间！';
 $_['error_lastname']       = '姓氏必须在1到32字符之间！';
 $_['error_email']          = '无效的邮箱地址！';
-$_['error_telephone']      = '电话号码必须为3到32字节！';
+$_['error_telephone']      = '手机号码必须为11位数字！';
 $_['error_address_1']      = '地址 1长度必须在3到128字符之间！';
 $_['error_city']           = '城市名必须在2到128字节之间！';
 $_['error_postcode']       = '邮编必须在2到10字符之间！';
 $_['error_country']        = '请选择一个国家！';
 $_['error_zone']           = '请选择地区/省份！';
 $_['error_custom_field']   = '%s 必须填写！';
-$_['error_password']       = '密码必须是 4 至 20 字符之间！';
+$_['error_password']       = '密码必须是 6 至 20 字符之间！';
 $_['error_confirm']        = '两次输入的密码不同！';
 $_['error_agree']          = '警告：您未有同意条款 %s！';

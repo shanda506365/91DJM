@@ -34,6 +34,6 @@ class ModelDesignBanner extends Model {
                 );
             }
         }
-        return json_encode($array_json);//JSON_UNESCAPED_SLASHES
+        return json_encode($array_json, JSON_UNESCAPED_SLASHES);
     }
 }

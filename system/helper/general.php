@@ -24,3 +24,48 @@ function log_message($level = 'error', $message, $php_error = FALSE)
     fwrite($handle, date('Y-m-d G:i:s') . ' - ' . print_r($message, true) . "\n");
     fclose($handle);
 }
+//电话号码隐藏中间4位
+function cover_telephone($telephone) {
+    $return = trim($telephone);
+    if (strlen($telephone) == 11) {
+        $return = substr($telephone, 0, 3) . '****' . substr($telephone, 7, 4);
+    }
+    return $return;
+}
+//json输出
+function output_json($arr) {
+    echo json_encode($arr);
+    exit;
+}
+//json输出成功信息
+function output_success($msg) {
+    $data = array(
+        "success" => true,
+        "message" => $msg
+    );
+    echo json_encode($data);
+    exit;
+}
+//json输出错误信息
+function output_error($msg) {
+    $data = array(
+        "success" => false,
+        "message" => $msg
+    );
+    echo json_encode($data);
+    exit;
+}
+//短信日志
+function log_sms($message)
+{
+    $handle = fopen(DIR_LOGS . 'error_sms.log', 'a');
+    fwrite($handle, date('Y-m-d H:i:s') . ' - ' . print_r($message, true) . "\n");
+    fclose($handle);
+}
+
+function is_mobile($mobile) {
+    if(preg_match("/^1\d{10}$/", $mobile)){
+        return true;
+    }
+    return false;
+}
