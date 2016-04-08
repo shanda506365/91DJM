@@ -6,7 +6,7 @@ class ControllerAccountLogin extends Controller {
 		$this->load->model('account/customer');
 
         if ($this->customer->isLogged()) {
-            $this->response->redirect($this->url->link('account/account', '', 'SSL'));
+            $this->response->redirect($this->url->link_static('account/account', '', 'SSL'));
         }
 
         //广告加载
@@ -23,21 +23,14 @@ class ControllerAccountLogin extends Controller {
     public function doLogin() {
         $this->load->model('account/customer');
 
-        $mobile = trim($this->request->get['mobile']);
+        $mobile = trim($this->request->post['mobile']);
 
         if (is_mobile($mobile) == false) {
             output_error("电话号码必须11位数！");
         }
 
-        if ($this->model_account_customer->getTotalCustomersByMobile($this->request->post['mobile'])) {
-            output_error("该手机号已被注册！");
-        }
-
-        // Customer Group
-        if (isset($this->request->post['customer_group_id']) && is_array($this->config->get('config_customer_group_display')) && in_array($this->request->post['customer_group_id'], $this->config->get('config_customer_group_display'))) {
-            $customer_group_id = $this->request->post['customer_group_id'];
-        } else {
-            $customer_group_id = $this->config->get('config_customer_group_id');
+        if ($this->model_account_customer->getTotalCustomersByMobile($this->request->post['mobile']) == 0) {
+            output_error("该手机号的用户不存在！");
         }
 
         $password = trim($this->request->post['password']);
@@ -45,25 +38,7 @@ class ControllerAccountLogin extends Controller {
             output_error('密码必须是 6 至 20 字符之间！');
         }
 
-        $confirm = trim($this->request->post['confirm']);
-        if ($confirm != $password) {
-            output_error('两次输入的密码不同！');
-        }
-
-        $random = trim($this->request->post['random']);
-        if ($this->session->data['register_code'] != $random) {
-            output_error('短信验证码错误！');
-        }
-
-        $data = array(
-            'customer_group_id' => $customer_group_id,
-            'mobile'    => $mobile,
-            'password' => $password
-        );
-
-        $customer_id = $this->model_account_customer->addCustomer($data);
-
-        if (!$this->customer->login($mobile, $this->request->post['password'])) {
+        if (!$this->customer->login($mobile, $password)) {
 
             $this->model_account_customer->addLoginAttempt($mobile);
 
@@ -83,8 +58,6 @@ class ControllerAccountLogin extends Controller {
 
         $this->model_account_activity->addActivity('login', $activity_data);
 
-        unset($this->session->data['login_code']);
-
-        output_success("注册成功！");
+        output_success("登录成功！");
     }
 }

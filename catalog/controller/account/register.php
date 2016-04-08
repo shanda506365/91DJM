@@ -178,7 +178,7 @@ class ControllerAccountRegister extends Controller {
 
         $customer_id = $this->model_account_customer->addCustomer($data);
 
-        if (!$this->customer->login($mobile, $this->request->post['password'])) {
+        if (!$this->customer->login($mobile, $password)) {
 
             $this->model_account_customer->addLoginAttempt($mobile);
 
