@@ -5,42 +5,20 @@ class ControllerAccountLogin extends Controller {
 	public function index() {
 		$this->load->model('account/customer');
 
+        if ($this->customer->isLogged()) {
+            $this->response->redirect($this->url->link('account/account', '', 'SSL'));
+        }
 
         //广告加载
         $this->load->model('design/banner');
         $data['data_banner'] = $this->model_design_banner->banner_to_json(14);
 
         //获取短信验证码的网址
-        $data['url_random'] = $this->url->link('account/login/getSmsRandom', '', 'SSL');
-        $data['url_register'] = $this->url->link('account/login/doLogin', '', 'SSL');
+        $data['url_login'] = $this->url->link('account/login/doLogin', '', 'SSL');
 
         $this->response->setOutput($this->load->view('login.html', $data));
 
 	}
-
-    public function getSmsRandom() {
-        $mobile = trim($this->request->get['mobile']);
-
-        if (is_mobile($mobile) == false) {
-            output_error("电话号码必须11位数");
-        }
-
-        $this->load->helper("sms");
-        $code = rand(0, 9).rand(0, 9).rand(0, 9).rand(0, 9).rand(0, 9).rand(0, 9);
-        $this->session->data['login_code'] = $code;
-        $pars = array(
-            "code" => $code,
-            "product" => "搭积木"
-        );
-        $result = send_sms($mobile, $pars, SMS_TPL_REGISTER, date("Y-m-d H:i:s"));
-        if ($result) {
-            if ($result->success) {
-
-            }
-        }
-        output_success("验证码发送成功！");
-        //$this->session->data['payment_address'] =
-    }
 
     public function doLogin() {
         $this->load->model('account/customer');
