@@ -8,10 +8,11 @@
     <link rel="stylesheet" type="text/css" href="css/style.min.css">     
     <link rel="stylesheet" type="text/css" href="css/bannerswip.css">
     <link rel="stylesheet" type="text/css" href="css/noless.css"> 
+    <link rel="stylesheet" type="text/css" href="css/bootstrapValidator.css">
     
     <link rel="stylesheet" type="text/css" href="css/global.css">
-    <!-- <link rel="stylesheet" type="text/css" href="css/loadmask.css"> -->
-    <link rel="stylesheet" type="text/css" href="css/standard_detail.css"> 
+    <link rel="stylesheet" type="text/css" href="css/loadmask.css">
+    <link rel="stylesheet" type="text/css" href="css/submit.css"> 
     
     <script type="text/javascript" src="js/checkNav.js"></script> 
 
@@ -22,7 +23,7 @@
     <script type="text/javascript" src="js/lib/sea.js"></script> 
     <script type="text/javascript" src="js/seaConfig.js"></script>
     <script type="text/javascript">
-    seajs.use("./js/Standard_detail");
+    seajs.use("./js/Submit");
     </script>
    
 
@@ -33,8 +34,10 @@
     data-banner='images/A24.jpg'
     data-floor-1='images/A25.jpg'
     data-content='["images/xx.jpg",""]'
-    data-breadcrumb='[{"name":"首页","link":"/"},{"name":"标准化套餐","link":"###"},{"name":"A套餐详情","link":"###"}]'
-    data-link-submit='submit.html'></div>
+    data-breadcrumb='[{"name":"首页","link":"/"},{"name":"标准化套餐","link":"standard.html"},{"name":"A套餐详情","link":"###"},{"name":"提交下单","link":"###"}]'
+    data-link-submit='submit.html' 
+    data-city='{"success":true,"message":"111","data":[{"area_code":"610000","area_name":"成都市"},{"area_code":"620000","area_name":"绵阳市"}],"code":""}'
+    data-ajax-getCity='getCity'></div>
 </body>
 
 </html>

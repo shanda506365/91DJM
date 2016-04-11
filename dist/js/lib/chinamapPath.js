@@ -4,6 +4,7 @@
         window.china = [];
 
         window.paintMap= function(R) {
+            
             var attr = {
                 "fill": "#f05900",
                 "stroke": "#FFFFFF",
