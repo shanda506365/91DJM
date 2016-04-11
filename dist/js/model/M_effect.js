@@ -1,1 +1,1 @@
-"use strict";define(function(require,exports,module){var M_effect={src:"src",link:"link",des:"case_name",id:"case_id",designer_id:"designer_id",designer_name:"designer_name",collect_num:"collect_num",designer_link:"designer_link"};module.exports=M_effect});
+"use strict";define(function(require,exports,module){var M_effect={src:"src",link:"link",des:"product_name",id:"product_id",designer_id:"designer_id",designer_name:"designer_name",collect_num:"collect_num",designer_link:"designer_link"};module.exports=M_effect});
