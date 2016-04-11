@@ -217,6 +217,12 @@ $(document).ready(function() {
 (function($) {
 	$.fn.autocomplete = function(option) {
 		return this.each(function() {
+
+            this.val_old = $(this).val();
+            this.val_new = this.val_old;
+
+            this.multiple = true; //默认多选
+
 			this.timer = null;
 			this.items = new Array();
 
@@ -226,7 +232,21 @@ $(document).ready(function() {
 
 			// Focus
 			$(this).on('focus', function() {
-				this.request();
+				//this.request();
+                if(this.multiple) {
+                    this.val_old = $(this).val();
+                    if (this.val_new == this.val_old && $(this).siblings('ul.dropdown-menu').html()!='') {
+                        $(this).siblings('ul.dropdown-menu').show();
+                    }else{
+                        //this.hide();
+                        this.request();
+                    }
+                }else{
+                    $(this).siblings('ul.dropdown-menu').hide();
+                    if( this.val_old != '') {
+                        this.request();
+                    }
+                }
 			});
 
 			// Blur
@@ -257,6 +277,9 @@ $(document).ready(function() {
 				if (value && this.items[value]) {
 					this.select(this.items[value]);
 				}
+                if(this.multiple == false) {
+                    $(this).siblings('ul.dropdown-menu').hide();
+                }
 			}
 
 			// Show
@@ -279,6 +302,10 @@ $(document).ready(function() {
 			// Request
 			this.request = function() {
 				clearTimeout(this.timer);
+
+                if($(this).val() == '') {
+                    return ;
+                }
 
 				this.timer = setTimeout(function(object) {
 					object.source($(object).val(), $.proxy(object.response, object));
