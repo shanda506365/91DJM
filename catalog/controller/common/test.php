@@ -19,7 +19,12 @@ class ControllerCommonTest extends Controller
 //        echo '<pre>';
 //        print_r($result);
 
+
+        $str = 'asdf<img src="asdfg/asdfasdf.jpg" />';
+
+
+
         echo '<pre>';
-        print_r($this->config->get('config_name'));
+        echo json_encode($str);
     }
 }

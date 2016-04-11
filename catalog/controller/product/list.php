@@ -106,7 +106,7 @@ class ControllerProductList extends Controller {
 
             $all_products[] = array(
                 'product_id'  => $result['product_id'],
-                'product_name'        => $result['case_name'],
+                'product_name'        => $result['name'],
                 'src' => $image,
                 'link'        => $this->url->link_static('product/'. $result['product_id'] . '.html'),
                 'price'       => $price,
@@ -122,7 +122,7 @@ class ControllerProductList extends Controller {
         foreach($all_designers as $designer) {
             $all_designers_info[$designer['customer_id']] = array(
                 'designer_id' => $designer['customer_id'],
-                'designer_name' => $designer['customer_name'],
+                'designer_name' => $designer['designer_name'],
                 'collect_num' => $designer['collect_num'],
                 'designer_link' => $this->url->link_static('designer/'. $result['customer_id'] . '.html')
             );
@@ -130,12 +130,15 @@ class ControllerProductList extends Controller {
 
         foreach($all_products as $key => $product) {
             //补充设计师数据
-            $product['designer_id'] = $product['customer_id'];
-            $product['designer_name'] = $all_designers_info[$product['customer_id']]['designer_name'];
-            $product['collect_num'] =  $all_designers_info[$product['customer_id']]['collect_num'];
-            $product['designer_link'] =  $all_designers_info[$product['customer_id']]['designer_link'];
-            $all_products_info[] = $product;
+            $temp = $product;
+            $temp['designer_id'] = $product['customer_id'];
+            $temp['designer_name'] = $all_designers_info[$product['customer_id']]['designer_name'];
+            $temp['collect_num'] =  $all_designers_info[$product['customer_id']]['collect_num'];
+            $temp['designer_link'] =  $all_designers_info[$product['customer_id']]['designer_link'];
+            $all_products_info[] = $temp;
         }
+
+        //echo '<pre>';print_r($all_products_info);exit;
 
         $data_imglist = array(
             "suc" => true,
