@@ -326,6 +326,21 @@
                   <input type="text" name="sort_order" value="<?php echo $sort_order; ?>" placeholder="<?php echo $entry_sort_order; ?>" id="input-sort-order" class="form-control" />
                 </div>
               </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-customer-id">设计师</label>
+                <div class="col-sm-10">
+                  <select name="customer_id" id="input-customer-id" class="form-control">
+                    <option value="0">无</option>
+                    <?php foreach($all_designers as $designer) { ?>
+                      <?php if ($designer['customer_id'] == $customer_id) { ?>
+                    <option value="<?php echo $designer['customer_id']; ?>" selected><?php echo $designer['designer_name']; ?></option>
+                      <?php } else { ?>
+                    <option value="<?php echo $designer['customer_id']; ?>"><?php echo $designer['designer_name']; ?></option>
+                      <?php } ?>
+                    <?php } ?>
+                  </select>
+                </div>
+              </div>
             </div>
             <div class="tab-pane" id="tab-links">
               <div class="form-group">

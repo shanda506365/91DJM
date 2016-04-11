@@ -1287,6 +1287,21 @@ class ControllerCatalogProduct extends Controller {
 			$data['product_layout'] = array();
 		}
 
+        //关联设计师
+        $this->load->model('customer/customer');
+
+        if (isset($this->request->post['customer_id'])) {
+            $data['customer_id'] = $this->request->post['customer_id'];
+        } elseif (!empty($product_info)) {
+            $data['customer_id'] = $product_info['customer_id'];
+        } else {
+            $data['customer_id'] = 0;
+        }
+
+        //查询所有设计师
+        $data['all_designers'] = $this->model_customer_customer->getCustomersByGroupId(2);
+
+
 		$this->load->model('design/layout');
 
 		$data['layouts'] = $this->model_design_layout->getLayouts();
