@@ -67,6 +67,8 @@ class ControllerProductList extends Controller {
 
         $data['meta_title'] = '案例展示 - ' . $this->config->get('config_name');
 
+        $this->load->model('account/customer');
+
         $this->load->model('catalog/category');
 
         $data['products'] = array();
@@ -85,8 +87,9 @@ class ControllerProductList extends Controller {
 
         $results = $this->model_catalog_product->getProducts($filter_data);
 
+        $all_designer_ids = array();
 
-
+        $all_products = array();
 
         foreach ($results as $result) {
             if ($result['image']) {
@@ -101,50 +104,50 @@ class ControllerProductList extends Controller {
                 $price = false;
             }
 
-            if ((float)$result['special']) {
-                $special = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')));
-            } else {
-                $special = false;
-            }
-
-            if ($this->config->get('config_tax')) {
-                $tax = $this->currency->format((float)$result['special'] ? $result['special'] : $result['price']);
-            } else {
-                $tax = false;
-            }
-
-            if ($this->config->get('config_review_status')) {
-                $rating = (int)$result['rating'];
-            } else {
-                $rating = false;
-            }
-
-            $data['products'][] = array(
+            $all_products[] = array(
                 'product_id'  => $result['product_id'],
-                'thumb'       => $image,
-                'name'        => $result['name'],
-                'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get('config_product_description_length')) . '..',
+                'product_name'        => $result['case_name'],
+                'src' => $image,
+                'link'        => $this->url->link_static('product/'. $result['product_id'] . '.html'),
                 'price'       => $price,
-                'special'     => $special,
-                'tax'         => $tax,
-                'minimum'     => $result['minimum'] > 0 ? $result['minimum'] : 1,
-                'rating'      => $result['rating'],
-                'href'        => $this->url->link_static('product/'. $result['product_id'] . '.html')
+                'customer_id' => $result['customer_id']
             );
 
-            $data['products'][] = array(
-                'product_id'  => $result['product_id'],
-                'thumb'       => $image,
-                'name'        => $result['name'],
-                'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get('config_product_description_length')) . '..',
-                'price'       => $price,
-                'special'     => $special,
-                'tax'         => $tax,
-                'minimum'     => $result['minimum'] > 0 ? $result['minimum'] : 1,
-                'rating'      => $result['rating'],
-                'href'        => $this->url->link_static('product/'. $result['product_id'] . '.html')
+            $all_designer_ids[] = $result['customer_id'];
+
+        }
+
+
+        $all_designers = $this->model_account_customer->getCustomerDesignersByIds($all_designer_ids);
+        foreach($all_designers as $designer) {
+            $all_designers_info[$designer['customer_id']] = array(
+                'designer_id' => $designer['customer_id'],
+                'designer_name' => $designer['customer_name'],
+                'collect_num' => $designer['collect_num'],
+                'designer_link' => $this->url->link_static('designer/'. $result['customer_id'] . '.html')
             );
         }
+
+        foreach($all_products as $key => $product) {
+            //补充设计师数据
+            $product['designer_id'] = $product['customer_id'];
+            $product['designer_name'] = $all_designers_info[$product['customer_id']]['designer_name'];
+            $product['collect_num'] =  $all_designers_info[$product['customer_id']]['collect_num'];
+            $product['designer_link'] =  $all_designers_info[$product['customer_id']]['designer_link'];
+            $all_products_info[] = $product;
+        }
+
+        $data_imglist = array(
+            "suc" => true,
+            "data" => $all_products_info,
+            "code" => 1,
+            "msg" => '',
+            "total" => $product_total
+        );
+
+        $data['data_imglist'] = json_encode($data_imglist, JSON_UNESCAPED_SLASHES);
+
+        //{"suc":"true","data":[{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"}……],"code":"111","msg":"tt","total":"13"}
 
         $data['search'] = $search;
         $data['category_id'] = $category_id;

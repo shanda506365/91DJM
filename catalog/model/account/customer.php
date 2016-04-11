@@ -157,4 +157,25 @@ class ModelAccountCustomer extends Model {
     public function deleteLoginAttempts($mobile) {
         $this->db->query("DELETE FROM `" . DB_PREFIX . "customer_login` WHERE mobile = '" . $this->db->escape(utf8_strtolower($mobile)) . "'");
     }
+
+    public function getCustomerDesigner($customer_id) {
+        $this->db_ci->where('customer_id', $customer_id);
+        $query = $this->db_ci->get('customer_designer');
+        return $query->first_row();
+    }
+
+    public function getCustomerCompany($customer_id) {
+        $this->db_ci->where('customer_id', $customer_id);
+        $query = $this->db_ci->get('customer_company');
+        return $query->first_row();
+    }
+
+    public function getCustomerDesignersByIds($ids = array()) {
+        $this->db_ci->select('a.*, b.designer_name');
+        $this->db_ci->from('customer');
+        $this->db_ci->join('customer_designer', 'a.customer_id = b.customer_id');
+        $this->db_ci->where_in('a.customer_id', $ids);
+        $query = $this->db_ci->get();
+        return $query->result_array();
+    }
 }
