@@ -147,7 +147,7 @@ class ControllerProductList extends Controller {
 
         $data['data_imglist'] = json_encode($data_imglist, JSON_UNESCAPED_SLASHES);
 
-        //{"suc":"true","data":[{"case_id":"1","src":"images/A15.jpg","case_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"}……],"code":"111","msg":"tt","total":"13"}
+        //{"suc":"true","data":[{"product_id":"1","src":"images/A15.jpg","product_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"}……],"code":"111","msg":"tt","total":"13"}
 
         $data['search'] = $search;
         $data['category_id'] = $category_id;
