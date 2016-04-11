@@ -43,6 +43,11 @@ class ControllerProductList extends Controller {
 
         if (isset($this->request->post['sort'])) {
             $sort = $this->request->post['sort'];
+            if ($sort == '1') {
+                $sort = 'p.date_added';
+            } elseif($sort == '2') {
+                $sort = 'p.viewed';
+            }
         } else {
             $sort = 'p.date_added';
         }
