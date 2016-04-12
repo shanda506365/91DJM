@@ -40,7 +40,7 @@ function output_json($arr) {
 //json输出成功信息
 function output_success($msg) {
     $data = array(
-        "success" => true,
+        "suc" => true,
         "message" => $msg
     );
     echo json_encode($data);
@@ -49,7 +49,7 @@ function output_success($msg) {
 //json输出错误信息
 function output_error($msg) {
     $data = array(
-        "success" => false,
+        "suc" => false,
         "message" => $msg
     );
     echo json_encode($data);

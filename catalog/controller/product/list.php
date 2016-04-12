@@ -34,7 +34,7 @@ class ControllerProductList extends Controller {
 
         //分页的网址
         $data['url_ajax_page'] = $this->url->link('product/list/ajax_url', '', '');
-        $data['url_ajax_collect'] = $this->url->link('api/account', '', '');
+        $data['url_ajax_collect'] = $this->url->link('api/collect', '', '');
 
         $this->response->setOutput($this->load->view('effect.html', $data));
     }
@@ -170,9 +170,7 @@ class ControllerProductList extends Controller {
             $temp['designer_link'] =  $all_designers_info[$product['customer_id']]['designer_link'];
             $all_products_info[] = $temp;
         }
-
 //echo '<pre>';print_r($all_products_info);exit;
-
         $data_imglist = array(
             "suc" => true,
             "data" => empty($all_products_info) ? array() : $all_products_info,
