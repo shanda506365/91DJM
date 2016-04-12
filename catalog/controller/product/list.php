@@ -34,6 +34,7 @@ class ControllerProductList extends Controller {
 
         //分页的网址
         $data['url_ajax_page'] = $this->url->link('product/list/ajax_url', '', '');
+        $data['url_ajax_collect'] = $this->url->link('api/account', '', '');
 
         $this->response->setOutput($this->load->view('effect.html', $data));
     }
