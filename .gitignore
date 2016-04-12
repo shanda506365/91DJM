@@ -12,3 +12,4 @@ package.json
 /system/storage/cache/*
 /system/storage/logs/*
 /system/storage/upload/*
+/backup/*
