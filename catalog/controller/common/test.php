@@ -19,12 +19,17 @@ class ControllerCommonTest extends Controller
 //        echo '<pre>';
 //        print_r($result);
 
+        $this->load->model('catalog/product');
 
-        $str = 'asdf<img src="asdfg/asdfasdf.jpg" />';
-
-
-
+        $filter_data = array(
+            'filter_category_id'  => 1,
+            'filter_filter'      => '2,18',
+            'sort' => 'p.product_id'
+        );
+        $temp = $this->model_catalog_product->getProducts($filter_data);
         echo '<pre>';
-        echo json_encode($str);
+        print_r($temp);
+
+        echo $this->model_catalog_product->getTotalProducts($filter_data);
     }
 }

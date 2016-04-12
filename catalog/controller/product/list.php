@@ -174,7 +174,7 @@ class ControllerProductList extends Controller {
 
         $data_imglist = array(
             "suc" => true,
-            "data" => $all_products_info,
+            "data" => empty($all_products_info) ? array() : $all_products_info,
             "code" => 1,
             "msg" => '',
             "total" => $product_total

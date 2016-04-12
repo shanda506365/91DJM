@@ -171,6 +171,9 @@ class ModelAccountCustomer extends Model {
     }
 
     public function getCustomerDesignersByIds($ids = array()) {
+        if (empty($ids)) {
+            return array();
+        }
         $this->db_ci->select('a.*, b.designer_name');
         $this->db_ci->from('customer a');
         $this->db_ci->join('customer_designer b', 'a.customer_id = b.customer_id');
