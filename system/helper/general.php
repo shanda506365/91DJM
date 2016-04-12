@@ -41,7 +41,7 @@ function output_json($arr) {
 function output_success($msg) {
     $data = array(
         "suc" => true,
-        "message" => $msg
+        "msg" => $msg
     );
     echo json_encode($data);
     exit;
@@ -50,7 +50,7 @@ function output_success($msg) {
 function output_error($msg) {
     $data = array(
         "suc" => false,
-        "message" => $msg
+        "msg" => $msg
     );
     echo json_encode($data);
     exit;
