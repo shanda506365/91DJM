@@ -12,7 +12,7 @@ class ControllerApiCollect extends Controller
         if (!$this->customer->isLogged()) {
             $data = array(
                 "suc" => false,
-                "message" => "登陆后才能收藏设计师！"
+                "msg" => "登陆后才能收藏设计师！"
             );
             echo json_encode($data);
             exit;
@@ -27,7 +27,7 @@ class ControllerApiCollect extends Controller
         $data = array(
             "suc" => true,
             "data" => $collect_num,
-            "message" => "收藏成功！"
+            "msg" => "收藏成功！"
         );
         echo json_encode($data);
         exit;
