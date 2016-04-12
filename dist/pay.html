@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <title>91DJM</title>
+    <link rel="stylesheet" type="text/css" href="css/style.min.css">     
+    <link rel="stylesheet" type="text/css" href="css/bannerswip.css">
+    <link rel="stylesheet" type="text/css" href="css/noless.css"> 
+    <link rel="stylesheet" type="text/css" href="css/bootstrapValidator.css">
+    
+    <link rel="stylesheet" type="text/css" href="css/global.css">
+    <link rel="stylesheet" type="text/css" href="css/loadmask.css">
+    <link rel="stylesheet" type="text/css" href="css/pay.css"> 
+    
+    <script type="text/javascript" src="js/checkNav.js"></script> 
+
+    <script src="js/lib/sonic.min.js"></script>
+    <script src="js/lib/sonic-dom.min.js"></script>
+     
+
+    <script type="text/javascript" src="js/lib/sea.js"></script> 
+    <script type="text/javascript" src="js/seaConfig.js"></script>
+    <script type="text/javascript">
+    seajs.use("./js/Pay");
+    </script>
+   
+
+</head>
+
+<body>
+    <div class="htmlbody container-fluid"   
+    
+    data-breadcrumb='[{"name":"首页","link":"/"},{"name":"标准化套餐","link":"standard.html"},{"name":"A套餐详情","link":"###"},{"name":"付定金","link":"###"}]'
+    data-link-submit='submit.html' 
+    data-city='{"success":true,"message":"111","data":[{"area_code":"610000","area_name":"成都市"},{"area_code":"620000","area_name":"绵阳市"}],"code":""}'
+    data-ajax-getCity='/getCity'
+    data-order-item='[{"product_id":"1","product_name":"标准化套餐A方案","price":"1000.00","image":"/images/I01.jpg"}]'
+    data-ajax-submit='/submit'
+    data-ajax-addfav='/addfav'></div>
+</body>
+
+</html>
