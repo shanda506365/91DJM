@@ -7,7 +7,43 @@
  */
 class ControllerProductList extends Controller {
     public function index() {
-        $this->load->language('product/search');
+
+        $data['meta_title'] = '案例展示 - ' . $this->config->get('config_name');
+
+        //{"suc":"true","data":[{"product_id":"1","src":"images/A15.jpg","product_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"}……],"code":"111","msg":"tt","total":"13"}
+
+//        $data['search'] = $search;
+//        $data['category_id'] = $category_id;
+//
+//        $data['sort'] = $sort;
+//        $data['order'] = $order;
+//        $data['limit'] = $limit;
+
+        $data['meta_title'] = '效果图展示 - ' . $this->config->get('config_name');
+
+        $this->load->model('catalog/category');
+
+        $filters = $this->model_catalog_category->getCategoryFilters(1);
+        $data['filters'] = json_encode($filters, JSON_UNESCAPED_SLASHES);
+
+        //广告加载
+        $this->load->model('design/banner');
+        $data['data_img'] = $this->model_design_banner->banner_to_json(7);
+
+        $data['data_imglist'] = $this->do_filter();
+
+        //分页的网址
+        $data['url_ajax_page'] = $this->url->link('product/list/ajax_url', '', '');
+
+        $this->response->setOutput($this->load->view('effect.html', $data));
+    }
+
+    public function ajax_url() {
+        $data['data_imglist'] = $this->do_filter();
+        echo $data['data_imglist'];exit;
+    }
+
+    protected function do_filter() {
 
         $this->load->model('catalog/category');
 
@@ -25,12 +61,6 @@ class ControllerProductList extends Controller {
 
         if (isset($this->request->post['filter'])) {
             $filter = $this->request->post['filter'];
-            $filter = json_decode($filter);
-            $temp_arr = array();
-            foreach($filter as $attr) {
-                $temp_arr[] = $attr->fid;
-            }
-            $filter = implode(',', $temp_arr);
         } else {
             $filter = '';
         }
@@ -69,8 +99,6 @@ class ControllerProductList extends Controller {
         } else {
             $limit = 12;
         }
-
-        $data['meta_title'] = '案例展示 - ' . $this->config->get('config_name');
 
         $this->load->model('account/customer');
 
@@ -121,8 +149,7 @@ class ControllerProductList extends Controller {
             $all_designer_ids[] = $result['customer_id'];
 
         }
-
-
+//print_r($all_products);exit;
         $all_designers = $this->model_account_customer->getCustomerDesignersByIds($all_designer_ids);
         foreach($all_designers as $designer) {
             $all_designers_info[$designer['customer_id']] = array(
@@ -132,7 +159,7 @@ class ControllerProductList extends Controller {
                 'designer_link' => $this->url->link_static('designer/'. $result['customer_id'] . '.html')
             );
         }
-
+//print_r($all_designers);exit;
         foreach($all_products as $key => $product) {
             //补充设计师数据
             $temp = $product;
@@ -143,7 +170,7 @@ class ControllerProductList extends Controller {
             $all_products_info[] = $temp;
         }
 
-        //echo '<pre>';print_r($all_products_info);exit;
+//echo '<pre>';print_r($all_products_info);exit;
 
         $data_imglist = array(
             "suc" => true,
@@ -154,28 +181,7 @@ class ControllerProductList extends Controller {
         );
 
         $data['data_imglist'] = json_encode($data_imglist, JSON_UNESCAPED_SLASHES);
-
-        //{"suc":"true","data":[{"product_id":"1","src":"images/A15.jpg","product_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"}……],"code":"111","msg":"tt","total":"13"}
-
-        $data['search'] = $search;
-        $data['category_id'] = $category_id;
-
-        $data['sort'] = $sort;
-        $data['order'] = $order;
-        $data['limit'] = $limit;
-
-        $data['meta_title'] = '效果图展示 - ' . $this->config->get('config_name');
-
-        $filters = $this->model_catalog_category->getCategoryFilters(1);
-        $data['filters'] = json_encode($filters, JSON_UNESCAPED_SLASHES);
-
-        //广告加载
-        $this->load->model('design/banner');
-        $data['data_img'] = $this->model_design_banner->banner_to_json(7);
-
-        //获取短信验证码的网址
-        $data['url_register'] = $this->url->link('account/register/doRegister', '', 'SSL');
-
-        $this->response->setOutput($this->load->view('effect.html', $data));
+//echo '<pre>';print_r($data['data_imglist']);exit;
+        return $data['data_imglist'];
     }
 }
