@@ -75,3 +75,10 @@ function format_bytes($size) {
     for ($i = 0; $size >= 1024 && $i < 4; $i++) $size /= 1024;
     return round($size, 2).$units[$i];
 }
+//得到文件后缀
+function get_extension($file){
+    if (is_file($file)) {
+        return pathinfo($file, PATHINFO_EXTENSION);
+    }
+    return false;
+}

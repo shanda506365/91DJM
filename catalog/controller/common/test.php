@@ -33,8 +33,16 @@ class ControllerCommonTest extends Controller
 //
 //        echo $this->model_catalog_product->getTotalProducts($filter_data);
 
-        echo format_bytes(filesize("E:\\djm\\image\\upload\\11.png.FHThrdSjioRvCxN7frdegG3hVef2xL6F"));exit;
+        //echo format_bytes(filesize("E:\\djm\\image\\upload\\11.png.FHThrdSjioRvCxN7frdegG3hVef2xL6F"));exit;
 
+        echo get_extension("E:\\djm\\image\\upload\\201604\\FHThrdSjioRvCxN7frdegG3hVef2xL6F.png");
+        exit;
+
+
+        //2016-04-13 10:51:29
+
+        $date = '2016-04-13 10:51:29';
+        echo date('Ym', strtotime($date));exit;
 
         $this->response->setOutput($this->load->view('djm/template/common/test.tpl', array()));
     }

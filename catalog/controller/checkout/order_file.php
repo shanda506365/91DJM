@@ -69,11 +69,21 @@ class ControllerCheckoutOrderFile extends Controller {
         }
 
         if (!$json) {
-            $file = $filename . '.' . token(32);
 
-            $size = filesize(DIR_UPLOAD . $file);
+            //$file = $filename . '.' . token(32);
+            $file_type = $this->request->files['file']['type'];
+            $file = token(32).'.'.$file_type;
 
-            move_uploaded_file($this->request->files['file']['tmp_name'], DIR_UPLOAD . $file);
+            //加上年月目录
+            if (!is_dir(DIR_UPLOAD . date('Ym'))) {
+                mkdir(DIR_UPLOAD . date('Ym'));
+            }
+
+            $real_path = DIR_UPLOAD . date('Ym') .'\\' . $file;
+
+            move_uploaded_file($this->request->files['file']['tmp_name'], $real_path);
+
+            $file_size = filesize($real_path);
 
             // Hide the uploaded file name so people can not link to it directly.
             $this->load->model('tool/upload');
@@ -82,7 +92,7 @@ class ControllerCheckoutOrderFile extends Controller {
 
             //$json['success'] = $this->language->get('text_upload');
 
-            $file_id = $this->model_tool_upload->addUpload($filename, $file, $size);
+            $file_id = $this->model_tool_upload->addUpload($filename, $file, $file_size);
 
             $this->load->model('checkout/order');
             $this->model_checkout_order->addOrderFile($order_id, $file_id);
@@ -90,7 +100,7 @@ class ControllerCheckoutOrderFile extends Controller {
             $data = array(
                 'file_id' => $file_id,
                 'file_name' => $filename,
-                'size' => format_bytes($size)
+                'size' => format_bytes($file_size)
             );
 
             $json = array(
@@ -114,6 +124,6 @@ class ControllerCheckoutOrderFile extends Controller {
 
         $this->model_tool_upload->deleteUpload($file_id);
 
-
+        @unlink(DIR_UPLOAD . date('Ym', strtotime($file_info['date_added'])) .'\\'. $file_info['filename']);
     }
 }
