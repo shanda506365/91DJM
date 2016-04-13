@@ -24,7 +24,7 @@ define('DIR_DOWNLOAD',      DIR_ROOT . 'system/storage/download/');
 define('DIR_LOGS',          DIR_ROOT . 'system/storage/logs/');
 define('DIR_MODIFICATION', DIR_ROOT . 'system/storage/modification/');
 //define('DIR_UPLOAD',        DIR_ROOT . 'system/storage/upload/');
-define('DIR_UPLOAD',        DIR_ROOT . 'image/upload/');
+define('DIR_UPLOAD',        DIR_ROOT . 'upload/');
 define('DIR_CATALOG',       DIR_ROOT . DIR_FRONT . '/');
 
 // DB

@@ -6,6 +6,9 @@
  * Time: 11:26
  */
 class ControllerCheckoutOrderFile extends Controller {
+
+    protected $dir_type = 'order';
+
     public function index() {
 
         $order_id = (int)$this->request->post['file_id'];
@@ -75,11 +78,11 @@ class ControllerCheckoutOrderFile extends Controller {
             $file = token(32).'.'.$file_type;
 
             //加上年月目录
-            if (!is_dir(DIR_UPLOAD . date('Ym'))) {
-                mkdir(DIR_UPLOAD . date('Ym'));
+            if (!is_dir(DIR_UPLOAD . $this->dir_type . '\\'. date('Ym'))) {
+                mkdir(DIR_UPLOAD .$this->dir_type . 'order\\' . date('Ym'));
             }
 
-            $real_path = DIR_UPLOAD . date('Ym') .'\\' . $file;
+            $real_path = DIR_UPLOAD . $this->dir_type . '\\' . date('Ym') .'\\' . $file;
 
             move_uploaded_file($this->request->files['file']['tmp_name'], $real_path);
 
@@ -124,6 +127,6 @@ class ControllerCheckoutOrderFile extends Controller {
 
         $this->model_tool_upload->deleteUpload($file_id);
 
-        @unlink(DIR_UPLOAD . date('Ym', strtotime($file_info['date_added'])) .'\\'. $file_info['filename']);
+        @unlink(DIR_UPLOAD .$this->dir_type . '\\' . date('Ym', strtotime($file_info['date_added'])) .'\\'. $file_info['filename']);
     }
 }
