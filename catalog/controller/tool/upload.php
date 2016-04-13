@@ -62,7 +62,12 @@ class ControllerToolUpload extends Controller {
 		if (!$json) {
 			$file = $filename . '.' . token(32);
 
-			move_uploaded_file($this->request->files['file']['tmp_name'], DIR_UPLOAD . $file);
+            //加上年月目录
+            if (!is_dir(DIR_UPLOAD . date('Ym'))) {
+                mkdir(DIR_UPLOAD . date('Ym'));
+            }
+
+			move_uploaded_file($this->request->files['file']['tmp_name'], DIR_UPLOAD . date('Ym') .'\\' . $file);
 
 			// Hide the uploaded file name so people can not link to it directly.
 			$this->load->model('tool/upload');
