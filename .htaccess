@@ -27,6 +27,7 @@ RewriteRule ^system/download/(.*) /index.php?route=error/not_found [L]
 
 RewriteRule ^factory$ index.php?route=factory/factory [L]
 RewriteRule ^example$ index.php?route=example/example [L]
+RewriteRule ^product/standard$ index.php?route=product/standard [L]
 
 
 RewriteRule ^account/(login|register|forgotpass|account|edit|password|address|wishlist|order|logout)$ index.php?route=account/$1 [L]
