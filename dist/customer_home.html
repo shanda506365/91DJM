@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
-    <title><?php echo $meta_title; ?></title>
+    <title>91DJM</title>
     <link rel="stylesheet" type="text/css" href="css/style.min.css">     
     <link rel="stylesheet" type="text/css" href="css/bannerswip.css">
     <link rel="stylesheet" type="text/css" href="css/noless.css"> 
     
     <link rel="stylesheet" type="text/css" href="css/global.css">
     <link rel="stylesheet" type="text/css" href="css/loadmask.css">
-    <link rel="stylesheet" type="text/css" href="css/effect.css">
+    <link rel="stylesheet" type="text/css" href="css/customer_home.css">
     <link rel="stylesheet" type="text/css" href="css/newPageControllPlus.css">
 
     <script type="text/javascript" src="js/checkNav.js"></script> 
@@ -23,20 +23,15 @@
     <script type="text/javascript" src="js/lib/sea.js"></script> 
     <script type="text/javascript" src="js/seaConfig.js"></script>
     <script type="text/javascript">
-    seajs.use("./js/Effect");
+    seajs.use("./js/Customer_home");
     </script>
    
 
 </head>
 
 <body>
- <div class="htmlbody container-fluid"   
-    data-img='<?php echo $data_img; ?>'
-    data-ajax-url='<?php echo $url_ajax_page; ?>'
-    data-ajax-thumbsUp='<?php echo $url_ajax_collect; ?>'
-    data-category='<?php echo $filters; ?>'
-
-    data-imglist='<?php echo $data_imglist; ?>'</div>
+    <div class="htmlbody container-fluid"
+    data-breadcrumb='[{"name":"首页","link":"/"},{"name":"账户中心","link":"###"}]'></div>
 </body>
 
 </html>
