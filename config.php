@@ -18,13 +18,14 @@ define('DIR_LANGUAGE',      DIR_ROOT . DIR_FRONT . '/language/');
 define('DIR_TEMPLATE',      DIR_ROOT . 'dist/');
 define('DIR_CONFIG',        DIR_ROOT . 'system/config/');
 //define('DIR_IMAGE',         'E:/djm/image/');
-define('DIR_IMAGE',         dirname(__FILE__) . '/image/');
+define('DIR_IMAGE',         DIR_ROOT . 'image/');
 
 define('DIR_CACHE',         DIR_ROOT . 'system/storage/cache/');
 define('DIR_DOWNLOAD',      DIR_ROOT . 'system/storage/download/');
 define('DIR_LOGS',          DIR_ROOT . 'system/storage/logs/');
 define('DIR_MODIFICATION', DIR_ROOT . 'system/storage/modification/');
-define('DIR_UPLOAD',        DIR_ROOT . 'system/storage/upload/');
+//define('DIR_UPLOAD',        DIR_ROOT . 'system/storage/upload/');
+define('DIR_UPLOAD',        DIR_ROOT . 'upload/');
 
 // DB
 require_once(DIR_ROOT . 'config_common.php');

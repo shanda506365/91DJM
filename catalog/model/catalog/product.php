@@ -49,13 +49,14 @@ class ModelCatalogProduct extends Model {
 				'status'           => $query->row['status'],
 				'date_added'       => $query->row['date_added'],
 				'date_modified'    => $query->row['date_modified'],
-				'viewed'           => $query->row['viewed']
+				'viewed'           => $query->row['viewed'],
+                'customer_id'     => $query->row['customer_id']
 			);
 		} else {
 			return false;
 		}
 	}
-
+/*
 	public function getProducts($data = array()) {
 		$sql = "SELECT p.product_id, (SELECT AVG(rating) AS total FROM " . DB_PREFIX . "review r1 WHERE r1.product_id = p.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating, (SELECT price FROM " . DB_PREFIX . "product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) AS discount, (SELECT price FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special";
 
@@ -195,7 +196,7 @@ class ModelCatalogProduct extends Model {
 
 		return $product_data;
 	}
-
+*/
 	public function getProductSpecials($data = array()) {
 		$sql = "SELECT DISTINCT ps.product_id, (SELECT AVG(rating) FROM " . DB_PREFIX . "review r1 WHERE r1.product_id = ps.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating FROM " . DB_PREFIX . "product_special ps LEFT JOIN " . DB_PREFIX . "product p ON (ps.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) GROUP BY ps.product_id";
 
@@ -398,7 +399,7 @@ class ModelCatalogProduct extends Model {
 
 		return $query->rows;
 	}
-
+/*
 	public function getTotalProducts($data = array()) {
 		$sql = "SELECT COUNT(DISTINCT p.product_id) AS total";
 
@@ -490,7 +491,7 @@ class ModelCatalogProduct extends Model {
 
 		return $query->row['total'];
 	}
-
+*/
 	public function getProfile($product_id, $recurring_id) {
 		return $this->db->query("SELECT * FROM `" . DB_PREFIX . "recurring` `p` JOIN `" . DB_PREFIX . "product_recurring` `pp` ON `pp`.`recurring_id` = `p`.`recurring_id` AND `pp`.`product_id` = " . (int)$product_id . " WHERE `pp`.`recurring_id` = " . (int)$recurring_id . " AND `status` = 1 AND `pp`.`customer_group_id` = " . (int)$this->config->get('config_customer_group_id'))->row;
 	}
@@ -508,4 +509,148 @@ class ModelCatalogProduct extends Model {
 			return 0;
 		}
 	}
+
+    public function getProductIdsByWhere($data) {
+        $product_ids = array();
+
+        if (empty($data['filter_filter'])) {
+            $this->db_ci->distinct();
+            $this->db_ci->select('p.product_id');
+            $this->db_ci->from('product p');
+            $this->db_ci->join('product_to_category p2c', 'p.product_id=p2c.product_id');
+            $this->db_ci->where('p.status', 1);
+            if (!empty($data['filter_category_id'])) {
+                $this->db_ci->where('p2c.category_id', (int)$data['filter_category_id']);
+            }
+            $query = $this->db_ci->get();
+            $rows = $query->result_array();
+
+            foreach($rows as $row) {
+                $product_ids[] = $row['product_id'];
+            }
+
+        } else {
+            $filter_ids = explode(',', $data['filter_filter']);
+
+            $sign = 0;//标识，第一次才赋值
+
+            foreach($filter_ids as $filter_id) {
+                $this->db_ci->distinct();
+                $this->db_ci->select('p.product_id');
+                $this->db_ci->from('product p');
+                $this->db_ci->join('product_to_category p2c', 'p.product_id=p2c.product_id');
+                $this->db_ci->join('product_filter pf', 'p.product_id=pf.product_id');
+                $this->db_ci->where('p.status', 1);
+                if (!empty($data['filter_category_id'])) {
+                    $this->db_ci->where('p2c.category_id', (int)$data['filter_category_id']);
+                }
+                if (!empty($data['filter_filter'])) {
+                    $this->db_ci->where('pf.filter_id', $filter_id);
+                }
+                $query = $this->db_ci->get();
+                $rows = $query->result_array();
+
+                $temp_ids = array();
+                foreach($rows as $row) {
+                    $temp_ids[] = $row['product_id'];
+                }
+
+                if ($sign == 0) {
+                    $product_ids = $temp_ids;
+                } else {
+                    $product_ids = array_intersect($product_ids, $temp_ids);
+                }
+                $sign++;
+            }
+
+        }
+
+        return $product_ids;
+
+    }
+
+    public function getTotalProducts($data) {
+        $product_ids = $this->getProductIdsByWhere($data);
+
+        if (empty($product_ids)) {
+            return 0;
+        }
+        $this->db_ci->select('p.product_id, pd.name, p.image, p.price, p.customer_id, p.tax_class_id');
+        $this->db_ci->from('product p');
+        $this->db_ci->join('product_description pd', 'p.product_id=pd.product_id');
+        $this->db_ci->where_in('p.product_id', $product_ids);
+        if (!empty($data['filter_description'])) {
+            $this->db_ci->like('pd.description', $data['filter_description']);
+        }
+        if (!empty($data['filter_tag'])) {
+            $this->db_ci->like('pd.tag', $data['filter_tag']);
+        }
+        if (!empty($data['filter_name'])) {
+            $this->db_ci->or_where('p.model', $data['filter_name']);
+        }
+
+        return $this->db_ci->count_all_results();
+    }
+
+    public function getProducts($data) {
+        /*select p.product_id
+        from djm_product p, djm_product_filter pf, djm_product_to_category p2c
+where p.product_id=pf.product_id and p.product_id=p2c.product_id and p2c.category_id=1
+        and pf.filter_id=2*/
+
+        $product_ids = $this->getProductIdsByWhere($data);
+
+        if (empty($product_ids)) {
+            return array();
+        }
+        $this->db_ci->select('p.product_id, pd.name, p.image, p.price, p.customer_id, p.tax_class_id');
+        $this->db_ci->from('product p');
+        $this->db_ci->join('product_description pd', 'p.product_id=pd.product_id');
+        $this->db_ci->where_in('p.product_id', $product_ids);
+        if (!empty($data['filter_description'])) {
+            $this->db_ci->like('pd.description', $data['filter_description']);
+        }
+        if (!empty($data['filter_tag'])) {
+            $this->db_ci->like('pd.tag', $data['filter_tag']);
+        }
+        if (!empty($data['filter_name'])) {
+            $this->db_ci->or_where('p.model', $data['filter_name']);
+        }
+
+        $sort_data = array(
+            'pd.name',
+            'p.model',
+            'p.quantity',
+            'p.price',
+            'p.product_id',
+            'p.sort_order',
+            'p.date_added'
+        );
+        $sort = 'p.product_id';
+        if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
+            $sort = $data['sort'];
+        }
+
+        $order = 'DESC';
+        if (isset($data['order']) && ($data['order'] == 'ASC')) {
+            $order = 'ASC';
+        }
+
+        $this->db_ci->order_by($sort, $order);
+
+        if (isset($data['start']) || isset($data['limit'])) {
+            if ($data['start'] < 0) {
+                $data['start'] = 0;
+            }
+
+            if ($data['limit'] < 1) {
+                $data['limit'] = 12;
+            }
+            $this->db_ci->limit((int)$data['limit'], (int)$data['start']);
+        }
+
+        $query = $this->db_ci->get();
+        $rows = $query->result_array();
+        return $rows;
+    }
 }

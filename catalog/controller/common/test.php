@@ -19,7 +19,31 @@ class ControllerCommonTest extends Controller
 //        echo '<pre>';
 //        print_r($result);
 
-        echo '<pre>';
-        print_r($this->config->get('config_name'));
+//产品过滤测试
+//        $this->load->model('catalog/product');
+//
+//        $filter_data = array(
+//            'filter_category_id'  => 1,
+//            'filter_filter'      => '2,18',
+//            'sort' => 'p.product_id'
+//        );
+//        $temp = $this->model_catalog_product->getProducts($filter_data);
+//        echo '<pre>';
+//        print_r($temp);
+//
+//        echo $this->model_catalog_product->getTotalProducts($filter_data);
+
+        //echo format_bytes(filesize("E:\\djm\\image\\upload\\11.png.FHThrdSjioRvCxN7frdegG3hVef2xL6F"));exit;
+
+        echo get_extension("E:\\djm\\image\\upload\\201604\\FHThrdSjioRvCxN7frdegG3hVef2xL6F.png");
+        exit;
+
+
+        //2016-04-13 10:51:29
+
+        $date = '2016-04-13 10:51:29';
+        echo date('Ym', strtotime($date));exit;
+
+        $this->response->setOutput($this->load->view('djm/template/common/test.tpl', array()));
     }
 }

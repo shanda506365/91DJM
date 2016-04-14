@@ -40,8 +40,8 @@ function output_json($arr) {
 //json输出成功信息
 function output_success($msg) {
     $data = array(
-        "success" => true,
-        "message" => $msg
+        "suc" => true,
+        "msg" => $msg
     );
     echo json_encode($data);
     exit;
@@ -49,8 +49,8 @@ function output_success($msg) {
 //json输出错误信息
 function output_error($msg) {
     $data = array(
-        "success" => false,
-        "message" => $msg
+        "suc" => false,
+        "msg" => $msg
     );
     echo json_encode($data);
     exit;
@@ -62,10 +62,23 @@ function log_sms($message)
     fwrite($handle, date('Y-m-d H:i:s') . ' - ' . print_r($message, true) . "\n");
     fclose($handle);
 }
-
+//验证手机号
 function is_mobile($mobile) {
     if(preg_match("/^1\d{10}$/", $mobile)){
         return true;
+    }
+    return false;
+}
+//文件大小格式，直观显示
+function format_bytes($size) {
+    $units = array('B', 'KB', 'MB', 'GB', 'TB');
+    for ($i = 0; $size >= 1024 && $i < 4; $i++) $size /= 1024;
+    return round($size, 2).$units[$i];
+}
+//得到文件后缀
+function get_extension($file){
+    if (is_file($file)) {
+        return pathinfo($file, PATHINFO_EXTENSION);
     }
     return false;
 }

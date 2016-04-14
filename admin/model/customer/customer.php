@@ -539,4 +539,19 @@ class ModelCustomerCustomer extends Model {
 	public function deleteLoginAttempts($email) {
 		$this->db->query("DELETE FROM `" . DB_PREFIX . "customer_login` WHERE `email` = '" . $this->db->escape($email) . "'");
 	}
+
+    //1是企业，2是设计师
+    public function getCustomersByGroupId($customer_group_id = 0) {
+        $this->db_ci->select('b.customer_id,b.designer_name');
+        $this->db_ci->from('customer a');
+        $this->db_ci->join('customer_designer b', 'a.customer_id=b.customer_id');
+        $this->db_ci->where('a.customer_group_id', $customer_group_id);
+
+        $this->db_ci->order_by('a.customer_id', 'ASC');
+        $this->db_ci->limit(0, 30);
+        $query = $this->db_ci->get();
+        $rows = $query->result_array();
+
+        return $rows;
+    }
 }

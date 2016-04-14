@@ -72,7 +72,7 @@ class Image {
 		}
 	}
 
-	public function resize($width = 0, $height = 0, $default = '') {
+	public function resize($width = 0, $height = 0, $default = 'w') {
 		if (!$this->width || !$this->height) {
 			return;
 		}

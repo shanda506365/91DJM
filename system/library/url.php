@@ -36,4 +36,24 @@ class Url {
 
 		return $url;
 	}
+
+    public function link_static($route, $args = '', $secure = false) {
+        if (!$secure) {
+            $url = $this->domain;
+        } else {
+            $url = $this->ssl;
+        }
+
+        $url .= $route;
+
+        if ($args) {
+            if (is_array($args)) {
+                $url .= '&amp;' . http_build_query($args);
+            } else {
+                $url .= str_replace('&', '&amp;', '&' . ltrim($args, '&'));
+            }
+        }
+
+        return $url;
+    }
 }
