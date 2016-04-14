@@ -1,6 +1,6 @@
 <?php
 class ModelToolImage extends Model {
-	public function resize($filename, $width, $height, $default = '') {
+	public function resize($filename, $width, $height) {
 		if (!is_file(DIR_IMAGE . $filename)) {
 			return;
 		}
@@ -40,4 +40,16 @@ class ModelToolImage extends Model {
 			return $this->config->get('config_url') . 'image/' . $new_image;
 		}
 	}
+
+    //返回原图
+    public function origin($filename) {
+        if (!is_file(DIR_IMAGE . $filename)) {
+            return '/image/no_image.png';
+        }
+        if ($this->request->server['HTTPS']) {
+            return HTTPS_SERVER . 'image/' . $filename;
+        } else {
+            return HTTP_SERVER . 'image/' . $filename;
+        }
+    }
 }
