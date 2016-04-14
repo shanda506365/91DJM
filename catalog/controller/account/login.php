@@ -9,6 +9,8 @@ class ControllerAccountLogin extends Controller {
             $this->response->redirect($this->url->link_static('account/account', '', 'SSL'));
         }
 
+        $data['meta_title'] = '登录 - ' . $this->config->get('config_name');
+
         //广告加载
         $this->load->model('design/banner');
         $data['data_banner'] = $this->model_design_banner->banner_to_json(14);
