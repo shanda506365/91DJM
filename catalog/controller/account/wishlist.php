@@ -135,6 +135,17 @@ class ControllerAccountWishList extends Controller {
 	public function add() {
 		$this->load->language('account/wishlist');
 
+
+        if (!$this->customer->isLogged()) {
+            $data = array(
+                "suc" => false,
+                "msg" => "登陆后才能收藏！"
+            );
+            echo json_encode($data);
+            exit;
+        }
+
+
 		$json = array();
 
 		if (isset($this->request->post['product_id'])) {
@@ -142,6 +153,15 @@ class ControllerAccountWishList extends Controller {
 		} else {
 			$product_id = 0;
 		}
+
+        if ($product_id == 0) {
+            $data = array(
+                "suc" => false,
+                "msg" => "错误的产品号！"
+            );
+            echo json_encode($data);
+            exit;
+        }
 
 		$this->load->model('catalog/product');
 
@@ -172,7 +192,18 @@ class ControllerAccountWishList extends Controller {
 			}
 		}
 
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
+//        $this->response->addHeader('Content-Type: application/json');
+//        $this->response->setOutput(json_encode($json));
+
+        $this->load->model('catalog/product');
+        $collect_num = $this->model_catalog_product->updateCollectNum($product_id);
+
+        $data = array(
+            "suc" => true,
+            "data" => $collect_num,
+            "msg" => "收藏成功！"
+        );
+        echo json_encode($data);
+        exit;
 	}
 }

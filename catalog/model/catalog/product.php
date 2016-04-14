@@ -50,7 +50,8 @@ class ModelCatalogProduct extends Model {
 				'date_added'       => $query->row['date_added'],
 				'date_modified'    => $query->row['date_modified'],
 				'viewed'           => $query->row['viewed'],
-                'customer_id'     => $query->row['customer_id']
+                'customer_id'     => $query->row['customer_id'],
+                'collect_num'     => $query->row['collect_num']
 			);
 		} else {
 			return false;
@@ -652,5 +653,20 @@ where p.product_id=pf.product_id and p.product_id=p2c.product_id and p2c.categor
         $query = $this->db_ci->get();
         $rows = $query->result_array();
         return $rows;
+    }
+    //更新收藏总数
+    public function updateCollectNum($product_id) {
+        //查询设计师收藏总数
+        $this->db_ci->where('product_id', $product_id);
+        $this->db_ci->from('customer_wishlist');
+        $collect_num = $this->db_ci->count_all_results();
+
+        //更新设计师收藏总数
+        $data = array(
+            'collect_num' => $collect_num
+        );
+        $this->db_ci->where('product_id', $product_id);
+        $this->db_ci->update('customer', $data);
+        return $collect_num;
     }
 }
