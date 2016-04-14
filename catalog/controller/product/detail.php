@@ -48,17 +48,20 @@ class ControllerProductDetail extends Controller
         $results = $this->model_catalog_product->getProductImages($this->request->get['product_id']);
         //echo '<pre>';print_r($results);exit;
         foreach($results as $image) {
-            $page_data['images'][] = $this->model_tool_image->resize($image['image'], 1200, 500, 'w');//优先考虑width缩放，高度无所谓
+            //$page_data['images'][] = $this->model_tool_image->resize($image['image'], 1200, 860);//优先考虑width缩放，高度无所谓
+            $page_data['images'][] = $this->model_tool_image->origin($image['image']);
         }
 
         $this->load->model('account/customer');
 
         $customer = $this->model_account_customer->getCustomer($product_info['customer_id']);
 
+        //print_r(DIR_UPLOAD . "photo/" . $customer['picture']);exit;
+
         $designer = $this->model_account_customer->getCustomerDesigner($product_info['customer_id']);
         $page_data['designer_name'] = $designer['designer_name'];
         $page_data['designer_image'] = $this->model_tool_image->resize($customer['picture'], 58, 58);
-        $page_data['designer_description'] = '设计师非常厉害';
+        $page_data['designer_description'] = $designer['designer_description'];
 
         $data['data_detail'] = json_encode($page_data, JSON_UNESCAPED_SLASHES);
 

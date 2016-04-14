@@ -28,8 +28,9 @@ class ControllerExampleExample extends Controller {
     public function ajaxPage() {
         $this->load->model('catalog/case');
 
-        $page = $this->request->get['page'];
-        if (!is_numeric($page)) {
+        if (isset($this->request->get['page'])) {
+            $page = (int)$this->request->get['page'];
+        } else {
             $page = 0;
         }
 
