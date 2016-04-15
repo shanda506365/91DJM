@@ -29,7 +29,7 @@ RewriteRule ^factory$ index.php?route=factory/factory [L]
 RewriteRule ^example$ index.php?route=example/example [L]
 RewriteRule ^product/standard$ index.php?route=product/standard [L]
 RewriteRule ^product/list$ index.php?route=product/list&category_id=1 [L]
-RewriteRule ^product/list/([0-9]+)$ index.php?route=product/list&category_id=$1 [L]
+RewriteRule ^product/list_([0-9]+)$ index.php?route=product/list&category_id=$1 [L]
 RewriteRule ^product/([0-9]+).html$ index.php?route=product/detail&product_id=$1 [L]
 
 

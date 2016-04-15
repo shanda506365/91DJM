@@ -68,8 +68,10 @@ class ControllerProductList extends Controller {
             $filter = '';
         }
 
-        if (isset($this->request->post['category_id'])) {
-            $category_id = $this->request->post['category_id'];
+        if (isset($this->request->get['category_id'])) {
+            $category_id = (int)$this->request->get['category_id'];
+        } elseif (isset($this->request->post['category_id'])) {
+            $category_id = (int)$this->request->post['category_id'];
         } else {
             $category_id = 1;//定制化
         }
