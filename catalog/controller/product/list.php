@@ -34,7 +34,7 @@ class ControllerProductList extends Controller {
 
         //分页的网址
         $data['url_ajax_page'] = $this->url->link('product/list/ajax_url', '', '');
-        $data['url_ajax_collect'] = $this->url->link('api/collect', '', '');
+        $data['url_ajax_collect'] = $this->url->link('account/wishlist/add', '', '');
 
         $this->response->setOutput($this->load->view('effect.html', $data));
     }
@@ -144,7 +144,8 @@ class ControllerProductList extends Controller {
                 'src' => $image,
                 'link'        => $this->url->link_static('product/'. $result['product_id'] . '.html'),
                 'price'       => $price,
-                'customer_id' => $result['customer_id']
+                'customer_id' => $result['customer_id'],
+                'collect_num' => $result['collect_num']
             );
 
             $all_designer_ids[] = $result['customer_id'];
@@ -166,7 +167,6 @@ class ControllerProductList extends Controller {
             $temp = $product;
             $temp['designer_id'] = $product['customer_id'];
             $temp['designer_name'] = $all_designers_info[$product['customer_id']]['designer_name'];
-            $temp['collect_num'] =  $all_designers_info[$product['customer_id']]['collect_num'];
             $temp['designer_link'] =  $all_designers_info[$product['customer_id']]['designer_link'];
             $all_products_info[] = $temp;
         }
@@ -181,6 +181,10 @@ class ControllerProductList extends Controller {
 
         $data['data_imglist'] = json_encode($data_imglist, JSON_UNESCAPED_SLASHES);
 //echo '<pre>';print_r($data['data_imglist']);exit;
+
+
+        //wishlist地址： index.php?route=account/wishlist/add
+
         return $data['data_imglist'];
     }
 }

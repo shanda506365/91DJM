@@ -173,7 +173,8 @@ class ControllerAccountRegister extends Controller {
         $data = array(
             'customer_group_id' => $customer_group_id,
             'mobile'    => $mobile,
-            'password' => $password
+            'password' => $password,
+            'nick_name' => cover_telephone($mobile)
         );
 
         $customer_id = $this->model_account_customer->addCustomer($data);

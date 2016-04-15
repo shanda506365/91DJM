@@ -27,7 +27,8 @@ class ControllerProductDetail extends Controller
 
         $page_data['title'] = $product_info['name'];
         $page_data['summary'] = $product_info['meta_description'];
-        $page_data['description'] = $product_info['description'];
+        //$page_data['description'] = $product_info['description'];
+        $page_data['description'] = "这是测试的描述";
 
         $this->load->model('tool/image');
         $page_data['image'] = $this->model_tool_image->resize($product_info['image'], 800, 540);
@@ -64,6 +65,8 @@ class ControllerProductDetail extends Controller
         $page_data['designer_description'] = $designer['designer_description'];
 
         $data['data_detail'] = json_encode($page_data, JSON_UNESCAPED_SLASHES);
+
+        //print_r($data['data_detail']);exit;
 
         //分页的网址
 //        $data['url_ajax_page'] = $this->url->link('product/list/ajax_url', '', '');
