@@ -185,6 +185,8 @@ class ControllerProductList extends Controller {
 
         //wishlist地址： index.php?route=account/wishlist/add
 
+        //{"name":"首页","link":"/"},{"name":"标准化套餐","link":"###"},{"name":"A套餐详情","link":"###"}
+
         return $data['data_imglist'];
     }
 }
