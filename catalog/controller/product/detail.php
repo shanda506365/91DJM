@@ -86,9 +86,8 @@ class ControllerProductDetail extends Controller
 
         $data['breadcrumbs'] = json_encode($breadcrumbs, JSON_UNESCAPED_SLASHES);
 
-        //分页的网址
-//        $data['url_ajax_page'] = $this->url->link('product/list/ajax_url', '', '');
-//        $data['url_ajax_collect'] = $this->url->link('api/collect', '', '');
+        //我要下单
+        $data['url_order'] = $this->url->link('order/order/step1', 'product_id='. $product_id, 'SSL');
 
         $this->response->setOutput($this->load->view('standard_detail.html', $data));
     }
