@@ -16,16 +16,18 @@ class ControllerOrderStep1 extends Controller {
 
         $product_info = $this->model_catalog_product->getProduct($product_id);
 
+
+
         $this->load->model('tool/image');
 
-        $data_product_info = array(
+        $data_product_info[] = array(
             'product_id' => $product_info['product_id'],
-            'product_name' => $product_info['product_name'],
+            'product_name' => $product_info['name'],
             'price' => $product_info['price'],
-            'image' => $this->model_tool_image->resize($product_info['image'], 58, 58),
+            'image' => $this->model_tool_image->resize($product_info['image'], 190, 110),
         );
 
-        $data['product_info'][] = json_encode($data_product_info, JSON_UNESCAPED_SLASHES);
+        $data['product_info'] = json_encode($data_product_info, JSON_UNESCAPED_SLASHES);
 
         //开始生成面包屑
         $breadcrumbs[] = array(
@@ -63,10 +65,10 @@ class ControllerOrderStep1 extends Controller {
 
         $areas = $this->model_tool_area->getAreasByParentCode('510000');//四川省
 
-        $data = array();
+        $temp = array();
 
         foreach($areas as $area) {
-            $data[] = array(
+            $temp[] = array(
                 'area_code' => $area['area_code'],
                 'area_name' => $area['area_name']
             );
@@ -75,7 +77,7 @@ class ControllerOrderStep1 extends Controller {
         $json = array(
             'suc' => true,
             'msg' => '',
-            'data' => $data,
+            'data' => $temp,
             'code' => ''
         );
 

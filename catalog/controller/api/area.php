@@ -9,7 +9,7 @@ class ControllerApiArea extends Controller
 {
     public function index()
     {
-        $area_code = $this->require->post('area_code');
+        $area_code = $this->request->post['area_code'];
 
         $this->load->model('tool/area');
 
