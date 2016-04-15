@@ -351,6 +351,13 @@
                 </div>
               </div>
               <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-parent"><span data-toggle="tooltip" title="<?php echo $help_category; ?>">主分类</span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="master_category" value="<?php echo $master_category; ?>" placeholder="主分类" id="input-parent" class="form-control" />
+                  <input type="hidden" name="master_category_id" value="<?php echo $master_category_id; ?>" />
+                </div>
+              </div>
+              <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-category"><span data-toggle="tooltip" title="<?php echo $help_category; ?>"><?php echo $entry_category; ?></span></label>
                 <div class="col-sm-10">
                   <input type="text" name="category" value="" placeholder="<?php echo $entry_category; ?>" id="input-category" class="form-control" />
@@ -961,7 +968,33 @@ $('input[name=\'manufacturer\']').autocomplete({
 		$('input[name=\'manufacturer_id\']').val(item['value']);
 	}
 });
+    // Master Category
+    $('input[name=\'master_category\']').autocomplete({
+      'multiple' : false,
+      'source': function(request, response) {
+        $.ajax({
+          url: 'index.php?route=catalog/category/autocomplete&token=<?php echo $token; ?>&filter_name=' +  encodeURIComponent(request),
+          dataType: 'json',
+          success: function(json) {
+            json.unshift({
+              category_id: 0,
+              name: '<?php echo $text_none; ?>'
+            });
 
+            response($.map(json, function(item) {
+              return {
+                label: item['name'],
+                value: item['category_id']
+              }
+            }));
+          }
+        });
+      },
+      'select': function(item) {
+        $('input[name="master_category"]').val(item['label']);
+        $('input[name="master_category_id"]').val(item['value']);
+      }
+    });
 // Category
 $('input[name=\'category\']').autocomplete({
 	'source': function(request, response) {

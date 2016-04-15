@@ -17,7 +17,6 @@ class ControllerProductDetail extends Controller
 
         $product_info = $this->model_catalog_product->getProduct($product_id);
 
-
         //广告加载
         $this->load->model('design/banner');
         $data['data_banner'] = $this->model_design_banner->banner_to_json(16);
@@ -63,7 +62,29 @@ class ControllerProductDetail extends Controller
 
         $data['data_detail'] = json_encode($page_data, JSON_UNESCAPED_SLASHES);
 
-        //print_r($data['data_detail']);exit;
+        //开始生成面包屑
+        $breadcrumbs[] = array(
+            'name' => '首页',
+            'link' => '/'
+        );
+
+        $master_category_id = $product_info['master_category_id'];
+
+        $this->load->model('catalog/category');
+
+        $master_category = $this->model_catalog_category->getCategory($master_category_id);
+
+        $breadcrumbs[] = array(
+            'name' => $master_category['name'],
+            'link' => '/product/list/' . $master_category_id
+        );
+
+        $breadcrumbs[] = array(
+            'name' => $product_info['name'],
+            'link' => '/product/' . $product_info['product_id'] . '.html'
+        );
+
+        $data['breadcrumbs'] = json_encode($breadcrumbs, JSON_UNESCAPED_SLASHES);
 
         //分页的网址
 //        $data['url_ajax_page'] = $this->url->link('product/list/ajax_url', '', '');

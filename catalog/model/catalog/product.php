@@ -51,7 +51,8 @@ class ModelCatalogProduct extends Model {
 				'date_modified'    => $query->row['date_modified'],
 				'viewed'           => $query->row['viewed'],
                 'customer_id'     => $query->row['customer_id'],
-                'collect_num'     => $query->row['collect_num']
+                'collect_num'     => $query->row['collect_num'],
+                'master_category_id'    => $query->row['master_category_id']
 			);
 		} else {
 			return false;
