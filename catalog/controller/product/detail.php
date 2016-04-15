@@ -27,8 +27,7 @@ class ControllerProductDetail extends Controller
 
         $page_data['title'] = $product_info['name'];
         $page_data['summary'] = $product_info['meta_description'];
-        //$page_data['description'] = $product_info['description'];
-        $page_data['description'] = "这是测试的描述";
+        $page_data['description'] = htmlspecialchars_decode($product_info['description']);
 
         $this->load->model('tool/image');
         $page_data['image'] = $this->model_tool_image->resize($product_info['image'], 800, 540);
