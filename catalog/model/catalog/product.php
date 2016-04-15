@@ -604,7 +604,7 @@ where p.product_id=pf.product_id and p.product_id=p2c.product_id and p2c.categor
         if (empty($product_ids)) {
             return array();
         }
-        $this->db_ci->select('p.product_id, pd.name, p.image, p.price, p.customer_id, p.tax_class_id');
+        $this->db_ci->select('p.product_id, pd.name, p.image, p.price, p.customer_id, p.tax_class_id, p.collect_num');
         $this->db_ci->from('product p');
         $this->db_ci->join('product_description pd', 'p.product_id=pd.product_id');
         $this->db_ci->where_in('p.product_id', $product_ids);
