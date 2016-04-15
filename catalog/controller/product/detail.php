@@ -22,9 +22,6 @@ class ControllerProductDetail extends Controller
         $this->load->model('design/banner');
         $data['data_banner'] = $this->model_design_banner->banner_to_json(16);
 
-
-        //{"title":"A方案详情","summary":"大撒送发送的阿萨德发送法阿萨德发送的的阿迪","attribute":[{"attribute_name":"参考价格","attribute_code":"3770元"}],"description":"asdf<ol><li>2ddddddddd</li><li>44dddddtttt</li></ol>","image":"images/A43.jpg","images":["images/A43.jpg","images/A43.jpg","images/A43.jpg"],"designer_name":"设计师1号","designer_image":"images/icons/headPic_default.png","designer_description":"设计师1号"}
-
         $page_data['title'] = $product_info['name'];
         $page_data['summary'] = $product_info['meta_description'];
         $page_data['description'] = htmlspecialchars_decode($product_info['description']);
