@@ -30,10 +30,7 @@ class ControllerProductDetail extends Controller
         $page_data['description'] = htmlspecialchars_decode($product_info['description']);
 
         $this->load->model('tool/image');
-        $page_data['image'] = array(
-            $this->model_tool_image->resize($product_info['image'], 800, 540),
-            $this->model_tool_image->resize($product_info['image'], 800, 540)
-        );
+        $page_data['image'] = $this->model_tool_image->resize($product_info['image'], 800, 540);
 
         $attribute_groups = $this->model_catalog_product->getProductAttributes($product_id);
         //echo '<pre>';print_r($attribute_groups);exit;
