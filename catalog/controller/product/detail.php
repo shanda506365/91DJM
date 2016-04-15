@@ -62,6 +62,7 @@ class ControllerProductDetail extends Controller
         //print_r(DIR_UPLOAD . "photo/" . $customer['picture']);exit;
 
         $designer = $this->model_account_customer->getCustomerDesigner($product_info['customer_id']);
+        $page_data['designer_id'] = $product_info['customer_id'];
         $page_data['designer_name'] = $designer['designer_name'];
         $page_data['designer_image'] = $this->model_tool_image->resize($customer['picture'], 58, 58);
         $page_data['designer_description'] = $designer['designer_description'];
