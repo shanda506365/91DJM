@@ -678,4 +678,32 @@ where p.product_id=pf.product_id and p.product_id=p2c.product_id and p2c.categor
             return $this->config->get('config_deposit_normal');
         }
     }
+
+    public function getBreadcrumbs($product_id) {
+        //开始生成面包屑
+        $breadcrumbs[] = array(
+            'name' => '首页',
+            'link' => $this->config->get('config_url')
+        );
+
+        $product_info = $this->getProduct($product_id);
+
+        $master_category_id = $product_info['master_category_id'];
+
+        $this->load->model('catalog/category');
+
+        $master_category = $this->model_catalog_category->getCategory($master_category_id);
+
+        $breadcrumbs[] = array(
+            'name' => $master_category['name'],
+            'link' => '/product/list/' . $master_category_id
+        );
+
+        $breadcrumbs[] = array(
+            'name' => $product_info['name'],
+            'link' => '/product/' . $product_info['product_id'] . '.html'
+        );
+
+        return $breadcrumbs;
+    }
 }

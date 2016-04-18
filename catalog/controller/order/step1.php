@@ -31,12 +31,18 @@ class ControllerOrderStep1 extends Controller {
         if ($this->request->server['REQUEST_METHOD'] == 'POST') {
             $this->load->model('order/order');
 
+            $order_no = initOrderNo(11);
+
             $data = array(
                 'order_name' => $product_info['name'],
-                'order_no'   => initOrderNo(11),
+                'order_no'   => $order_no,
                 'order_status_id' => 1,//1表示未付订金
                 'customer_id' => $this->customer->getId(),
                 'customer_group_id' => $this->customer->getGroupId(),
+                'invoice_prefix'    => $this->config->get('config_invoice_prefix'),
+                'store_id'           => $this->config->get('config_store_id'),
+                'store_name'        => $this->config->get('config_name'),
+                'store_url'         => $this->config->get('config_url'),
                 'exhibition_area_code' => $this->request->post['exhibition_area_code'],
                 'contact_name'  => $this->request->post['contact_name'],
                 'contact_mobile' => $this->request->post['contact_mobile'],
@@ -48,11 +54,13 @@ class ControllerOrderStep1 extends Controller {
                 'price' => $deposit,
                 'total' => $deposit
             );
-            echo '<pre>'; print_r($data);
 
             $this->model_order_order->addOrderStep1($data);
 
-            echo '添加订单成功';exit;
+            //echo '添加订单成功';exit;
+            //$this->session->data['order_no']
+
+            $this->response->redirect($this->url->link('order/step2', 'order_no='. $order_no, 'SSL'));
         }
 
         $this->load->model('tool/image');
@@ -67,26 +75,27 @@ class ControllerOrderStep1 extends Controller {
         $data['product_info'] = json_encode($data_product_info, JSON_UNESCAPED_SLASHES);
 
         //开始生成面包屑
-        $breadcrumbs[] = array(
-            'name' => '首页',
-            'link' => '/'
-        );
-
-        $master_category_id = $product_info['master_category_id'];
-
-        $this->load->model('catalog/category');
-
-        $master_category = $this->model_catalog_category->getCategory($master_category_id);
-
-        $breadcrumbs[] = array(
-            'name' => $master_category['name'],
-            'link' => '/product/list/' . $master_category_id
-        );
-
-        $breadcrumbs[] = array(
-            'name' => $product_info['name'],
-            'link' => '/product/' . $product_info['product_id'] . '.html'
-        );
+//        $breadcrumbs[] = array(
+//            'name' => '首页',
+//            'link' => '/'
+//        );
+//
+//        $master_category_id = $product_info['master_category_id'];
+//
+//        $this->load->model('catalog/category');
+//
+//        $master_category = $this->model_catalog_category->getCategory($master_category_id);
+//
+//        $breadcrumbs[] = array(
+//            'name' => $master_category['name'],
+//            'link' => '/product/list/' . $master_category_id
+//        );
+//
+//        $breadcrumbs[] = array(
+//            'name' => $product_info['name'],
+//            'link' => '/product/' . $product_info['product_id'] . '.html'
+//        );
+        $breadcrumbs = $this->model_catalog_product->getBreadcrumbs($product_id);
 
         $breadcrumbs[] = array(
             'name' => '提交订单',
