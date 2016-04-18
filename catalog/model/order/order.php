@@ -11,11 +11,13 @@ class ModelOrderOrder extends Model
     public function addOrderStep1($data)
     {
         $step1 = array(
+            'order_no'  => $data['order_no'],
             'order_name' => $data['product_name'],
             'exhibition_area_code' => $data['exhibition_area_code'],
             'contact_name'  => $data['contact_name'],
             'contact_mobile' => $data['contact_mobile'],
-            'contact_qq' => $data['contact_qq']
+            'contact_qq' => $data['contact_qq'],
+            'order_status_id' => $data['order_status_id']
         );
 
         $this->db_ci->insert('order', $step1);
@@ -28,8 +30,8 @@ class ModelOrderOrder extends Model
             'name' => $data['product_name'],
             'model' => $data['product_model'],
             'quantity' => 1,
-            'price' => 1000,
-            'total' => 1000
+            'price' => $data['price'],
+            'total' => $data['total']
         );
 
         $this->db_ci->insert('order_product', $order_product);

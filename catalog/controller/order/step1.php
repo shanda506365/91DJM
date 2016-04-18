@@ -12,18 +12,55 @@ class ControllerOrderStep1 extends Controller {
 
         $product_id = (int)$this->request->get['product_id'];
 
+        $url = $this->url->link('order/step1', 'product_id='. $product_id, 'SSL');
+
+        //未登录跳转到登录页面
+        if (!$this->customer->isLogged()) {
+            $this->session->data['redirect'] = $url;
+
+            $this->response->redirect($this->url->link('account/login', 'redirect='. urlencode($url), 'SSL'));
+        }
+
         $this->load->model('catalog/product');
 
         $product_info = $this->model_catalog_product->getProduct($product_id);
 
+        //根据商品类型查询定金
+        $deposit = $this->model_catalog_product->getDepositByCategory($product_info['master_category_id']);
 
+        if ($this->request->server['REQUEST_METHOD'] == 'POST') {
+            $this->load->model('order/order');
+
+            $data = array(
+                'order_name' => $product_info['name'],
+                'order_no'   => initOrderNo(11),
+                'order_status_id' => 1,//1表示未付订金
+                'customer_id' => $this->customer->getId(),
+                'customer_group_id' => $this->customer->getGroupId(),
+                'exhibition_area_code' => $this->request->post['exhibition_area_code'],
+                'contact_name'  => $this->request->post['contact_name'],
+                'contact_mobile' => $this->request->post['contact_mobile'],
+                'contact_qq' => $this->request->post['contact_qq'],
+                'product_id' => $product_id,
+                'product_name' => $product_info['name'],
+                'product_model' => $product_info['model'],
+                'quantity' => 1,
+                'price' => $deposit,
+                'total' => $deposit
+            );
+            echo '<pre>'; print_r($data);
+
+            $this->model_order_order->addOrderStep1($data);
+
+            echo '添加订单成功';exit;
+        }
 
         $this->load->model('tool/image');
 
         $data_product_info[] = array(
             'product_id' => $product_info['product_id'],
             'product_name' => $product_info['name'],
-            'price' => $product_info['price'],
+            'price' => $deposit,//$product_info['price'],
             'image' => $this->model_tool_image->resize($product_info['image'], 190, 110),
         );
 
@@ -85,6 +122,8 @@ class ControllerOrderStep1 extends Controller {
 
         //加入收藏夹
         $data['url_ajax_collect'] = $this->url->link('account/wishlist/add', '', '');
+        //提交订单
+        $data['url_ajax_submit'] = $this->url->link('order/step1', 'product_id='. $product_id, 'SSL');
 
         $this->response->setOutput($this->load->view('submit.html', $data));
     }

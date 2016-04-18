@@ -670,4 +670,12 @@ where p.product_id=pf.product_id and p.product_id=p2c.product_id and p2c.categor
         $this->db_ci->update('customer', $data);
         return $collect_num;
     }
+    //通过类型得到定金价格
+    public function getDepositByCategory($category_id) {
+        if ($category_id == 1) {//定制
+            return $this->config->get('config_deposit_customize');
+        } else if($category_id == 2) {//普通套餐
+            return $this->config->get('config_deposit_normal');
+        }
+    }
 }

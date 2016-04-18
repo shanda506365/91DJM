@@ -11,7 +11,10 @@ function token($length = 32) {
 	
 	return $token;
 }
-
+//生成系统订单号
+function initOrderNo($length = 11) {
+    date('ymd').rand(0,9).rand(0,9).rand(0,9).rand(0,9).rand(0,9);
+}
 /*
  * 集成codeIgniter的数据访问类，数据库错误显示，需要用到该函数
  * */

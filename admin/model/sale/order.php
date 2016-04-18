@@ -229,7 +229,7 @@ class ModelSaleOrder extends Model {
 		}
 
 		$query = $this->db->query($sql);
-
+echo $sql;
 		return $query->rows;
 	}
 
