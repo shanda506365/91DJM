@@ -41,14 +41,28 @@ class ModelOrderOrder extends Model
 
         $this->db_ci->insert('order_product', $order_product);
 
-        return $order_id;
+        return $data['order_no'];
     }
 
     //填写详细的订单表单信息
-    public function completeOrder($data) {
-        $info = array(
-
+    public function completeOrder($data, $order_no) {
+        $order = array(
+            'exhibition_subject'    => $data['exhibition_subject'],
+            'length'                  => $data['length'],
+            'width'                   => $data['width'],
+            'height'                  => $data['height'],
+            'area'                    => $data['area'],
+            'is_squareness'         => $data['is_squareness'],
+            'exhibition_verify_date' => $data['exhibition_verify_date'],
+            'exhibition_enter_date'  => $data['exhibition_enter_date'],
+            'exhibition_begin_date'  => $data['exhibition_begin_date'],
+            'exhibition_leave_date'  => $data['exhibition_leave_date'],
+            'remark'                    => $data['remark']
         );
+        $this->db_ci->where('order_no', $order_no);
+        $this->db_ci->update('order', $order);
+
+        return $order_no;
     }
 
     //通过order_id得到订单信息
