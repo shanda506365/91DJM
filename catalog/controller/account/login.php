@@ -67,15 +67,8 @@ class ControllerAccountLogin extends Controller {
             "data" => isset($this->session->data['redirect']) ? $this->session->data['redirect'] : HTTP_SERVER
         );
 
-        $redirect = $this->config->get('config_url');
-
-        if (isset($this->session->data['redirect'])) {
-            $redirect = $this->session->data['redirect'];
-        }
-
         unset($this->session->data['redirect']);
 
         echo json_encode($data);
-        //$this->response->redirect($redirect);
     }
 }
