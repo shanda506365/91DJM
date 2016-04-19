@@ -36,7 +36,7 @@ class ControllerOrderOrder extends Controller {
             $order_no = initOrderNo(11);
 
             $data = array(
-                'order_name' => $product_info['name'],
+                //'order_name' => $product_info['name'],
                 'order_no'   => $order_no,
                 'order_status_id' => 1,//1表示未付订金
                 'customer_id' => $this->customer->getId(),
@@ -46,13 +46,13 @@ class ControllerOrderOrder extends Controller {
                 'store_name'        => $this->config->get('config_name'),
                 'store_url'         => $this->config->get('config_url'),
                 'exhibition_area_code' => $this->request->post['exhibition_area_code'],
-                'exhibition_area_code' => '',
+                'exhibition_address' => '',
                 'contact_name'  => $this->request->post['contact_name'],
                 'contact_mobile' => $this->request->post['contact_mobile'],
                 'contact_qq' => $this->request->post['contact_qq'],
                 'product_id' => $product_id,
-                'product_name' => $product_info['name'],
-                'product_model' => $product_info['model'],
+                //'product_name' => $product_info['name'],
+                //'product_model' => $product_info['model'],
                 'quantity' => 1,
                 'price' => $deposit,
                 'total' => $deposit
@@ -63,7 +63,15 @@ class ControllerOrderOrder extends Controller {
             //echo '添加订单成功';exit;
             //$this->session->data['order_no']
 
-            $this->response->redirect($this->url->link('order/depositPay', 'order_no='. $order_no, 'SSL'));
+            $json = array(
+                'suc' => true,
+                'msg' => '订单创建成功',
+                'data' => str_replace('&amp;', '&', $this->url->link('order/order/depositPay', 'order_no='. $order_no, 'SSL'))
+            );
+
+            $data['data_default_city'] = json_encode($json, JSON_UNESCAPED_SLASHES);
+
+            //$this->response->redirect($this->url->link('order/order/depositPay', 'order_no='. $order_no, 'SSL'));
         }
 
         $this->load->model('tool/image');
@@ -114,8 +122,55 @@ class ControllerOrderOrder extends Controller {
         //加入收藏夹
         $data['url_ajax_collect'] = $this->url->link('account/wishlist/add', '', '');
         //提交订单
-        $data['url_ajax_submit'] = $this->url->link('order/depositForm', 'product_id='. $product_id, 'SSL');
+        $data['url_ajax_submit'] = $this->url->link('order/order/depositForm', 'product_id='. $product_id, 'SSL');
 
         $this->response->setOutput($this->load->view('submit.html', $data));
+    }
+    //第二步订金表单，必须要已支付完订金才能进入该页面
+    public function depositPay()
+    {
+        $data['meta_title'] = '付定金 - ' . $this->config->get('config_name');
+
+        $order_no = $this->request->get['order_no'];
+
+        $this->load->model('order/order');
+
+        $order_info = $this->model_order_order->getOrderByNo($order_no);
+
+
+        $product_id = $order_info['main_product_id'];
+
+        $url = $this->url->link('order/order/depositForm', 'product_id='. $product_id, 'SSL');
+        $url = str_replace('&amp;', '&', $url);
+
+        //未登录跳转到登录页面
+        if (!$this->customer->isLogged()) {
+            $this->session->data['redirect'] = $url;
+
+            $this->response->redirect($this->url->link('account/login', 'redirect='. urlencode($url), 'SSL'));
+        }
+
+        $this->load->model('catalog/product');
+
+        $product_info = $this->model_catalog_product->getProduct($product_id);
+
+        //根据商品类型查询定金
+        $deposit = $this->model_catalog_product->getDepositByCategory($product_info['master_category_id']);
+
+        $breadcrumbs = $this->model_catalog_product->getBreadcrumbs($product_id);
+
+        $breadcrumbs[] = array(
+            'name' => '付定金',
+            'link' => 'javascript:void(0)'
+        );
+
+        $data['breadcrumbs'] = json_encode($breadcrumbs, JSON_UNESCAPED_SLASHES);
+
+
+        $this->response->setOutput($this->load->view('pay.html', $data));
+    }
+    //3、第三步订单详细表单填写
+    public function orderForm() {
+
     }
 }

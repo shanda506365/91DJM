@@ -10,9 +10,13 @@ class ModelOrderOrder extends Model
     //step1添加订单，主要填写联系人信息，和支付订金
     public function addOrderStep1($data)
     {
+        $this->load->model('catalog/product');
+
+        $product_info = $this->model_catalog_product->getProduct($data['product_id']);
+
         $step1 = array(
             'order_no'  => $data['order_no'],
-            'order_name' => $data['product_name'],
+            'order_name' => $product_info['name'],
             'invoice_prefix'    => $data['invoice_prefix'],
             'store_id'          => $data['store_id'],
             'store_name'          => $data['store_name'],
@@ -22,6 +26,8 @@ class ModelOrderOrder extends Model
             'contact_name'  => $data['contact_name'],
             'contact_mobile' => $data['contact_mobile'],
             'contact_qq' => $data['contact_qq'],
+            'designer_id' => $product_info['customer_id'],
+            'main_product_id' => $data['product_id'],
             'order_status_id' => $data['order_status_id']
         );
 
@@ -32,8 +38,8 @@ class ModelOrderOrder extends Model
         $order_product = array(
             'order_id' => $order_id,
             'product_id' => $data['product_id'],
-            'name' => $data['product_name'],
-            'model' => $data['product_model'],
+            'name' => $product_info['name'],
+            'model' => $product_info['model'],
             'quantity' => 1,
             'price' => $data['price'],
             'total' => $data['total']
