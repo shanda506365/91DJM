@@ -197,6 +197,7 @@ class ControllerOrderOrder extends Controller {
         $order_no = $this->request->get['order_no'];
 
         $this->load->model('order/order');
+        $this->load->model('order/order_file');
 
         $order_info = $this->model_order_order->getOrderByNo($order_no);
 
@@ -211,12 +212,12 @@ class ControllerOrderOrder extends Controller {
 
         $data['meta_title'] = '完善订单信息 - ' . $this->config->get('config_name');
 
-        $data['order'] = array(
+        $order_form = array(
             'exhibition_subject'    => $order_info['exhibition_subject'],
-            'length'                  => $order_info['length'],
-            'width'                   => $order_info['width'],
-            'height'                  => $order_info['height'],
-            'area'                    => $order_info['area'],
+            'length'                  => $order_info['length'] == 0 ? "" : $order_info['length'],
+            'width'                   => $order_info['width'] == 0 ? "" : $order_info['width'],
+            'height'                  => $order_info['height'] == 0 ? "" : $order_info['height'],
+            'area'                    => $order_info['area'] == 0 ? "" : $order_info['area'],
             'is_squareness'         => $order_info['is_squareness'],
             'exhibition_verify_date' => $order_info['exhibition_verify_date'],
             'exhibition_enter_date'  => $order_info['exhibition_enter_date'],
@@ -224,6 +225,10 @@ class ControllerOrderOrder extends Controller {
             'exhibition_leave_date'  => $order_info['exhibition_leave_date'],
             'remark'                    => $order_info['remark']
         );
+
+        $order_form['files'] = $this->model_order_order_file->getOrderFiles($order_info['order_id']);
+
+        $data['order'] = json_encode($order_form, JSON_UNESCAPED_SLASHES);
 
         $this->response->setOutput($this->load->view('writepayform.html', $data));
     }
