@@ -60,7 +60,7 @@ class ModelOrderOrder extends Model
 
     //通过order_id得到订单信息
     public function getOrderByNo($order_no) {
-        $this->db_ci->where('order_id', $order_id);
+        $this->db_ci->where('order_no', $order_no);
         $query = $this->db_ci->get('order');
         return $query->first_row();
     }

@@ -6,6 +6,7 @@
  * Time: 9:45
  */
 class ControllerOrderOrder extends Controller {
+    //第一步订金表单
     public function depositForm() {
 
         $data['meta_title'] = '提交订单 - ' . $this->config->get('config_name');
@@ -13,6 +14,7 @@ class ControllerOrderOrder extends Controller {
         $product_id = (int)$this->request->get['product_id'];
 
         $url = $this->url->link('order/order/depositForm', 'product_id='. $product_id, 'SSL');
+        $url = str_replace('&amp;', '&', $url);
 
         //未登录跳转到登录页面
         if (!$this->customer->isLogged()) {

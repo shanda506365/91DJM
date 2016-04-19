@@ -69,6 +69,6 @@ class ControllerAccountLogin extends Controller {
 
         unset($this->session->data['redirect']);
 
-        echo json_encode($data);
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
     }
 }
