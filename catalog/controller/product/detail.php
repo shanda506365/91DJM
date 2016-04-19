@@ -87,7 +87,7 @@ class ControllerProductDetail extends Controller
         $data['breadcrumbs'] = json_encode($breadcrumbs, JSON_UNESCAPED_SLASHES);
 
         //我要下单
-        $data['url_order'] = $this->url->link('order/step1', 'product_id='. $product_id, 'SSL');
+        $data['url_order'] = $this->url->link('order/order/depositForm', 'product_id='. $product_id, 'SSL');
 
         $this->response->setOutput($this->load->view('standard_detail.html', $data));
     }

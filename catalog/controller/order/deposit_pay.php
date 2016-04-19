@@ -5,7 +5,7 @@
  * Date: 2016/4/18
  * Time: 13:58
  */
-class ControllerOrderStep1 extends Controller
+class ControllerOrderDepositPay extends Controller
 {
     public function index()
     {

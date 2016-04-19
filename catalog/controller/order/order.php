@@ -2,17 +2,17 @@
 /**
  * Created by PhpStorm.
  * User: 周
- * Date: 2016/4/15
- * Time: 13:36
+ * Date: 2016/4/19
+ * Time: 9:45
  */
-class ControllerOrderStep1 extends Controller {
-    public function index() {
+class ControllerOrderOrder extends Controller {
+    public function depositForm() {
 
         $data['meta_title'] = '提交订单 - ' . $this->config->get('config_name');
 
         $product_id = (int)$this->request->get['product_id'];
 
-        $url = $this->url->link('order/step1', 'product_id='. $product_id, 'SSL');
+        $url = $this->url->link('order/depositForm', 'product_id='. $product_id, 'SSL');
 
         //未登录跳转到登录页面
         if (!$this->customer->isLogged()) {
@@ -44,6 +44,7 @@ class ControllerOrderStep1 extends Controller {
                 'store_name'        => $this->config->get('config_name'),
                 'store_url'         => $this->config->get('config_url'),
                 'exhibition_area_code' => $this->request->post['exhibition_area_code'],
+                'exhibition_area_code' => '',
                 'contact_name'  => $this->request->post['contact_name'],
                 'contact_mobile' => $this->request->post['contact_mobile'],
                 'contact_qq' => $this->request->post['contact_qq'],
@@ -60,7 +61,7 @@ class ControllerOrderStep1 extends Controller {
             //echo '添加订单成功';exit;
             //$this->session->data['order_no']
 
-            $this->response->redirect($this->url->link('order/step2', 'order_no='. $order_no, 'SSL'));
+            $this->response->redirect($this->url->link('order/depositPay', 'order_no='. $order_no, 'SSL'));
         }
 
         $this->load->model('tool/image');
@@ -74,27 +75,6 @@ class ControllerOrderStep1 extends Controller {
 
         $data['product_info'] = json_encode($data_product_info, JSON_UNESCAPED_SLASHES);
 
-        //开始生成面包屑
-//        $breadcrumbs[] = array(
-//            'name' => '首页',
-//            'link' => '/'
-//        );
-//
-//        $master_category_id = $product_info['master_category_id'];
-//
-//        $this->load->model('catalog/category');
-//
-//        $master_category = $this->model_catalog_category->getCategory($master_category_id);
-//
-//        $breadcrumbs[] = array(
-//            'name' => $master_category['name'],
-//            'link' => '/product/list/' . $master_category_id
-//        );
-//
-//        $breadcrumbs[] = array(
-//            'name' => $product_info['name'],
-//            'link' => '/product/' . $product_info['product_id'] . '.html'
-//        );
         $breadcrumbs = $this->model_catalog_product->getBreadcrumbs($product_id);
 
         $breadcrumbs[] = array(
@@ -132,7 +112,7 @@ class ControllerOrderStep1 extends Controller {
         //加入收藏夹
         $data['url_ajax_collect'] = $this->url->link('account/wishlist/add', '', '');
         //提交订单
-        $data['url_ajax_submit'] = $this->url->link('order/step1', 'product_id='. $product_id, 'SSL');
+        $data['url_ajax_submit'] = $this->url->link('order/depositForm', 'product_id='. $product_id, 'SSL');
 
         $this->response->setOutput($this->load->view('submit.html', $data));
     }
