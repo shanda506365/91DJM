@@ -9,8 +9,6 @@ class ControllerOrderOrder extends Controller {
     //第一步订金表单
     public function depositForm() {
 
-        echo $this->customer->getId();exit;
-
         $data['meta_title'] = '提交订单 - ' . $this->config->get('config_name');
 
         $product_id = (int)$this->request->get['product_id'];
@@ -57,7 +55,9 @@ class ControllerOrderOrder extends Controller {
                 //'product_model' => $product_info['model'],
                 'quantity' => 1,
                 'price' => $deposit,
-                'total' => $deposit
+                'total' => $deposit,
+                'date_added' => date('Y-m-d H:i:s'),
+                'date_modified' => date('Y-m-d H:i:s')
             );
 
             $this->model_order_order->addOrderStep1($data);
@@ -126,19 +126,26 @@ class ControllerOrderOrder extends Controller {
         //提交订单
         $data['url_ajax_submit'] = $this->url->link('order/order/depositForm', 'product_id='. $product_id, 'SSL');
 
+        //广告加载
+        $this->load->model('design/banner');
+        $data['data_banner'] = $this->model_design_banner->banner_to_json(16);
+
         $this->response->setOutput($this->load->view('submit.html', $data));
     }
     //第二步订金表单，必须要已支付完订金才能进入该页面
     public function depositPay()
     {
-        $data['meta_title'] = '付定金 - ' . $this->config->get('config_name');
-
         $order_no = $this->request->get['order_no'];
+
+        $data['meta_title'] = '项目预付款 - ' . $this->config->get('config_name');
 
         $this->load->model('order/order');
 
         $order_info = $this->model_order_order->getOrderByNo($order_no);
 
+        if (empty($order_info)) {
+            output_error("该订单号不存在");
+        }
 
         $product_id = $order_info['main_product_id'];
 
@@ -168,11 +175,56 @@ class ControllerOrderOrder extends Controller {
 
         $data['breadcrumbs'] = json_encode($breadcrumbs, JSON_UNESCAPED_SLASHES);
 
+        //广告加载
+        $this->load->model('design/banner');
+        $data['data_banner'] = $this->model_design_banner->banner_to_json(16);
+
+
+        $data['info'] = array(
+            'order_name' => $order_info['order_name'],
+            'order_no' => $order_info['order_no'],
+            'deposit_price' => $deposit,
+            'payment_method' => '支付宝即时到帐',
+            'payment_code' => 'alipay_direct',
+            'alipay_seller_email' => '123@123.com'
+        );
+        //{"order_name":"xxx","order_no":"xxxxxxx","deposit_price":"1000","payment_mothod":"zhifubao","payment_code":"11111","alipay_seller_email":"234234234"}
 
         $this->response->setOutput($this->load->view('pay.html', $data));
     }
     //3、第三步订单详细表单填写
     public function orderForm() {
+        $order_no = $this->request->get['order_no'];
 
+        $this->load->model('order/order');
+
+        $order_info = $this->model_order_order->getOrderByNo($order_no);
+
+        if (empty($order_info)) {
+            echo "订单号不存在";exit;
+        }
+
+        //订单状态必须是已经付了订金的才能进行该操作
+        if ($order_info['order_status_id'] != 2) {
+            echo "订单状态不能执行当前操作";exit;
+        }
+
+        $data['meta_title'] = '完善订单信息 - ' . $this->config->get('config_name');
+
+        $data['order'] = array(
+            'exhibition_subject'    => $order_info['exhibition_subject'],
+            'length'                  => $order_info['length'],
+            'width'                   => $order_info['width'],
+            'height'                  => $order_info['height'],
+            'area'                    => $order_info['area'],
+            'is_squareness'         => $order_info['is_squareness'],
+            'exhibition_verify_date' => $order_info['exhibition_verify_date'],
+            'exhibition_enter_date'  => $order_info['exhibition_enter_date'],
+            'exhibition_begin_date'  => $order_info['exhibition_begin_date'],
+            'exhibition_leave_date'  => $order_info['exhibition_leave_date'],
+            'remark'                    => $order_info['remark']
+        );
+
+        $this->response->setOutput($this->load->view('writepayform.html', $data));
     }
 }

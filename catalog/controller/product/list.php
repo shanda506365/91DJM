@@ -165,7 +165,7 @@ class ControllerProductList extends Controller {
                 'designer_link' => $this->url->link_static('designer/'. $result['customer_id'] . '.html')
             );
         }
-//print_r($all_designers);exit;
+
         foreach($all_products as $key => $product) {
             //补充设计师数据
             $temp = $product;
@@ -174,7 +174,7 @@ class ControllerProductList extends Controller {
             $temp['designer_link'] =  $all_designers_info[$product['customer_id']]['designer_link'];
             $all_products_info[] = $temp;
         }
-//echo '<pre>';print_r($all_products_info);exit;
+
         $data_imglist = array(
             "suc" => true,
             "data" => empty($all_products_info) ? array() : $all_products_info,
