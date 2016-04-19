@@ -17,6 +17,8 @@ class ModelOrderOrder extends Model
         $step1 = array(
             'order_no'  => $data['order_no'],
             'order_name' => $product_info['name'],
+            'customer_id' => $data['customer_id'],
+            'customer_group_id' => $data['customer_group_id'],
             'invoice_prefix'    => $data['invoice_prefix'],
             'store_id'          => $data['store_id'],
             'store_name'          => $data['store_name'],

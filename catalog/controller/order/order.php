@@ -9,6 +9,8 @@ class ControllerOrderOrder extends Controller {
     //第一步订金表单
     public function depositForm() {
 
+        echo $this->customer->getId();exit;
+
         $data['meta_title'] = '提交订单 - ' . $this->config->get('config_name');
 
         $product_id = (int)$this->request->get['product_id'];
