@@ -12,7 +12,7 @@ class ControllerOrderOrder extends Controller {
 
         $product_id = (int)$this->request->get['product_id'];
 
-        $url = $this->url->link('order/depositForm', 'product_id='. $product_id, 'SSL');
+        $url = $this->url->link('order/order/depositForm', 'product_id='. $product_id, 'SSL');
 
         //未登录跳转到登录页面
         if (!$this->customer->isLogged()) {
