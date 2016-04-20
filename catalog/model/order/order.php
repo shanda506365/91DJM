@@ -72,7 +72,6 @@ class ModelOrderOrder extends Model
         );
         $this->db_ci->where('order_no', $order_no);
         $this->db_ci->update('order', $order);
-
         return $order_no;
     }
 

@@ -38,8 +38,9 @@ class ModelOrderOrderFile extends Model
             $temp_file_ids[] = $row['file_id'];
         }
         if (empty($temp_file_ids)) {
-            return false;
+            return [];
         }
+        $this->db_ci->select('');
         $this->db_ci->where_in('file_id', $temp_file_ids);
         $query = $this->db_ci->get('upload');
         return $query->result_array();

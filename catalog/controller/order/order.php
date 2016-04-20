@@ -221,34 +221,49 @@ class ControllerOrderOrder extends Controller {
                 'height'                  => (int)$this->request->post['height'],
                 'area'                    => (int)$this->request->post['area'],
                 'is_squareness'         => (int)$this->request->post['is_squareness'],
-                'exhibition_verify_date' => $order_info['exhibition_verify_date'],
-                'exhibition_enter_date'  => $order_info['exhibition_enter_date'],
-                'exhibition_begin_date'  => $order_info['exhibition_begin_date'],
-                'exhibition_leave_date'  => $order_info['exhibition_leave_date'],
-                'remark'                    => $order_info['remark']
+                'exhibition_verify_date' => $this->request->post['exhibition_verify_date'],
+                'exhibition_enter_date'  => $this->request->post['exhibition_enter_date'],
+                'exhibition_begin_date'  => $this->request->post['exhibition_begin_date'],
+                'exhibition_leave_date'  => $this->request->post['exhibition_leave_date'],
+                'remark'                    => $this->request->post['remark']
             );
 
             $this->model_order_order->completeOrder($order_form, $order_no);
-            echo $order_no . '保存成功';exit;
+
+            $json = array(
+                'suc' => true,
+                'msg' => $order_no . '保存成功',
+                'data' => str_replace('&amp;', '&', $this->url->link('order/order/orderInfo', 'order_no='. $order_no, 'SSL'))
+            );
+
+            echo json_encode($json, JSON_UNESCAPED_SLASHES);exit;
         }
 
         $data['meta_title'] = '完善订单信息 - ' . $this->config->get('config_name');
 
         $order_form = array(
-            'exhibition_subject'    => $order_info['exhibition_subject'],
+            'exhibition_subject'    => strval($order_info['exhibition_subject']),
             'length'                  => $order_info['length'] == 0 ? "" : $order_info['length'],
             'width'                   => $order_info['width'] == 0 ? "" : $order_info['width'],
             'height'                  => $order_info['height'] == 0 ? "" : $order_info['height'],
             'area'                    => $order_info['area'] == 0 ? "" : $order_info['area'],
-            'is_squareness'         => $order_info['is_squareness'],
-            'exhibition_verify_date' => $order_info['exhibition_verify_date'],
-            'exhibition_enter_date'  => $order_info['exhibition_enter_date'],
-            'exhibition_begin_date'  => $order_info['exhibition_begin_date'],
-            'exhibition_leave_date'  => $order_info['exhibition_leave_date'],
-            'remark'                    => $order_info['remark']
+            'is_squareness'         => intval($order_info['is_squareness']),
+            'exhibition_verify_date' => strval($order_info['exhibition_verify_date']),
+            'exhibition_enter_date'  => strval($order_info['exhibition_enter_date']),
+            'exhibition_begin_date'  => strval($order_info['exhibition_begin_date']),
+            'exhibition_leave_date'  => strval($order_info['exhibition_leave_date']),
+            'remark'                    => strval($order_info['remark']),
+            'files' => array()
         );
 
-        $order_form['files'] = $this->model_order_order_file->getOrderFiles($order_info['order_id']);
+        $files = $this->model_order_order_file->getOrderFiles($order_info['order_id']);
+        foreach($files as $file) {
+            $order_form['files'][] = array(
+                'file_id' => $file['upload_id'],
+                'file_name' => $file['name'],
+                'size'  => format_bytes($file['size'])
+            );
+        }
 
         $data['order'] = json_encode($order_form, JSON_UNESCAPED_SLASHES);
 
@@ -317,5 +332,59 @@ class ControllerOrderOrder extends Controller {
             output_error('日期格式不对');
         }
         return true;
+    }
+    //4、确认订单
+    public function orderInfo() {
+        $order_no = $this->request->get['order_no'];
+
+        $this->load->model('order/order');
+        $this->load->model('order/order_file');
+
+        $order_info = $this->model_order_order->getOrderByNo($order_no);
+
+        if (empty($order_info)) {
+            echo "订单号不存在";exit;
+        }
+
+        //订单状态必须是已经付了订金的才能进行该操作
+        if ($order_info['order_status_id'] != 2) {
+            echo "订单状态不能执行当前操作";exit;
+        }
+
+        $data['meta_title'] = '确认订单信息 - ' . $this->config->get('config_name');
+
+        //echo '<pre>';print_r($order_info);exit;
+
+        $order_form = array(
+            'exhibition_subject'    => $order_info['exhibition_subject'],
+            'length'                  => $order_info['length'] == 0 ? "" : $order_info['length'],
+            'width'                   => $order_info['width'] == 0 ? "" : $order_info['width'],
+            'height'                  => $order_info['height'] == 0 ? "" : $order_info['height'],
+            'area'                    => $order_info['area'] == 0 ? "" : $order_info['area'],
+            'is_squareness'         => $order_info['is_squareness'],
+            'exhibition_verify_date' => $order_info['exhibition_verify_date'],
+            'exhibition_enter_date'  => $order_info['exhibition_enter_date'],
+            'exhibition_begin_date'  => $order_info['exhibition_begin_date'],
+            'exhibition_leave_date'  => $order_info['exhibition_leave_date'],
+            'remark'                    => $order_info['remark'],
+            'files' => array()
+        );
+
+        $files = $this->model_order_order_file->getOrderFiles($order_info['order_id']);
+        foreach($files as $file) {
+            $order_form['files'][] = array(
+                'file_id' => $file['upload_id'],
+                'file_name' => $file['name'],
+                'size'  => format_bytes($file['size'])
+            );
+        }
+
+
+        $data['order'] = json_encode($order_form, JSON_UNESCAPED_SLASHES);
+
+        //返回修改
+        $data['url_back'] = str_replace('&amp;', '&', $this->url->link('order/order/orderForm', 'order_no='. $order_no, 'SSL'));
+
+        $this->response->setOutput($this->load->view('makesureOrder.html', $data));
     }
 }
