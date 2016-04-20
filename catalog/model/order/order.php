@@ -30,7 +30,10 @@ class ModelOrderOrder extends Model
             'contact_qq' => $data['contact_qq'],
             'designer_id' => $product_info['customer_id'],
             'main_product_id' => $data['product_id'],
-            'order_status_id' => $data['order_status_id']
+            'order_status_id' => $data['order_status_id'],
+            'total'             => $data['total'],
+            'date_added'      => $data['date_added'],
+            'date_modified'  => $data['date_modified']
         );
 
         $this->db_ci->insert('order', $step1);

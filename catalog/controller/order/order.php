@@ -71,7 +71,7 @@ class ControllerOrderOrder extends Controller {
                 'data' => str_replace('&amp;', '&', $this->url->link('order/order/depositPay', 'order_no='. $order_no, 'SSL'))
             );
 
-            $data['data_default_city'] = json_encode($json, JSON_UNESCAPED_SLASHES);
+            echo json_encode($json, JSON_UNESCAPED_SLASHES);exit;
 
             //$this->response->redirect($this->url->link('order/order/depositPay', 'order_no='. $order_no, 'SSL'));
         }
@@ -180,7 +180,7 @@ class ControllerOrderOrder extends Controller {
         $data['data_banner'] = $this->model_design_banner->banner_to_json(16);
 
 
-        $data['info'] = array(
+        $info = array(
             'order_name' => $order_info['order_name'],
             'order_no' => $order_info['order_no'],
             'deposit_price' => $deposit,
@@ -188,6 +188,8 @@ class ControllerOrderOrder extends Controller {
             'payment_code' => 'alipay_direct',
             'alipay_seller_email' => '123@123.com'
         );
+
+        $data['info'] = json_encode($info, JSON_UNESCAPED_SLASHES);
         //{"order_name":"xxx","order_no":"xxxxxxx","deposit_price":"1000","payment_mothod":"zhifubao","payment_code":"11111","alipay_seller_email":"234234234"}
 
         $this->response->setOutput($this->load->view('pay.html', $data));
