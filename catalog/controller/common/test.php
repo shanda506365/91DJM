@@ -7,8 +7,14 @@
  */
 class ControllerCommonTest extends Controller
 {
+    public function __construct() {
+        echo get_url();
+    }
+
     public function index()
     {
+        echo __FUNCTION__;exit;
+
         //$this->response->setOutput($this->load->view('index.html', array()));
 //        $this->load->helper("sms");
 //        $pars = array(

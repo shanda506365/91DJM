@@ -6,24 +6,28 @@
  * Time: 9:45
  */
 class ControllerOrderOrder extends Controller {
+    //登录验证
+    protected function check_login() {
+        $cur_url = get_url();
+
+        //未登录跳转到登录页面
+        if (!$this->customer->isLogged()) {
+
+            $this->session->data['redirect'] = $cur_url;
+
+            $this->response->redirect($this->url->link('account/login', 'redirect='. urlencode($cur_url), 'SSL'));
+        }
+    }
     //第一步订金表单
     public function depositForm() {
+        $this->check_login();
 
         $data['meta_title'] = '提交订单 - ' . $this->config->get('config_name');
 
         $product_id = (int)$this->request->get['product_id'];
 
-        $url = $this->url->link('order/order/depositForm', 'product_id='. $product_id, 'SSL');
-        $url = str_replace('&amp;', '&', $url);
-
-        //未登录跳转到登录页面
-        if (!$this->customer->isLogged()) {
-            $this->session->data['redirect'] = $url;
-
-            $this->response->redirect($this->url->link('account/login', 'redirect='. urlencode($url), 'SSL'));
-        }
-
         $this->load->model('catalog/product');
+        $this->load->model('order/order_history');
 
         $product_info = $this->model_catalog_product->getProduct($product_id);
 
@@ -38,7 +42,7 @@ class ControllerOrderOrder extends Controller {
             $data = array(
                 //'order_name' => $product_info['name'],
                 'order_no'   => $order_no,
-                'order_status_id' => 1,//1表示未付订金
+                'order_status_id' => $this->model_order_order->getOrderStatus('no_deposit'),//1表示待付项目预付款
                 'customer_id' => $this->customer->getId(),
                 'customer_group_id' => $this->customer->getGroupId(),
                 'invoice_prefix'    => $this->config->get('config_invoice_prefix'),
@@ -60,10 +64,20 @@ class ControllerOrderOrder extends Controller {
                 'date_modified' => date('Y-m-d H:i:s')
             );
 
-            $this->model_order_order->addOrderStep1($data);
+            $order_id = $this->model_order_order->addOrderStep1($data);
 
             //echo '添加订单成功';exit;
             //$this->session->data['order_no']
+
+            //记录订单历史
+            $order_history = array(
+                'order_id' => $order_id,
+                'user_id' => 0,//0表示，客户自己
+                'order_status_id' => $this->model_order_order->getOrderStatus('no_deposit'),
+                'title'         => '下单成功',
+                'date_added'   => date('Y-m-d H:i:s')
+            );
+            $this->model_order_order_history->addOrderHistory($order_history);
 
             $json = array(
                 'suc' => true,
@@ -133,8 +147,9 @@ class ControllerOrderOrder extends Controller {
         $this->response->setOutput($this->load->view('submit.html', $data));
     }
     //第二步订金表单，必须要已支付完订金才能进入该页面
-    public function depositPay()
-    {
+    public function depositPay() {
+        $this->check_login();
+
         $order_no = $this->request->get['order_no'];
 
         $data['meta_title'] = '项目预付款 - ' . $this->config->get('config_name');
@@ -196,6 +211,8 @@ class ControllerOrderOrder extends Controller {
     }
     //3、第三步订单详细表单填写
     public function orderForm() {
+        $this->check_login();
+
         $order_no = $this->request->get['order_no'];
 
         $this->load->model('order/order');
@@ -208,13 +225,14 @@ class ControllerOrderOrder extends Controller {
         }
 
         //订单状态必须是已经付了订金的才能进行该操作
-        if ($order_info['order_status_id'] != 2) {
+        if ($order_info['order_status_id'] != $this->model_order_order->getOrderStatus('deposit_no_form')) {
             echo "订单状态不能执行当前操作";exit;
         }
 
         if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->orderFormValidate()) {
 
             $order_form = array(
+                'order_status_id' => $this->model_order_order->getOrderStatus('validating'),//表单填写完成，沟通确认需求
                 'exhibition_subject'    => $this->request->post['exhibition_subject'],
                 'length'                  => (int)$this->request->post['length'],
                 'width'                   => (int)$this->request->post['width'],
@@ -230,9 +248,19 @@ class ControllerOrderOrder extends Controller {
 
             $this->model_order_order->completeOrder($order_form, $order_no);
 
+            //记录订单历史
+            $order_history = array(
+                'order_id' => $order_info['order_id'],
+                'user_id' => 0,//0表示，客户自己
+                'order_status_id' => $this->model_order_order->getOrderStatus('validating'),//表单填写完成，沟通确认需求
+                'title'         => '下单成功',
+                'date_added'   => date('Y-m-d H:i:s')
+            );
+            $this->model_order_order_history->addOrderHistory($order_history);
+
             $json = array(
                 'suc' => true,
-                'msg' => $order_no . '保存成功',
+                'msg' => '订单：' . $order_no . '保存成功',
                 'data' => str_replace('&amp;', '&', $this->url->link('order/order/orderInfo', 'order_no='. $order_no, 'SSL'))
             );
 
@@ -286,7 +314,7 @@ class ControllerOrderOrder extends Controller {
         }
 
         //订单状态必须是已经付了订金的才能进行该操作
-        if ($order_info['order_status_id'] != 2) {
+        if ($order_info['order_status_id'] != $this->model_order_order->getOrderStatus('deposit_no_form')) {
             echo "订单状态不能执行当前操作";exit;
         }
 
@@ -347,7 +375,7 @@ class ControllerOrderOrder extends Controller {
         }
 
         //订单状态必须是已经付了订金的才能进行该操作
-        if ($order_info['order_status_id'] != 2) {
+        if ($order_info['order_status_id'] != $this->model_order_order->getOrderStatus('deposit_no_form')) {
             echo "订单状态不能执行当前操作";exit;
         }
 
@@ -379,11 +407,11 @@ class ControllerOrderOrder extends Controller {
             );
         }
 
-
         $data['order'] = json_encode($order_form, JSON_UNESCAPED_SLASHES);
 
         //返回修改
-        $data['url_back'] = str_replace('&amp;', '&', $this->url->link('order/order/orderForm', 'order_no='. $order_no, 'SSL'));
+        //$data['url_back'] = str_replace('&amp;', '&', $this->url->link('order/order/orderForm', 'order_no='. $order_no, 'SSL'));
+        $data['url_back'] = $this->url->link('order/order/orderForm', 'order_no='. $order_no, 'SSL');
 
         $this->response->setOutput($this->load->view('makesureOrder.html', $data));
     }

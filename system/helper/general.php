@@ -93,3 +93,10 @@ function get_extension($file){
     }
     return false;
 }
+//得到当前完整url
+function get_url(){
+    $url = (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443') ? 'https://' : 'http://';
+    $url .= $_SERVER['HTTP_HOST'];
+    $url .= isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : urlencode($_SERVER['PHP_SELF']) . '?' . urlencode($_SERVER['QUERY_STRING']);
+    return $url;
+}

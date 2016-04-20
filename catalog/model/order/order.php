@@ -7,6 +7,25 @@
  */
 class ModelOrderOrder extends Model
 {
+
+    public function getOrderStatus($name) {
+        $key = array(
+            'no_deposit' => 1,      //待付项目预付款
+            'deposit_no_form' => 2,//已付项目预付款，待填写表单
+            'validating'  => 3,     //沟通确认需求
+            'designing' => 4,       //设计图设计中
+            'design_over_not_pass' => 5,//设计图交付，待确认
+            'design_pass_no_final_pay' => 6,//设计图已确认，待付尾款
+            'payed_in_production' => 7,         //已付尾款，材料施工中
+            'building' => 8,                    //进场搭建中
+            'build_over' => 9                   //搭建完成
+        );
+        if (array_key_exists($name, $key)) {
+            return $key[$name];
+        }
+        return 0;
+    }
+
     //step1添加订单，主要填写联系人信息，和支付订金
     public function addOrderStep1($data)
     {
@@ -52,7 +71,8 @@ class ModelOrderOrder extends Model
 
         $this->db_ci->insert('order_product', $order_product);
 
-        return $data['order_no'];
+        //return $data['order_no'];
+        return $order_id;
     }
 
     //填写详细的订单表单信息
