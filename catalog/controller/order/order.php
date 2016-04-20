@@ -295,6 +295,9 @@ class ControllerOrderOrder extends Controller {
 
         $data['order'] = json_encode($order_form, JSON_UNESCAPED_SLASHES);
 
+        //上传地址
+        $data['url_upload'] = $this->url->link('order/order_file/upload', 'order_id='. $order_info['order_id'], 'SSL');
+
         //提交订单
         $data['url_ajax_submit'] = $this->url->link('order/order/orderForm', 'order_no='. $order_no, 'SSL');
 
