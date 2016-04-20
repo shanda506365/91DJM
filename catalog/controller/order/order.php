@@ -210,6 +210,26 @@ class ControllerOrderOrder extends Controller {
             echo "订单状态不能执行当前操作";exit;
         }
 
+        if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->orderFormValidate()) {
+
+            $order_form = array(
+                'exhibition_subject'    => $this->request->post['exhibition_subject'],
+                'length'                  => (int)$this->request->post['length'],
+                'width'                   => (int)$this->request->post['width'],
+                'height'                  => (int)$this->request->post['height'],
+                'area'                    => (int)$this->request->post['area'],
+                'is_squareness'         => (int)$this->request->post['is_squareness'],
+                'exhibition_verify_date' => $order_info['exhibition_verify_date'],
+                'exhibition_enter_date'  => $order_info['exhibition_enter_date'],
+                'exhibition_begin_date'  => $order_info['exhibition_begin_date'],
+                'exhibition_leave_date'  => $order_info['exhibition_leave_date'],
+                'remark'                    => $order_info['remark']
+            );
+
+            $this->model_order_order->completeOrder($order_form, $order_no);
+            echo $order_no . '保存成功';exit;
+        }
+
         $data['meta_title'] = '完善订单信息 - ' . $this->config->get('config_name');
 
         $order_form = array(
@@ -230,6 +250,70 @@ class ControllerOrderOrder extends Controller {
 
         $data['order'] = json_encode($order_form, JSON_UNESCAPED_SLASHES);
 
+        //提交订单
+        $data['url_ajax_submit'] = $this->url->link('order/order/orderForm', 'order_no='. $order_no, 'SSL');
+
         $this->response->setOutput($this->load->view('writepayform.html', $data));
+    }
+
+    protected function orderFormValidate() {
+        $order_no = $this->request->get['order_no'];
+
+        $this->load->model('order/order');
+        $this->load->model('order/order_file');
+
+        $order_info = $this->model_order_order->getOrderByNo($order_no);
+
+        if (empty($order_info)) {
+            echo "订单号不存在";exit;
+        }
+
+        //订单状态必须是已经付了订金的才能进行该操作
+        if ($order_info['order_status_id'] != 2) {
+            echo "订单状态不能执行当前操作";exit;
+        }
+
+        $order_form = array(
+            'exhibition_subject' => $this->request->post['exhibition_subject'],
+            'length' => (int)$this->request->post['length'],
+            'width' => (int)$this->request->post['width'],
+            'height' => (int)$this->request->post['height'],
+            'area' => (int)$this->request->post['area'],
+            'is_squareness' => (int)$this->request->post['is_squareness'],
+            'exhibition_verify_date' => $this->request->post['exhibition_verify_date'],
+            'exhibition_enter_date' => $this->request->post['exhibition_enter_date'],
+            'exhibition_begin_date' => $this->request->post['exhibition_begin_date'],
+            'exhibition_leave_date' => $this->request->post['exhibition_leave_date'],
+            'remark' => $this->request->post['remark']
+        );
+
+        if (strlen($order_form['exhibition_subject']) < 3) {
+            output_error('展会主题太短');
+        }
+        if (!is_numeric($order_form['length'])) {
+            output_error('长度只能为数字');
+        }
+        if (!is_numeric($order_form['width'])) {
+            output_error('宽度只能为数字');
+        }
+        if (!is_numeric($order_form['height'])) {
+            output_error('高度只能为数字');
+        }
+        if (!is_numeric($order_form['area'])) {
+            output_error('面积只能为数字');
+        }
+        if (!is_date($order_form['exhibition_verify_date'])) {
+            output_error('日期格式不对');
+        }
+        if (!is_date($order_form['exhibition_enter_date'])) {
+            output_error('日期格式不对');
+        }
+        if (!is_date($order_form['exhibition_begin_date'])) {
+            output_error('日期格式不对');
+        }
+        if (!is_date($order_form['exhibition_leave_date'])) {
+            output_error('日期格式不对');
+        }
+        return true;
     }
 }

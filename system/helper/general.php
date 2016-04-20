@@ -72,6 +72,14 @@ function is_mobile($mobile) {
     }
     return false;
 }
+//验证日期
+function is_date($str) {
+    $is_date = strtotime($str) ? strtotime($str) : false;
+    if( $is_date === false) {
+        return false;
+    }
+    return true;
+}
 //文件大小格式，直观显示
 function format_bytes($size) {
     $units = array('B', 'KB', 'MB', 'GB', 'TB');
