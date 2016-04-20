@@ -7,12 +7,12 @@
  */
 class ModelOrderOrderFile extends Model
 {
-    public function addOrderFile($order_id, $file_id) {
-        $this->event->trigger('pre.order_file.add', $file_id);
+    public function addOrderFile($order_id, $upload_id) {
+        $this->event->trigger('pre.order_file.add', $upload_id);
 
         $data = array(
             'order_id' => $order_id,
-            'file_id' => $file_id,
+            'upload_id' => $upload_id,
             'date_added' => date('Y-m-d H:i:s')
         );
         $this->db_ci->insert('order_file', $data);
@@ -20,10 +20,10 @@ class ModelOrderOrderFile extends Model
         $this->event->trigger('post.order_file.add', $order_id);
     }
 
-    public function deleteOrderFile($file_id) {
-        $this->event->trigger('pre.order_file.delete', $file_id);
+    public function deleteOrderFile($upload_id) {
+        $this->event->trigger('pre.order_file.delete', $upload_id);
 
-        $this->db_ci->where('file_id', $file_id);
+        $this->db_ci->where('upload_id', $upload_id);
 
         return $this->db_ci->delete('order_file');
     }
@@ -35,13 +35,13 @@ class ModelOrderOrderFile extends Model
 
         $temp_file_ids = array();
         foreach($rows as $row) {
-            $temp_file_ids[] = $row['file_id'];
+            $temp_file_ids[] = $row['upload_id'];
         }
         if (empty($temp_file_ids)) {
             return [];
         }
         $this->db_ci->select('');
-        $this->db_ci->where_in('file_id', $temp_file_ids);
+        $this->db_ci->where_in('upload_id', $temp_file_ids);
         $query = $this->db_ci->get('upload');
         return $query->result_array();
     }

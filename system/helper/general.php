@@ -88,10 +88,11 @@ function format_bytes($size) {
 }
 //得到文件后缀
 function get_extension($file){
-    if (is_file($file)) {
-        return pathinfo($file, PATHINFO_EXTENSION);
-    }
-    return false;
+//    if (is_file($file)) {
+//        return pathinfo($file, PATHINFO_EXTENSION);
+//    }
+//    return false;
+    return substr($file, strrpos($file, '.') + 1);
 }
 //得到当前完整url
 function get_url(){
