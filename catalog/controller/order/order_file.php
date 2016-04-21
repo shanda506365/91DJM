@@ -116,7 +116,7 @@ class ControllerOrderOrderFile extends Controller {
                     'file_id' => $upload_id,
                     'file_name' => $filename,
                     'size'  => format_bytes($file_size),
-                    'delete_url' => $this->url->link('order/order_file/delete', 'upload_id=' . $upload_id, ''),
+                    'delete_url' => $this->url->link_simple('order/order_file/delete', 'upload_id=' . $upload_id, ''),
                     'url' => ''
                 )
             );

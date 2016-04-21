@@ -6,7 +6,6 @@ class ControllerAccountLogin extends Controller {
 		$this->load->model('account/customer');
 
         if ($this->customer->isLogged()) {
-            //$this->response->redirect($this->url->link_static('account/account', '', 'SSL'));
             $this->response->redirect(HTTP_SERVER);
         }
 

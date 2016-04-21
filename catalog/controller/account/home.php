@@ -15,6 +15,6 @@ class ControllerAccountHome extends Controller
             $this->response->redirect($this->url->link('account/login', '', 'SSL'));
         }
 
-        $data['meta_title'] = '登录 - ' . $this->config->get('config_name');
+        $data['meta_title'] = '账户中心 - ' . $this->config->get('config_name');
     }
 }
