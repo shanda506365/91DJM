@@ -47,12 +47,15 @@ class ControllerAccountHome extends Controller
         $orders = array();
         foreach ($data as $order) {
             //{"order_no":"1111","order_name":"标准化套餐A方案","price":"待定","order_status":"代付定金"
+
+            $order_status = $this->model_order_order_status->getOrderStatusById($order['order_status_id']);
+
             $orders[] = array(
                 'order_id' => $order['order_id'],
                 'order_no' => $order['order_no'],
                 'order_name' => $order['order_name'],
                 'price' => $order['total'],
-                'order_status' => $this->model_order_order_status->getOrderStatusById($order['order_status_id']),
+                'order_status' => $order_status['name'],
                 'date_added' => $order['date_added']
             );
         }
