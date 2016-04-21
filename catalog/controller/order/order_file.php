@@ -29,7 +29,8 @@ class ControllerOrderOrderFile extends Controller {
 
         if (!empty($this->request->files['files']['name'][0]) && is_file($this->request->files['files']['tmp_name'][0])) {
             // Sanitize the filename
-            $filename = basename(preg_replace('/[^a-zA-Z0-9\.\-\s+]/', '', html_entity_decode($this->request->files['files']['name'][0], ENT_QUOTES, 'UTF-8')));
+            //$filename = basename(preg_replace('/[^a-zA-Z0-9\.\-\s+]/', '', html_entity_decode($this->request->files['files']['name'][0], ENT_QUOTES, 'UTF-8')));
+            $filename = $this->request->files['files']['name'][0];
 
             // Validate the filename length
             if ((utf8_strlen($filename) < 3) || (utf8_strlen($filename) > 64)) {
@@ -48,37 +49,41 @@ class ControllerOrderOrderFile extends Controller {
             }
 
             if (!in_array(strtolower(substr(strrchr($filename, '.'), 1)), $allowed)) {
-                $json['error'] = $this->language->get('error_filetype');
+                $msg = '文件后缀不对';
             }
-
-            // Allowed file mime types
-            $allowed = array();
-
-            $mime_allowed = preg_replace('~\r?\n~', "\n", $this->config->get('config_file_mime_allowed'));
-
-            $filetypes = explode("\n", $mime_allowed);
-
-            foreach ($filetypes as $filetype) {
-                $allowed[] = trim($filetype);
-            }
-
-            if (!in_array($this->request->files['files']['type'][0], $allowed)) {
-                $json['error'] = $this->language->get('error_filetype');
-            }
+//前期只判断后缀，后面再加上安全的文件类型验证
+//            // Allowed file mime types
+//            $allowed = array();
+//
+//            $mime_allowed = preg_replace('~\r?\n~', "\n", $this->config->get('config_file_mime_allowed'));
+//
+//            $filetypes = explode("\n", $mime_allowed);
+//
+//            foreach ($filetypes as $filetype) {
+//                $allowed[] = trim($filetype);
+//            }
+//
+//            if (!in_array($this->request->files['files']['type'][0], $allowed)) {
+//                $msg = '文件类型不对';
+//            }
 
             // Check to see if any PHP files are trying to be uploaded
             $content = file_get_contents($this->request->files['files']['tmp_name'][0]);
 
             if (preg_match('/\<\?php/i', $content)) {
-                $json['error'] = $this->language->get('error_filetype');
+                $msg = $this->language->get('error_filetype');
             }
 
             // Return any upload error
             if ($this->request->files['files']['error'][0] != UPLOAD_ERR_OK) {
-                $json['error'] = $this->language->get('error_upload_' . $this->request->files['files']['error'][0]);
+                $msg = $this->language->get('error_upload_' . $this->request->files['files']['error'][0]);
+            }
+            if (isset($msg)) {
+                output_error($msg);
             }
         } else {
-            $json['error'] = $this->language->get('error_upload');
+            $msg = $this->language->get('error_upload');
+            output_error($msg);
         }
 
         if (!$json) {
