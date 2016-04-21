@@ -42,6 +42,7 @@ class ModelOrderOrderFile extends Model
         }
         $this->db_ci->select('');
         $this->db_ci->where_in('upload_id', $temp_file_ids);
+        $this->db_ci->order_by('date_added', 'DESC');
         $query = $this->db_ci->get('upload');
         return $query->result_array();
     }
