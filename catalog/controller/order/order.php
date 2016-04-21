@@ -7,7 +7,7 @@
  */
 class ControllerOrderOrder extends Controller {
     //登录验证
-    protected function check_login() {
+    protected function init() {
         $cur_url = get_url();
 
         //未登录跳转到登录页面
@@ -17,17 +17,21 @@ class ControllerOrderOrder extends Controller {
 
             $this->response->redirect($this->url->link('account/login', 'redirect='. urlencode($cur_url), 'SSL'));
         }
+
+        $this->load->model('catalog/product');
+        $this->load->model('order/order');
+        $this->load->model('order/order_file');
+        $this->load->model('order/order_history');
+        $this->load->model('order/order_status');
+
     }
     //第一步订金表单
     public function depositForm() {
-        $this->check_login();
+        $this->init();
 
         $data['meta_title'] = '提交订单 - ' . $this->config->get('config_name');
 
         $product_id = (int)$this->request->get['product_id'];
-
-        $this->load->model('catalog/product');
-        $this->load->model('order/order_history');
 
         $product_info = $this->model_catalog_product->getProduct($product_id);
 
@@ -35,14 +39,13 @@ class ControllerOrderOrder extends Controller {
         $deposit = $this->model_catalog_product->getDepositByCategory($product_info['master_category_id']);
 
         if ($this->request->server['REQUEST_METHOD'] == 'POST') {
-            $this->load->model('order/order');
 
             $order_no = initOrderNo(11);
 
             $data = array(
                 //'order_name' => $product_info['name'],
                 'order_no'   => $order_no,
-                'order_status_id' => $this->model_order_order->getOrderStatus('no_deposit'),//1表示待付项目预付款
+                'order_status_id' => $this->model_order_order_status->getOrderStatusByKey('no_deposit'),//1表示待付项目预付款
                 'customer_id' => $this->customer->getId(),
                 'customer_group_id' => $this->customer->getGroupId(),
                 'invoice_prefix'    => $this->config->get('config_invoice_prefix'),
@@ -59,7 +62,7 @@ class ControllerOrderOrder extends Controller {
                 //'product_model' => $product_info['model'],
                 'quantity' => 1,
                 'price' => $deposit,
-                'total' => $deposit,
+                'total' => 0,//0表示价格待定
                 'date_added' => date('Y-m-d H:i:s'),
                 'date_modified' => date('Y-m-d H:i:s')
             );
@@ -73,7 +76,7 @@ class ControllerOrderOrder extends Controller {
             $order_history = array(
                 'order_id' => $order_id,
                 'user_id' => 0,//0表示，客户自己
-                'order_status_id' => $this->model_order_order->getOrderStatus('no_deposit'),
+                'order_status_id' => $this->model_order_order_status->getOrderStatusByKey('no_deposit'),
                 'title'         => '下单成功',
                 'date_added'   => date('Y-m-d H:i:s')
             );
@@ -148,13 +151,11 @@ class ControllerOrderOrder extends Controller {
     }
     //第二步订金表单，必须要已支付完订金才能进入该页面
     public function depositPay() {
-        $this->check_login();
+        $this->init();
 
         $order_no = $this->request->get['order_no'];
 
         $data['meta_title'] = '项目预付款 - ' . $this->config->get('config_name');
-
-        $this->load->model('order/order');
 
         $order_info = $this->model_order_order->getOrderByNo($order_no);
 
@@ -173,8 +174,6 @@ class ControllerOrderOrder extends Controller {
 
             $this->response->redirect($this->url->link('account/login', 'redirect='. urlencode($url), 'SSL'));
         }
-
-        $this->load->model('catalog/product');
 
         $product_info = $this->model_catalog_product->getProduct($product_id);
 
@@ -211,7 +210,7 @@ class ControllerOrderOrder extends Controller {
     }
     //3、第三步订单详细表单填写
     public function orderForm() {
-        $this->check_login();
+        $this->init();
 
         $order_no = $this->request->get['order_no'];
 
@@ -226,14 +225,14 @@ class ControllerOrderOrder extends Controller {
         }
 
         //订单状态必须是已经付了订金的才能进行该操作
-        if ($order_info['order_status_id'] != $this->model_order_order->getOrderStatus('deposit_no_form')) {
+        if ($order_info['order_status_id'] != $this->model_order_order_status->getOrderStatusByKey('deposit_no_form')) {
             echo "订单状态不能执行当前操作";exit;
         }
 
         if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->orderFormValidate()) {
 
             $order_form = array(
-                'order_status_id' => $this->model_order_order->getOrderStatus('validating'),//表单填写完成，沟通确认需求
+                'order_status_id' => $this->model_order_order_status->getOrderStatusByKey('validating'),//表单填写完成，沟通确认需求
                 'exhibition_subject'    => $this->request->post['exhibition_subject'],
                 'length'                  => (int)$this->request->post['length'],
                 'width'                   => (int)$this->request->post['width'],
@@ -253,7 +252,7 @@ class ControllerOrderOrder extends Controller {
             $order_history = array(
                 'order_id' => $order_info['order_id'],
                 'user_id' => 0,//0表示，客户自己
-                'order_status_id' => $this->model_order_order->getOrderStatus('validating'),//表单填写完成，沟通确认需求
+                'order_status_id' => $this->model_order_order_status->getOrderStatusByKey('validating'),//表单填写完成，沟通确认需求
                 'title'         => '下单成功',
                 'date_added'   => date('Y-m-d H:i:s')
             );
@@ -310,9 +309,6 @@ class ControllerOrderOrder extends Controller {
     protected function orderFormValidate() {
         $order_no = $this->request->get['order_no'];
 
-        $this->load->model('order/order');
-        $this->load->model('order/order_file');
-
         $order_info = $this->model_order_order->getOrderByNo($order_no);
 
         if (empty($order_info)) {
@@ -320,7 +316,7 @@ class ControllerOrderOrder extends Controller {
         }
 
         //订单状态必须是已经付了订金的才能进行该操作
-        if ($order_info['order_status_id'] != $this->model_order_order->getOrderStatus('deposit_no_form')) {
+        if ($order_info['order_status_id'] != $this->model_order_order_status->getOrderStatusByKey('deposit_no_form')) {
             echo "订单状态不能执行当前操作";exit;
         }
 
@@ -371,9 +367,6 @@ class ControllerOrderOrder extends Controller {
     public function orderInfo() {
         $order_no = $this->request->get['order_no'];
 
-        $this->load->model('order/order');
-        $this->load->model('order/order_file');
-
         $order_info = $this->model_order_order->getOrderByNo($order_no);
 
         if (empty($order_info)) {
@@ -381,7 +374,7 @@ class ControllerOrderOrder extends Controller {
         }
 
         //订单状态必须是已经付了订金的才能进行该操作
-        if ($order_info['order_status_id'] != $this->model_order_order->getOrderStatus('deposit_no_form')) {
+        if ($order_info['order_status_id'] != $this->model_order_order_status->getOrderStatusByKey('deposit_no_form')) {
             echo "订单状态不能执行当前操作";exit;
         }
 

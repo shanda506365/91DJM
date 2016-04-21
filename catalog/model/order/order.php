@@ -7,7 +7,7 @@
  */
 class ModelOrderOrder extends Model
 {
-
+/*
     public function getOrderStatus($name) {
         $key = array(
             'no_deposit' => 1,      //待付项目预付款
@@ -25,7 +25,7 @@ class ModelOrderOrder extends Model
         }
         return 0;
     }
-
+*/
     //step1添加订单，主要填写联系人信息，和支付订金
     public function addOrderStep1($data)
     {

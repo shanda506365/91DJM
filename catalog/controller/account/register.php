@@ -42,8 +42,8 @@ class ControllerAccountRegister extends Controller {
         $data['data_banner'] = $this->model_design_banner->banner_to_json(14);
 
         //获取短信验证码的网址
-        $data['url_random'] = $this->url->link('account/register/getSmsRandom', '', 'SSL');
-        $data['url_register'] = $this->url->link('account/register/doRegister', '', 'SSL');
+        $data['url_sms_random'] = $this->url->link('account/register/getSmsRandom', '', '');
+        $data['url_register'] = $this->url->link('account/register/doRegister', '', '');
 
         $this->response->setOutput($this->load->view('register.html', $data));
 	}
@@ -109,7 +109,7 @@ class ControllerAccountRegister extends Controller {
 
 		return !$this->error;
 	}
-
+    //发送短信
     public function getSmsRandom() {
         $mobile = trim($this->request->get['mobile']);
 
@@ -119,10 +119,10 @@ class ControllerAccountRegister extends Controller {
 
         $this->load->helper("sms");
         $code = rand(0, 9).rand(0, 9).rand(0, 9).rand(0, 9).rand(0, 9).rand(0, 9);
-        $this->session->data['register_code'] = $code;
+        $this->session->data['code_register'] = $code;
         $pars = array(
             "code" => $code,
-            "product" => "搭积木"
+            "product" => $this->config->get('config_name')
         );
         $result = send_sms($mobile, $pars, SMS_TPL_REGISTER, date("Y-m-d H:i:s"));
         if ($result) {
@@ -166,7 +166,7 @@ class ControllerAccountRegister extends Controller {
         }
 
         $random = trim($this->request->post['random']);
-        if ($this->session->data['register_code'] != $random) {
+        if ($this->session->data['code_register'] != $random) {
             output_error('短信验证码错误！');
         }
 
@@ -199,7 +199,7 @@ class ControllerAccountRegister extends Controller {
 
         $this->model_account_activity->addActivity('login', $activity_data);
 
-        unset($this->session->data['register_code']);
+        unset($this->session->data['code_register']);
 
         output_success("注册成功！");
     }

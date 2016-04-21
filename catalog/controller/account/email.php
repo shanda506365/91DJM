@@ -3,10 +3,9 @@
  * Created by PhpStorm.
  * User: 周
  * Date: 2016/4/21
- * Time: 9:48
+ * Time: 14:49
  */
-class ControllerAccountHome extends Controller
-{
+class ControllerAccountEmail extends Controller {
     //登录验证
     protected function init() {
         $cur_url = get_url();
@@ -19,12 +18,10 @@ class ControllerAccountHome extends Controller
             $this->response->redirect($this->url->link('account/login', 'redirect='. urlencode($cur_url), 'SSL'));
         }
     }
-
-    public function index()
-    {
+    public function index() {
         $this->init();
 
-        $data_page['meta_title'] = '账户中心 - ' . $this->config->get('config_name');
+        $data_page['meta_title'] = '绑定邮箱 - ' . $this->config->get('config_name');
 
         //个人资料
         $this->load->model('account/customer');
@@ -38,27 +35,13 @@ class ControllerAccountHome extends Controller
         );
         $data_page['customer'] = json_encode($customer, JSON_UNESCAPED_SLASHES);
 
-        //最近订单
-        $this->load->model('account/order');
-        $this->load->model('order/order_status');
-        //最近3条
-        $data = $this->model_account_order->getOrders(0, 3);
+        if ($this->request->server['REQUEST_METHOD'] == 'POST') {
+            $email = $this->request->post['email'];
+            $data['email'] = $email;
 
-        $orders = array();
-        foreach ($data as $order) {
-            //{"order_no":"1111","order_name":"标准化套餐A方案","price":"待定","order_status":"代付定金"
-            $orders[] = array(
-                'order_id' => $order['order_id'],
-                'order_no' => $order['order_no'],
-                'order_name' => $order['order_name'],
-                'price' => $order['total'],
-                'order_status' => $this->model_order_order_status->getOrderStatusById($order['order_status_id']),
-                'date_added' => $order['date_added']
-            );
+            $this->model_account_customer->editCustomer($data);
+            output_success("修改成功");
         }
-
-        $data_page['orders'] = json_encode($orders, JSON_UNESCAPED_SLASHES);
-
 
         //开始生成面包屑
         $breadcrumbs[] = array(
@@ -77,9 +60,10 @@ class ControllerAccountHome extends Controller
         $this->load->model('design/banner');
         //顶部广告
         $data_page['data_banner'] = $this->model_design_banner->banner_to_json(18);
-        //中间广告
-        $data_page['data_floor'] = $this->model_design_banner->banner_to_json(19);
 
-        $this->response->setOutput($this->load->view('customer_home.html', $data_page));
+        //提交修改
+        $data_page['url_submit'] = $this->url->link_simple('account/email');
+
+        $this->response->setOutput($this->load->view('customer_bindMail.html', $data_page));
     }
 }

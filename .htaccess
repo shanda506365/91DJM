@@ -33,7 +33,7 @@ RewriteRule ^product/list_([0-9]+)$ index.php?route=product/list&category_id=$1 
 RewriteRule ^product/([0-9]+).html$ index.php?route=product/detail&product_id=$1 [L]
 
 
-RewriteRule ^account/(login|register|forgotpass|account|home|edit|password|address|wishlist|order|logout)$ index.php?route=account/$1 [L]
+RewriteRule ^account/(login|register|forgotpass|account|home|email|mobile|edit|password|address|wishlist|order|logout)$ index.php?route=account/$1 [L]
 
 RewriteRule ^information/(introduce|issues|support)$ index.php?route=information/information/$1 [L]
 

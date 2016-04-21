@@ -1,7 +1,8 @@
 <?php
 define("SMS_TPL_REGISTER", "SMS_7225793");//注册短信模版，必须在 http://www.alidayu.com/admin/service/tpl 存在
+define("SMS_TPL_CHANGE_MOBILE", "SMS_8215243");//用户变更手机号码发送的短信模版
 
-define("SMS_SIGN", "搭积木");//签名，必须在 http://www.alidayu.com/admin/service/sign 存在
+define("SMS_SIGN", "91搭积木");//签名，必须在 http://www.alidayu.com/admin/service/sign 存在
 
 /*
  * stdClass Object

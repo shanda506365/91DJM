@@ -18,7 +18,7 @@ class ModelAccountCustomer extends Model {
             'customer_group_id' => (int)$customer_group_id,
             'store_id' => (int)$this->config->get('config_store_id'),
             'mobile' => $data['mobile'],
-            'nick_name' => '',
+            'nick_name' => isset($data['nick_name']) ? $data['nick_name'] : '',
             'picture' => '',
             'firstname' => '',
             'lastname' => '',
@@ -48,7 +48,9 @@ class ModelAccountCustomer extends Model {
 
 		$customer_id = $this->customer->getId();
 
-		$this->db->query("UPDATE " . DB_PREFIX . "customer SET firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', custom_field = '" . $this->db->escape(isset($data['custom_field']) ? json_encode($data['custom_field']) : '') . "' WHERE customer_id = '" . (int)$customer_id . "'");
+		//$this->db->query("UPDATE " . DB_PREFIX . "customer SET firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', custom_field = '" . $this->db->escape(isset($data['custom_field']) ? json_encode($data['custom_field']) : '') . "' WHERE customer_id = '" . (int)$customer_id . "'");
+        $this->db_ci->where('customer_id', $customer_id);
+        $this->db_ci->update('customer', $data);
 
 		$this->event->trigger('post.customer.edit', $customer_id);
 	}
@@ -180,5 +182,12 @@ class ModelAccountCustomer extends Model {
         $this->db_ci->where_in('a.customer_id', $ids);
         $query = $this->db_ci->get();
         return $query->result_array();
+    }
+    //用户安全级别，高（电话+邮箱），中（只有电话）
+    public function getLevel($customer) {
+        if (!empty($customer['mobile']) && !empty($customer['email'])) {
+            return '高';
+        }
+        return '中';
     }
 }
