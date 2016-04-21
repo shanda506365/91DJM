@@ -289,7 +289,9 @@ class ControllerOrderOrder extends Controller {
             $order_form['files'][] = array(
                 'file_id' => $file['upload_id'],
                 'file_name' => $file['name'],
-                'size'  => format_bytes($file['size'])
+                'size'  => format_bytes($file['size']),
+                'delete_url' => $this->url->link_simple('order/order_file/delete', 'upload_id=' . $file['upload_id'], ''),
+                'url' => ''
             );
         }
 
