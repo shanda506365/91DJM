@@ -217,6 +217,7 @@ class ControllerOrderOrder extends Controller {
 
         $this->load->model('order/order');
         $this->load->model('order/order_file');
+        $this->load->model('order/order_history');
 
         $order_info = $this->model_order_order->getOrderByNo($order_no);
 
@@ -395,6 +396,7 @@ class ControllerOrderOrder extends Controller {
             'height'                  => $order_info['height'] == 0 ? "" : $order_info['height'],
             'area'                    => $order_info['area'] == 0 ? "" : $order_info['area'],
             'is_squareness'         => $order_info['is_squareness'],
+            'is_squareness_name'     => radioName($order_info['is_squareness']),
             'exhibition_verify_date' => $order_info['exhibition_verify_date'],
             'exhibition_enter_date'  => $order_info['exhibition_enter_date'],
             'exhibition_begin_date'  => $order_info['exhibition_begin_date'],
