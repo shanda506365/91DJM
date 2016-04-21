@@ -43,9 +43,12 @@ class ControllerAccountMobile extends Controller {
             }
 
             $mobile = $this->request->post['mobile'];
-            $data['mobile'] = $mobile;
+            $customer['mobile'] = $mobile;
+            if (empty($data['nick_name'])) {
+                $customer['nick_name'] = cover_telephone($mobile);
+            }
 
-            $this->model_account_customer->editCustomer($data);
+            $this->model_account_customer->editCustomer($customer);
             unset($this->session->data['code_change']);
             output_success("修改成功");
         }
