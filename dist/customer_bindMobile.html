@@ -30,11 +30,11 @@
 
 <body>
     <div class="htmlbody container-fluid"
-    data-banner='[{"src":"images/A41.jpg","des":"\u6d4b\u8bd5\u4e00","link":"###"}]' 
-    data-breadcrumb='[{"name":"首页","link":"/"},{"name":"账户中心","link":"###"}]'
-    data-customer='{"nick_name":"用户9026879","level":"中","mobile":"13544433321","mail":"xxx@xx.com","picture":"/images/icons/touxiang.png"}'
-    data-ajax-submit='/submit'
-    data-getRandom-url="../testData.json"
+    data-banner='<?php echo $data_banner; ?>'
+    data-breadcrumb='<?php echo $breadcrumbs; ?>'
+    data-customer='<?php echo $customer; ?>'
+    data-ajax-submit='<?php echo $url_submit; ?>'
+    data-getRandom-url="<?php echo $url_sms_random; ?>"
     ></div>
 </body>
 

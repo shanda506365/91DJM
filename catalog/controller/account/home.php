@@ -33,7 +33,7 @@ class ControllerAccountHome extends Controller
             'nick_name' => $data['nick_name'],
             'level' => $this->model_account_customer->getLevel($data),
             'mobile' => $data['mobile'],
-            'mail' => $data['email'],
+            'email' => $data['email'],
             'picture' => HTTP_SERVER . 'upload/'. $data['picture']
         );
         $data_page['customer'] = json_encode($customer, JSON_UNESCAPED_SLASHES);

@@ -30,7 +30,7 @@ class ControllerAccountEmail extends Controller {
             'nick_name' => $data['nick_name'],
             'level' => $this->model_account_customer->getLevel($data),
             'mobile' => $data['mobile'],
-            'mail' => $data['email'],
+            'email' => $data['email'],
             'picture' => HTTP_SERVER . 'upload/'. $data['picture']
         );
         $data_page['customer'] = json_encode($customer, JSON_UNESCAPED_SLASHES);
@@ -40,7 +40,7 @@ class ControllerAccountEmail extends Controller {
             $data['email'] = $email;
 
             $this->model_account_customer->editCustomer($data);
-            output_success("修改成功");
+            output_success("邮箱绑定成功");
         }
 
         //开始生成面包屑
@@ -51,6 +51,10 @@ class ControllerAccountEmail extends Controller {
         $breadcrumbs[] = array(
             'name' => '账户中心',
             'link' => $this->url->link_static('account/home')
+        );
+        $breadcrumbs[] = array(
+            'name' => '绑定邮箱',
+            'link' => $this->url->link_static('account/email')
         );
 
         $data_page['breadcrumbs'] = json_encode($breadcrumbs, JSON_UNESCAPED_SLASHES);

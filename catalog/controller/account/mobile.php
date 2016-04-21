@@ -21,7 +21,7 @@ class ControllerAccountMobile extends Controller {
     public function index() {
         $this->init();
 
-        $data_page['meta_title'] = '绑定邮箱 - ' . $this->config->get('config_name');
+        $data_page['meta_title'] = '重新绑定手机号 - ' . $this->config->get('config_name');
 
         //个人资料
         $this->load->model('account/customer');
@@ -30,7 +30,7 @@ class ControllerAccountMobile extends Controller {
             'nick_name' => $data['nick_name'],
             'level' => $this->model_account_customer->getLevel($data),
             'mobile' => $data['mobile'],
-            'mail' => $data['email'],
+            'email' => $data['email'],
             'picture' => HTTP_SERVER . 'upload/'. $data['picture']
         );
         $data_page['customer'] = json_encode($customer, JSON_UNESCAPED_SLASHES);
@@ -61,6 +61,10 @@ class ControllerAccountMobile extends Controller {
         $breadcrumbs[] = array(
             'name' => '账户中心',
             'link' => $this->url->link_static('account/home')
+        );
+        $breadcrumbs[] = array(
+            'name' => '重新绑定手机号',
+            'link' => $this->url->link_static('account/mobile')
         );
 
         $data_page['breadcrumbs'] = json_encode($breadcrumbs, JSON_UNESCAPED_SLASHES);
