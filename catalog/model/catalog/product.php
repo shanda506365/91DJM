@@ -51,7 +51,8 @@ class ModelCatalogProduct extends Model {
 				'date_modified'    => $query->row['date_modified'],
 				'viewed'           => $query->row['viewed'],
                 'customer_id'     => $query->row['customer_id'],
-                'collect_num'     => $query->row['collect_num']
+                'collect_num'     => $query->row['collect_num'],
+                'master_category_id'    => $query->row['master_category_id']
 			);
 		} else {
 			return false;
@@ -668,5 +669,41 @@ where p.product_id=pf.product_id and p.product_id=p2c.product_id and p2c.categor
         $this->db_ci->where('product_id', $product_id);
         $this->db_ci->update('customer', $data);
         return $collect_num;
+    }
+    //通过类型得到定金价格
+    public function getDepositByCategory($category_id) {
+        if ($category_id == 1) {//定制
+            return $this->config->get('config_deposit_customize');
+        } else if($category_id == 2) {//普通套餐
+            return $this->config->get('config_deposit_normal');
+        }
+    }
+
+    public function getBreadcrumbs($product_id) {
+        //开始生成面包屑
+        $breadcrumbs[] = array(
+            'name' => '首页',
+            'link' => $this->config->get('config_url')
+        );
+
+        $product_info = $this->getProduct($product_id);
+
+        $master_category_id = $product_info['master_category_id'];
+
+        $this->load->model('catalog/category');
+
+        $master_category = $this->model_catalog_category->getCategory($master_category_id);
+
+        $breadcrumbs[] = array(
+            'name' => $master_category['name'],
+            'link' => '/product/list/' . $master_category_id
+        );
+
+        $breadcrumbs[] = array(
+            'name' => $product_info['name'],
+            'link' => '/product/' . $product_info['product_id'] . '.html'
+        );
+
+        return $breadcrumbs;
     }
 }

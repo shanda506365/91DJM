@@ -17,13 +17,9 @@ class ControllerProductDetail extends Controller
 
         $product_info = $this->model_catalog_product->getProduct($product_id);
 
-
         //广告加载
         $this->load->model('design/banner');
         $data['data_banner'] = $this->model_design_banner->banner_to_json(16);
-
-
-        //{"title":"A方案详情","summary":"大撒送发送的阿萨德发送法阿萨德发送的的阿迪","attribute":[{"attribute_name":"参考价格","attribute_code":"3770元"}],"description":"asdf<ol><li>2ddddddddd</li><li>44dddddtttt</li></ol>","image":"images/A43.jpg","images":["images/A43.jpg","images/A43.jpg","images/A43.jpg"],"designer_name":"设计师1号","designer_image":"images/icons/headPic_default.png","designer_description":"设计师1号"}
 
         $page_data['title'] = $product_info['name'];
         $page_data['summary'] = $product_info['meta_description'];
@@ -66,11 +62,32 @@ class ControllerProductDetail extends Controller
 
         $data['data_detail'] = json_encode($page_data, JSON_UNESCAPED_SLASHES);
 
-        //print_r($data['data_detail']);exit;
+        //开始生成面包屑
+        $breadcrumbs[] = array(
+            'name' => '首页',
+            'link' => '/'
+        );
 
-        //分页的网址
-//        $data['url_ajax_page'] = $this->url->link('product/list/ajax_url', '', '');
-//        $data['url_ajax_collect'] = $this->url->link('api/collect', '', '');
+        $master_category_id = $product_info['master_category_id'];
+
+        $this->load->model('catalog/category');
+
+        $master_category = $this->model_catalog_category->getCategory($master_category_id);
+
+        $breadcrumbs[] = array(
+            'name' => $master_category['name'],
+            'link' => '/product/list/' . $master_category_id
+        );
+
+        $breadcrumbs[] = array(
+            'name' => $product_info['name'],
+            'link' => '/product/' . $product_info['product_id'] . '.html'
+        );
+
+        $data['breadcrumbs'] = json_encode($breadcrumbs, JSON_UNESCAPED_SLASHES);
+
+        //我要下单
+        $data['url_order'] = $this->url->link('order/order/depositForm', 'product_id='. $product_id, 'SSL');
 
         $this->response->setOutput($this->load->view('standard_detail.html', $data));
     }

@@ -168,6 +168,19 @@
                     <textarea name="config_comment" rows="5" placeholder="<?php echo $entry_comment; ?>" id="input-comment" class="form-control"><?php echo $config_comment; ?></textarea>
                   </div>
                 </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-deposit-normal"><span data-toggle="tooltip" data-container="#tab-general" title="套餐订金">套餐订金</span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="config_deposit_normal" value="<?php echo $config_deposit_normal; ?>" placeholder="套餐订金" id="input-deposit-normal" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-deposit-customize"><span data-toggle="tooltip" data-container="#tab-general" title="定制化订金">定制化订金</span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="config_deposit_customize" value="<?php echo $config_deposit_customize; ?>" placeholder="定制化订金" id="input-deposit-customize" class="form-control" />
+                </div>
+              </div>
+
                 <?php if ($locations) { ?>
                 <div class="form-group">
                   <label class="col-sm-2 control-label"><span data-toggle="tooltip" data-container="#tab-general" title="<?php echo $help_location; ?>"><?php echo $entry_location; ?></span></label>

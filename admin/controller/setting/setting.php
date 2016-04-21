@@ -544,6 +544,18 @@ class ControllerSettingSetting extends Controller {
 			$data['config_comment'] = $this->config->get('config_comment');
 		}
 
+        if (isset($this->request->post['config_deposit_normal'])) {
+            $data['config_deposit_normal'] = $this->request->post['config_deposit_normal'];
+        } else {
+            $data['config_deposit_normal'] = $this->config->get('config_deposit_normal');
+        }
+
+        if (isset($this->request->post['config_deposit_customize'])) {
+            $data['config_deposit_customize'] = $this->request->post['config_deposit_customize'];
+        } else {
+            $data['config_deposit_customize'] = $this->config->get('config_deposit_customize');
+        }
+
 		$this->load->model('localisation/location');
 
 		$data['locations'] = $this->model_localisation_location->getLocations();

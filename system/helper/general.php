@@ -11,7 +11,10 @@ function token($length = 32) {
 	
 	return $token;
 }
-
+//生成系统订单号
+function initOrderNo($length = 11) {
+    return date('ymd').rand(0,9).rand(0,9).rand(0,9).rand(0,9).rand(0,9);
+}
 /*
  * 集成codeIgniter的数据访问类，数据库错误显示，需要用到该函数
  * */
@@ -69,6 +72,14 @@ function is_mobile($mobile) {
     }
     return false;
 }
+//验证日期
+function is_date($str) {
+    $is_date = strtotime($str) ? strtotime($str) : false;
+    if( $is_date === false) {
+        return false;
+    }
+    return true;
+}
 //文件大小格式，直观显示
 function format_bytes($size) {
     $units = array('B', 'KB', 'MB', 'GB', 'TB');
@@ -77,8 +88,16 @@ function format_bytes($size) {
 }
 //得到文件后缀
 function get_extension($file){
-    if (is_file($file)) {
-        return pathinfo($file, PATHINFO_EXTENSION);
-    }
-    return false;
+//    if (is_file($file)) {
+//        return pathinfo($file, PATHINFO_EXTENSION);
+//    }
+//    return false;
+    return substr($file, strrpos($file, '.') + 1);
+}
+//得到当前完整url
+function get_url(){
+    $url = (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443') ? 'https://' : 'http://';
+    $url .= $_SERVER['HTTP_HOST'];
+    $url .= isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : urlencode($_SERVER['PHP_SELF']) . '?' . urlencode($_SERVER['QUERY_STRING']);
+    return $url;
 }

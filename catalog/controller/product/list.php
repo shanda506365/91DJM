@@ -8,6 +8,8 @@
 class ControllerProductList extends Controller {
     public function index() {
 
+        $category_id = (int)$this->request->get['category_id'];
+
         $data['meta_title'] = '案例展示 - ' . $this->config->get('config_name');
 
         //{"suc":"true","data":[{"product_id":"1","src":"images/A15.jpg","product_name":"111","link":"连接1","designer_id":"1","designer_name":"赵晓配","collect_num":"48","designer_link":"###"}……],"code":"111","msg":"tt","total":"13"}
@@ -23,7 +25,7 @@ class ControllerProductList extends Controller {
 
         $this->load->model('catalog/category');
 
-        $filters = $this->model_catalog_category->getCategoryFilters(1);
+        $filters = $this->model_catalog_category->getCategoryFilters($category_id);
         $data['filters'] = json_encode($filters, JSON_UNESCAPED_SLASHES);
 
         //广告加载
@@ -66,8 +68,10 @@ class ControllerProductList extends Controller {
             $filter = '';
         }
 
-        if (isset($this->request->post['category_id'])) {
-            $category_id = $this->request->post['category_id'];
+        if (isset($this->request->get['category_id'])) {
+            $category_id = (int)$this->request->get['category_id'];
+        } elseif (isset($this->request->post['category_id'])) {
+            $category_id = (int)$this->request->post['category_id'];
         } else {
             $category_id = 1;//定制化
         }
@@ -161,7 +165,7 @@ class ControllerProductList extends Controller {
                 'designer_link' => $this->url->link_static('designer/'. $result['customer_id'] . '.html')
             );
         }
-//print_r($all_designers);exit;
+
         foreach($all_products as $key => $product) {
             //补充设计师数据
             $temp = $product;
@@ -170,7 +174,7 @@ class ControllerProductList extends Controller {
             $temp['designer_link'] =  $all_designers_info[$product['customer_id']]['designer_link'];
             $all_products_info[] = $temp;
         }
-//echo '<pre>';print_r($all_products_info);exit;
+
         $data_imglist = array(
             "suc" => true,
             "data" => empty($all_products_info) ? array() : $all_products_info,

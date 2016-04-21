@@ -1022,6 +1022,28 @@ class ControllerCatalogProduct extends Controller {
 		// Categories
 		$this->load->model('catalog/category');
 
+        //新增的主分类
+        if (isset($this->request->post['master_category_id'])) {
+            $data['master_category_id'] = $this->request->post['master_category_id'];
+        } elseif (!empty($product_info)) {
+            $data['master_category_id'] = $product_info['master_category_id'];
+        } else {
+            $data['master_category_id'] = '';
+        }
+
+        if (isset($this->request->post['master_category'])) {
+            $data['master_category'] = $this->request->post['master_category'];
+        } elseif (!empty($product_info)) {
+            if(!empty($product_info['master_category_id'])) {
+                $category_info = $this->model_catalog_category->getCategory($product_info['master_category_id']);
+                if ($category_info) {
+                    $data['master_category'] = $category_info['path'] ? $category_info['path'] . ' &gt; ' . $category_info['name'] : $category_info['name'];
+                }
+            }
+        } else {
+            $data['master_category'] = '';
+        }
+
 		if (isset($this->request->post['product_category'])) {
 			$categories = $this->request->post['product_category'];
 		} elseif (isset($this->request->get['product_id'])) {

@@ -61,6 +61,14 @@ class ControllerAccountLogin extends Controller {
 
         $this->model_account_activity->addActivity('login', $activity_data);
 
-        output_success("登录成功！");
+        $data = array(
+            "suc" => true,
+            "msg" => '登录成功',
+            "data" => isset($this->session->data['redirect']) ? $this->session->data['redirect'] : HTTP_SERVER
+        );
+
+        unset($this->session->data['redirect']);
+
+        echo json_encode($data, JSON_UNESCAPED_SLASHES);
     }
 }

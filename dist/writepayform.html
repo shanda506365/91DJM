@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
-    <title>91DJM</title>
+    <title><?php echo $meta_title; ?></title>
     <link rel="stylesheet" type="text/css" href="css/style.min.css">     
     <link rel="stylesheet" type="text/css" href="css/bannerswip.css">
     <link rel="stylesheet" type="text/css" href="css/noless.css"> 
@@ -31,15 +31,15 @@
 </head>
 
 <body>
-    <div class="htmlbody container-fluid"   
+     <div class="htmlbody container-fluid"   
     
     data-breadcrumb='[{"name":"首页","link":"/"},{"name":"标准化套餐","link":"standard.html"},{"name":"A套餐详情","link":"###"},{"name":"填写表单","link":"###"}]'
     data-ajax-deleteFile='/deleteFile'
-    data-ajax-submit='/submit'
+    data-ajax-submit='<?php echo $url_ajax_submit; ?>'
     data-ajax-reset='/reset'
-    data-orderNum='xxxxx'
-    data-order='{"exhibition_subject":"222","exhibition_begin_date":"","area":"222","exhibition_enter_date":"2016-04-29","exhibition_leave_date":"2016-04-29","exhibition_verify_date":"2016-04-29","height":"222","is_squareness":"0","length":"222","remark":"222","width":"22","files":[{"file_id":"1","file_name":"1111.png","size":"2.0M"},{"file_id":"1","file_name":"1111.png","size":"2.0M"}]}'
-    data-fileupload-url='/upload1'></div>
+    data-orderNum='xxxxx' 
+    data-order='<?php echo $order; ?>'
+    data-fileupload-url='<?php echo $url_upload; ?>'></div> 
 </body>
 
 </html>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
-    <title>91DJM</title>
+    <title><?php echo $meta_title; ?></title>
     <link rel="stylesheet" type="text/css" href="css/style.min.css">     
     <link rel="stylesheet" type="text/css" href="css/bannerswip.css">
     <link rel="stylesheet" type="text/css" href="css/noless.css"> 
@@ -31,9 +31,9 @@
 
 <body>
     <div class="htmlbody container-fluid"   
-     data-banner='[{"src":"images/A41.jpg","des":"\u6d4b\u8bd5\u4e00","link":"###"}]' 
-    data-breadcrumb='[{"name":"首页","link":"/"},{"name":"标准化套餐","link":"standard.html"},{"name":"A套餐详情","link":"###"},{"name":"付定金","link":"###"}]'
-     data-order='{"order_name":"xxx","order_no":"xxxxxxx","deposit_price":"1000","payment_method":"zhifubao","payment_code":"11111","alipay_seller_email":"234234234"}'
+     data-banner='<?php echo $data_banner; ?>'
+    data-breadcrumb='<?php echo $breadcrumbs; ?>'
+     data-order='<?php echo $info; ?>'
     data-ajax-submit='/submit' ></div>
 </body>
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
-    <title>91DJM</title>
+    <title><?php echo $meta_title; ?></title>
     <link rel="stylesheet" type="text/css" href="css/style.min.css">     
     <link rel="stylesheet" type="text/css" href="css/bannerswip.css">
     <link rel="stylesheet" type="text/css" href="css/noless.css"> 
@@ -30,14 +30,15 @@
 </head>
 
 <body>
-    <div class="htmlbody container-fluid"   
-    
-    data-breadcrumb='[{"name":"首页","link":"/"},{"name":"标准化套餐","link":"standard.html"},{"name":"A套餐详情","link":"###"},{"name":"提交下单","link":"###"}]' 
-    data-city='{"success":true,"message":"111","data":[{"area_code":"610000","area_name":"成都市"},{"area_code":"620000","area_name":"绵阳市"}],"code":""}'
-    data-ajax-getCity='/getCity'
-    data-order-item='[{"product_id":"1","product_name":"标准化套餐A方案","price":"1000.00","image":"/images/I01.jpg"}]'
-    data-ajax-submit='/submit'
-    data-ajax-addfav='/addfav'></div>
+    <div class="htmlbody container-fluid"
+    data-banner='<?php echo $data_banner; ?>'
+    data-breadcrumb='<?php echo $breadcrumbs; ?>'
+    data-link-submit='submit.html' 
+    data-city='<?php echo $data_default_city; ?>'
+    data-ajax-getCity='<?php echo $url_area; ?>'
+    data-order-item='<?php echo $product_info; ?>'
+    data-ajax-submit='<?php echo $url_ajax_submit; ?>'
+    data-ajax-addfav='<?php echo $url_ajax_collect; ?>'></div>
 </body>
 
 </html>
