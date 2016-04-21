@@ -36,7 +36,31 @@ class Url {
 
 		return $url;
 	}
+    //添加一个不转义的
+    public function link_simple($route, $args = '', $secure = false) {
+        if (!$secure) {
+            $url = $this->domain;
+        } else {
+            $url = $this->ssl;
+        }
 
+        $url .= 'index.php?route=' . $route;
+
+        if ($args) {
+            if (is_array($args)) {
+                $url .= '&' . http_build_query($args);
+            } else {
+                $url .= str_replace('&', '&', '&' . ltrim($args, '&'));
+            }
+        }
+
+        foreach ($this->rewrite as $rewrite) {
+            $url = $rewrite->rewrite($url);
+        }
+
+        return $url;
+    }
+    //添加一个静态的url方法
     public function link_static($route, $args = '', $secure = false) {
         if (!$secure) {
             $url = $this->domain;

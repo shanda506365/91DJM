@@ -113,10 +113,13 @@ class ControllerOrderOrderFile extends Controller {
                 'suc' => true,
                 'msg' => '上传成功',
                 'data' => array(
-                    'file_id' => $upload_id,
-                    'file_name' => $filename,
-                    'size'  => $file_size,
-                    'delete_url' => $this->url->link('order/order_file/delete', 'upload_id=' . $upload_id, '')
+                    0 => array(
+                        'file_id' => $upload_id,
+                        'file_name' => $filename,
+                        'size'  => format_bytes($file_size),
+                        'delete_url' => $this->url->link_simple('order/order_file/delete', 'upload_id=' . $upload_id, ''),
+                        'url' => ''
+                    )
                 )
             );
 
