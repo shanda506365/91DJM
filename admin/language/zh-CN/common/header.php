@@ -4,7 +4,7 @@ $_['heading_title']        = '搭积木';
 
 // Text
 $_['text_order']           = '订单管理';
-$_['text_order_status']    = '待处理订单';
+$_['text_processing_status']    = '待处理订单';
 $_['text_complete_status'] = '已完成订单';
 $_['text_customer']        = '客户列表';
 $_['text_online']          = '在线客户';

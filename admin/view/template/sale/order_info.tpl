@@ -50,11 +50,7 @@
           <table class="table">
             <tr>
               <td style="width: 1%;"><button data-toggle="tooltip" title="<?php echo $text_customer; ?>" class="btn btn-info btn-xs"><i class="fa fa-user fa-fw"></i></button></td>
-              <td><?php if ($customer) { ?>
-                <a href="<?php echo $customer; ?>" target="_blank"><?php echo $firstname; ?> <?php echo $lastname; ?></a>
-                <?php } else { ?>
-                <?php echo $firstname; ?> <?php echo $lastname; ?>
-                <?php } ?></td>
+              <td><?php echo $contact_name ?></td>
             </tr>
             <tr>
               <td><button data-toggle="tooltip" title="<?php echo $text_customer_group; ?>" class="btn btn-info btn-xs"><i class="fa fa-group fa-fw"></i></button></td>
@@ -66,7 +62,7 @@
             </tr>
             <tr>
               <td><button data-toggle="tooltip" title="<?php echo $text_telephone; ?>" class="btn btn-info btn-xs"><i class="fa fa-phone fa-fw"></i></button></td>
-              <td><?php echo $telephone; ?></td>
+              <td><?php echo $contact_mobile; ?></td>
             </tr>
           </table>
         </div>
@@ -129,17 +125,17 @@
         <table class="table table-bordered">
           <thead>
             <tr>
-              <td style="width: 50%;" class="text-left"><?php echo $text_payment_address; ?></td>
-              <?php if ($shipping_method) { ?>
-              <td style="width: 50%;" class="text-left"><?php echo $text_shipping_address; ?>
+              <td style="width: 50%;" class="text-left">订单基础信息</td>
+              <?php if ($order_exhibition) { ?>
+              <td style="width: 50%;" class="text-left">展台资料
                 <?php } ?></td>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td class="text-left"><?php echo $payment_address; ?></td>
-              <?php if ($shipping_method) { ?>
-              <td class="text-left"><?php echo $shipping_address; ?></td>
+              <td class="text-left"><?php echo $order_info_base; ?></td>
+              <?php if ($order_exhibition) { ?>
+              <td class="text-left"><?php echo $order_exhibition; ?></td>
               <?php } ?>
             </tr>
           </tbody>

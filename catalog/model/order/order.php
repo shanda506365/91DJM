@@ -10,7 +10,7 @@ class ModelOrderOrder extends Model
     //step1添加订单，主要填写联系人信息，和支付订金
     public function addOrderStep1($data)
     {
-        $step1 = array(
+        $order = array(
             'order_no'  => $data['order_no'],
             'order_name' => $data['order_name'],
             'customer_id' => $data['customer_id'],
@@ -29,16 +29,21 @@ class ModelOrderOrder extends Model
             'order_status_id' => $data['order_status_id'],
             'payment_method' => $data['payment_method'],
             'payment_code' => $data['payment_code'],
-            'language_id' => $data['language_id'],
-            'currency_id' => $data['currency_id'],
-            'currency_code' => $data['currency_code'],
             'deposit'             => $data['deposit'],
             'total'             => $data['total'],
             'date_added'      => $data['date_added'],
-            'date_modified'  => $data['date_modified']
+            'date_modified'  => $data['date_modified'],
+            'language_id' => $data['language_id'],
+            'currency_id' => $data['currency_id'],
+            'currency_code' => $data['currency_code'],
+            'currency_value' => $data['currency_value'],
+            'ip' => $data['ip'],
+            'forwarded_ip' => $data['forwarded_ip'],
+            'user_agent' => $data['user_agent'],
+            'accept_language' => $data['accept_language']
         );
 
-        $this->db_ci->insert('order', $step1);
+        $this->db_ci->insert('order', $order);
 
         $order_id = $this->db_ci->insert_id();
 

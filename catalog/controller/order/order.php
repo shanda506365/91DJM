@@ -62,14 +62,37 @@ class ControllerOrderOrder extends Controller {
                 'main_product_id' => $product_id,
                 'payment_method' => '银行转账',//支付没通，先默认这2个
                 'payment_code' => 'bank_transfer',//支付没通，先默认这2个
-                'language_id' => 2,//中文
-                'currency_id' => 2,//人民币
-                'currency_code' => $this->config->get('config_currency'),
                 'deposit' => $deposit,
                 'total' => 0,//0表示价格待定
                 'date_added' => date('Y-m-d H:i:s'),
                 'date_modified' => date('Y-m-d H:i:s')
             );
+
+            $order['language_id'] = $this->config->get('config_language_id');
+            $order['currency_id'] = $this->currency->getId();
+            $order['currency_code'] = $this->currency->getCode();
+            $order['currency_value'] = $this->currency->getValue($this->currency->getCode());
+            $order['ip'] = $this->request->server['REMOTE_ADDR'];
+
+            if (!empty($this->request->server['HTTP_X_FORWARDED_FOR'])) {
+                $order['forwarded_ip'] = $this->request->server['HTTP_X_FORWARDED_FOR'];
+            } elseif (!empty($this->request->server['HTTP_CLIENT_IP'])) {
+                $order['forwarded_ip'] = $this->request->server['HTTP_CLIENT_IP'];
+            } else {
+                $order['forwarded_ip'] = '';
+            }
+
+            if (isset($this->request->server['HTTP_USER_AGENT'])) {
+                $order['user_agent'] = $this->request->server['HTTP_USER_AGENT'];
+            } else {
+                $order['user_agent'] = '';
+            }
+
+            if (isset($this->request->server['HTTP_ACCEPT_LANGUAGE'])) {
+                $order['accept_language'] = $this->request->server['HTTP_ACCEPT_LANGUAGE'];
+            } else {
+                $order['accept_language'] = '';
+            }
 
             $order_id = $this->model_order_order->addOrderStep1($order);
 
@@ -381,6 +404,7 @@ class ControllerOrderOrder extends Controller {
     }
     //4、确认订单
     public function orderInfo() {
+        $this->init();
         $order_no = $this->request->get['order_no'];
 
         $order_info = $this->model_order_order->getOrderByNo($order_no);

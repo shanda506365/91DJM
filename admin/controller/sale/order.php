@@ -489,6 +489,27 @@ class ControllerSaleOrder extends Controller {
 			$data['customer_group_id'] = $order_info['customer_group_id'];
 			$data['firstname'] = $order_info['firstname'];
 			$data['lastname'] = $order_info['lastname'];
+            //新增的
+            $data['order_no'] = $order_info['order_no'];
+            $data['deposit'] = $order_info['deposit'];
+            $data['exhibition_subject'] = $order_info['exhibition_subject'];
+            $data['area'] = $order_info['area'];
+            $data['length'] = $order_info['length'];
+            $data['width'] = $order_info['height'];
+            $data['height'] = $order_info['height'];
+            $data['is_squareness'] = $order_info['is_squareness'];
+            $data['exhibition_area_code'] = $order_info[''];
+            $data['exhibition_address'] = $order_info[''];
+            $data['exhibition_verify_date'] = $order_info[''];
+            $data['exhibition_enter_date'] = $order_info[''];
+            $data['exhibition_begin_date'] = $order_info[''];
+            $data['exhibition_leave_date'] = $order_info[''];
+            $data['contact_name'] = $order_info['contact_name'];
+            $data['contact_mobile'] = $order_info['contact_mobile'];
+            $data['contact_qq'] = $order_info['contact_qq'];
+            $data['remark'] = $order_info['remark'];
+
+
 			$data['email'] = $order_info['email'];
 			$data['telephone'] = $order_info['telephone'];
 			$data['fax'] = $order_info['fax'];
@@ -743,7 +764,7 @@ class ControllerSaleOrder extends Controller {
 		}
 
 		$order_info = $this->model_sale_order->getOrder($order_id);
-
+//echo '<pre>';print_r($order_info);exit;
 		if ($order_info) {
 			$this->load->language('sale/order');
 
@@ -884,6 +905,26 @@ class ControllerSaleOrder extends Controller {
 			$data['firstname'] = $order_info['firstname'];
 			$data['lastname'] = $order_info['lastname'];
 
+            //新增的
+            $data['order_no'] = $order_info['order_no'];
+            $data['deposit'] = $order_info['deposit'];
+            $data['exhibition_subject'] = $order_info['exhibition_subject'];
+            $data['area'] = $order_info['area'];
+            $data['length'] = $order_info['length'];
+            $data['width'] = $order_info['height'];
+            $data['height'] = $order_info['height'];
+            $data['is_squareness'] = $order_info['is_squareness'];
+            $data['exhibition_area_code'] = $order_info['exhibition_area_code'];
+            $data['exhibition_address'] = $order_info['exhibition_area_code'];
+            $data['exhibition_verify_date'] = $order_info['exhibition_area_code'];
+            $data['exhibition_enter_date'] = $order_info['exhibition_area_code'];
+            $data['exhibition_begin_date'] = $order_info['exhibition_area_code'];
+            $data['exhibition_leave_date'] = $order_info['exhibition_area_code'];
+            $data['contact_name'] = $order_info['contact_name'];
+            $data['contact_mobile'] = $order_info['contact_mobile'];
+            $data['contact_qq'] = $order_info['contact_qq'];
+            $data['remark'] = $order_info['remark'];
+
 			if ($order_info['customer_id']) {
 				$data['customer'] = $this->url->link('customer/customer/edit', 'token=' . $this->session->data['token'] . '&customer_id=' . $order_info['customer_id'], 'SSL');
 			} else {
@@ -906,75 +947,77 @@ class ControllerSaleOrder extends Controller {
 			$data['shipping_method'] = $order_info['shipping_method'];
 			$data['payment_method'] = $order_info['payment_method'];
 
+            $this->load->model('localisation/area');
+            //getAreaNameByCode
+            $area_name = $this->model_localisation_area->getAreaNameByCode($order_info['exhibition_area_code']);
+
 			// Payment Address
-			if ($order_info['payment_address_format']) {
-				$format = $order_info['payment_address_format'];
-			} else {
-				$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
-			}
+			$format = '联系人：{contact_name}' . "\n".
+                    '联系电话：{contact_mobile}' . "\n".
+                '联系QQ：{contact_qq}' . "\n".
+                '展览地址：{area_name} {address}' . "\n";
 
 			$find = array(
-				'{firstname}',
-				'{lastname}',
-				'{company}',
-				'{address_1}',
-				'{address_2}',
-				'{city}',
-				'{postcode}',
-				'{zone}',
-				'{zone_code}',
-				'{country}'
+				'{contact_name}',
+				'{contact_mobile}',
+                '{contact_qq}',
+                '{area_name}',
+                '{address}'
 			);
 
 			$replace = array(
-				'firstname' => $order_info['payment_firstname'],
-				'lastname'  => $order_info['payment_lastname'],
-				'company'   => $order_info['payment_company'],
-				'address_1' => $order_info['payment_address_1'],
-				'address_2' => $order_info['payment_address_2'],
-				'city'      => $order_info['payment_city'],
-				'postcode'  => $order_info['payment_postcode'],
-				'zone'      => $order_info['payment_zone'],
-				'zone_code' => $order_info['payment_zone_code'],
-				'country'   => $order_info['payment_country']
+				'contact_name' => $order_info['contact_name'],
+				'contact_mobile'   => $order_info['contact_mobile'],
+                'contact_qq'   => $order_info['contact_qq'],
+                'area_name' => $area_name,
+                'address'  =>  $order_info['exhibition_address']
 			);
 
-			$data['payment_address'] = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
+			$data['order_info_base'] = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
 
 			// Shipping Address
-			if ($order_info['shipping_address_format']) {
-				$format = $order_info['shipping_address_format'];
+			if (empty($order_info['exhibition_subject'])) {
+				$format = '';
 			} else {
-				$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+				$format = '展会主题：{exhibition_subject}' . "\n" .
+                    '面积：{area}' . "\n" . ' 长宽高：{length} X {width} X {height}' . "\n" .
+                    '是否异型：{is_squareness}' . "\n" .
+                    '展台审核时间：{exhibition_verify_date}' . "\n" .
+                    '进场施工时间：{exhibition_enter_date}' . "\n" .
+                    '展会开始时间：{exhibition_begin_date}'. "\n" .
+                    '撤展时间：{exhibition_leave_date}'. "\n" .
+                    '备注：{remark}';
 			}
 
 			$find = array(
-				'{firstname}',
-				'{lastname}',
-				'{company}',
-				'{address_1}',
-				'{address_2}',
-				'{city}',
-				'{postcode}',
-				'{zone}',
-				'{zone_code}',
-				'{country}'
+				'{exhibition_subject}',
+				'{area}',
+				'{length}',
+				'{width}',
+				'{height}',
+				'{is_squareness}',
+				'{exhibition_verify_date}',
+				'{exhibition_enter_date}',
+				'{exhibition_begin_date}',
+				'{exhibition_leave_date}',
+                '{remark}'
 			);
 
 			$replace = array(
-				'firstname' => $order_info['shipping_firstname'],
-				'lastname'  => $order_info['shipping_lastname'],
-				'company'   => $order_info['shipping_company'],
-				'address_1' => $order_info['shipping_address_1'],
-				'address_2' => $order_info['shipping_address_2'],
-				'city'      => $order_info['shipping_city'],
-				'postcode'  => $order_info['shipping_postcode'],
-				'zone'      => $order_info['shipping_zone'],
-				'zone_code' => $order_info['shipping_zone_code'],
-				'country'   => $order_info['shipping_country']
+				'exhibition_subject' => $order_info['exhibition_subject'],
+				'area'  => $order_info['area'],
+				'length'   => $order_info['length'],
+				'width' => $order_info['width'],
+				'height' => $order_info['height'],
+				'is_squareness'      => radioName($order_info['is_squareness']),
+				'exhibition_verify_date'  => $order_info['exhibition_verify_date'],
+				'exhibition_enter_date'      => $order_info['exhibition_enter_date'],
+				'exhibition_begin_date' => $order_info['exhibition_begin_date'],
+				'exhibition_leave_date'   => $order_info['exhibition_leave_date'],
+                'remark'   => $order_info['remark']
 			);
 
-			$data['shipping_address'] = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
+			$data['order_exhibition'] = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
 
 			// Uploaded files
 			$this->load->model('tool/upload');

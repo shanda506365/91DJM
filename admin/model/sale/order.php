@@ -80,6 +80,7 @@ class ModelSaleOrder extends Model {
 
 			return array(
 				'order_id'                => $order_query->row['order_id'],
+                'order_no'                => $order_query->row['order_no'],
 				'invoice_no'              => $order_query->row['invoice_no'],
 				'invoice_prefix'          => $order_query->row['invoice_prefix'],
 				'store_id'                => $order_query->row['store_id'],
@@ -131,6 +132,7 @@ class ModelSaleOrder extends Model {
 				'shipping_method'         => $order_query->row['shipping_method'],
 				'shipping_code'           => $order_query->row['shipping_code'],
 				'comment'                 => $order_query->row['comment'],
+                'deposit'                => $order_query->row['deposit'],
 				'total'                   => $order_query->row['total'],
 				'reward'                  => $reward,
 				'order_status_id'         => $order_query->row['order_status_id'],
@@ -149,7 +151,24 @@ class ModelSaleOrder extends Model {
 				'user_agent'              => $order_query->row['user_agent'],
 				'accept_language'         => $order_query->row['accept_language'],
 				'date_added'              => $order_query->row['date_added'],
-				'date_modified'           => $order_query->row['date_modified']
+				'date_modified'           => $order_query->row['date_modified'],
+                'contact_name'            => $order_query->row['contact_name'],
+                'contact_mobile'            => $order_query->row['contact_mobile'],
+                'contact_qq'            => $order_query->row['contact_qq'],
+                'designer_id'             => $order_query->row['designer_id'],
+                'exhibition_subject'    => $order_query->row['exhibition_subject'],
+                'exhibition_area_code'  => $order_query->row['exhibition_area_code'],
+                'exhibition_address'    => $order_query->row['exhibition_address'],
+                'length'                  => $order_query->row['length'],
+                'width'                   => $order_query->row['width'],
+                'height'                  => $order_query->row['height'],
+                'area'                    => $order_query->row['area'],
+                'is_squareness'         => $order_query->row['is_squareness'],
+                'exhibition_verify_date' => $order_query->row['exhibition_verify_date'],
+                'exhibition_enter_date'  => $order_query->row['exhibition_enter_date'],
+                'exhibition_begin_date'  => $order_query->row['exhibition_begin_date'],
+                'exhibition_leave_date'  => $order_query->row['exhibition_leave_date'],
+                'remark'                    => $order_query->row['remark']
 			);
 		} else {
 			return;
