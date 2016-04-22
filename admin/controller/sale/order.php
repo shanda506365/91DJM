@@ -164,6 +164,8 @@ class ControllerSaleOrder extends Controller {
 			$data['orders'][] = array(
 				'order_id'      => $result['order_id'],
 				'customer'      => $result['customer'],
+                'contact_name' => $result['contact_name'],
+                'contact_mobile' => $result['contact_mobile'],
 				'status'        => $result['status'],
 				'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
@@ -491,6 +493,25 @@ class ControllerSaleOrder extends Controller {
 			$data['telephone'] = $order_info['telephone'];
 			$data['fax'] = $order_info['fax'];
 			$data['account_custom_field'] = $order_info['custom_field'];
+            //新增字段
+            $data['order_no'] = $order_info['order_no'];
+            $data['deposit'] = $order_info['deposit'];
+            $data['exhibition_subject'] = $order_info['exhibition_subject'];
+            $data['area'] = $order_info['area'];
+            $data['length'] = $order_info['length'];
+            $data['width'] = $order_info['height'];
+            $data['height'] = $order_info['height'];
+            $data['is_squareness'] = $order_info['is_squareness'];
+            $data['exhibition_area_code'] = $order_info[''];
+            $data['exhibition_address'] = $order_info[''];
+            $data['exhibition_verify_date'] = $order_info[''];
+            $data['exhibition_enter_date'] = $order_info[''];
+            $data['exhibition_begin_date'] = $order_info[''];
+            $data['exhibition_leave_date'] = $order_info[''];
+            $data['contact_name'] = $order_info['contact_name'];
+            $data['contact_mobile'] = $order_info['contact_mobile'];
+            $data['contact_qq'] = $order_info['contact_qq'];
+            $data['remark'] = $order_info['remark'];
 
 			$this->load->model('customer/customer');
 

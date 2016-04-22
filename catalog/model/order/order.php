@@ -7,35 +7,12 @@
  */
 class ModelOrderOrder extends Model
 {
-/*
-    public function getOrderStatus($name) {
-        $key = array(
-            'no_deposit' => 1,      //待付项目预付款
-            'deposit_no_form' => 2,//已付项目预付款，待填写表单
-            'validating'  => 3,     //沟通确认需求
-            'designing' => 4,       //设计图设计中
-            'design_over_not_pass' => 5,//设计图交付，待确认
-            'design_pass_no_final_pay' => 6,//设计图已确认，待付尾款
-            'payed_in_production' => 7,         //已付尾款，材料施工中
-            'building' => 8,                    //进场搭建中
-            'build_over' => 9                   //搭建完成
-        );
-        if (array_key_exists($name, $key)) {
-            return $key[$name];
-        }
-        return 0;
-    }
-*/
     //step1添加订单，主要填写联系人信息，和支付订金
     public function addOrderStep1($data)
     {
-        $this->load->model('catalog/product');
-
-        $product_info = $this->model_catalog_product->getProduct($data['product_id']);
-
         $step1 = array(
             'order_no'  => $data['order_no'],
-            'order_name' => $product_info['name'],
+            'order_name' => $data['order_name'],
             'customer_id' => $data['customer_id'],
             'customer_group_id' => $data['customer_group_id'],
             'invoice_prefix'    => $data['invoice_prefix'],
@@ -47,9 +24,15 @@ class ModelOrderOrder extends Model
             'contact_name'  => $data['contact_name'],
             'contact_mobile' => $data['contact_mobile'],
             'contact_qq' => $data['contact_qq'],
-            'designer_id' => $product_info['customer_id'],
-            'main_product_id' => $data['product_id'],
+            'designer_id' => $data['customer_id'],
+            'main_product_id' => $data['main_product_id'],
             'order_status_id' => $data['order_status_id'],
+            'payment_method' => $data['payment_method'],
+            'payment_code' => $data['payment_code'],
+            'language_id' => $data['language_id'],
+            'currency_id' => $data['currency_id'],
+            'currency_code' => $data['currency_code'],
+            'deposit'             => $data['deposit'],
             'total'             => $data['total'],
             'date_added'      => $data['date_added'],
             'date_modified'  => $data['date_modified']
@@ -59,19 +42,6 @@ class ModelOrderOrder extends Model
 
         $order_id = $this->db_ci->insert_id();
 
-        $order_product = array(
-            'order_id' => $order_id,
-            'product_id' => $data['product_id'],
-            'name' => $product_info['name'],
-            'model' => $product_info['model'],
-            'quantity' => 1,
-            'price' => $data['price'],
-            'total' => $data['total']
-        );
-
-        $this->db_ci->insert('order_product', $order_product);
-
-        //return $data['order_no'];
         return $order_id;
     }
 

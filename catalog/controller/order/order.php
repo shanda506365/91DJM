@@ -20,6 +20,7 @@ class ControllerOrderOrder extends Controller {
 
         $this->load->model('catalog/product');
         $this->load->model('order/order');
+        $this->load->model('order/order_product');
         $this->load->model('order/order_file');
         $this->load->model('order/order_history');
         $this->load->model('order/order_status');
@@ -42,9 +43,9 @@ class ControllerOrderOrder extends Controller {
 
             $order_no = initOrderNo(11);
 
-            $data = array(
-                //'order_name' => $product_info['name'],
+            $order = array(
                 'order_no'   => $order_no,
+                'order_name' => $product_info['name'],
                 'order_status_id' => $this->model_order_order_status->getOrderStatusByKey('no_deposit'),//1表示待付项目预付款
                 'customer_id' => $this->customer->getId(),
                 'customer_group_id' => $this->customer->getGroupId(),
@@ -54,20 +55,35 @@ class ControllerOrderOrder extends Controller {
                 'store_url'         => $this->config->get('config_url'),
                 'exhibition_area_code' => $this->request->post['exhibition_area_code'],
                 'exhibition_address' => '',
+                'designer_id' => $product_info['customer_id'],
                 'contact_name'  => $this->request->post['contact_name'],
                 'contact_mobile' => $this->request->post['contact_mobile'],
                 'contact_qq' => $this->request->post['contact_qq'],
-                'product_id' => $product_id,
-                //'product_name' => $product_info['name'],
-                //'product_model' => $product_info['model'],
-                'quantity' => 1,
-                'price' => $deposit,
+                'main_product_id' => $product_id,
+                'payment_method' => '银行转账',//支付没通，先默认这2个
+                'payment_code' => 'bank_transfer',//支付没通，先默认这2个
+                'language_id' => 2,//中文
+                'currency_id' => 2,//人民币
+                'currency_code' => $this->config->get('config_currency'),
+                'deposit' => $deposit,
                 'total' => 0,//0表示价格待定
                 'date_added' => date('Y-m-d H:i:s'),
                 'date_modified' => date('Y-m-d H:i:s')
             );
 
-            $order_id = $this->model_order_order->addOrderStep1($data);
+            $order_id = $this->model_order_order->addOrderStep1($order);
+
+            $order_product = array(
+                'order_id' => $order_id,
+                'product_id' => $product_info['product_id'],
+                'name' => $product_info['name'],
+                'model' => $product_info['model'],
+                'quantity' => 1,
+                'price' => 0,//没有实际金额
+                'total' => 0
+            );
+
+            $this->model_order_order_product->addOrderProduct($order_product);
 
             //echo '添加订单成功';exit;
             //$this->session->data['order_no']

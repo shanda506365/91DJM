@@ -47,7 +47,7 @@
                   </select>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group hidden">
                 <label class="col-sm-2 control-label" for="input-currency"><?php echo $entry_currency; ?></label>
                 <div class="col-sm-10">
                   <select name="currency" id="input-currency" class="form-control">
