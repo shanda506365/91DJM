@@ -2,26 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: 周
- * Date: 2016/4/20
- * Time: 15:54
+ * Date: 2016/4/25
+ * Time: 16:12
  */
-class ControllerOrderOrderFile extends Controller {
+class ControllerOrderOrderDesign extends Controller {
 
-    private $dir_upload = 'order_file';
-
-    //登录验证
-    protected function check_login() {
-        //未登录跳转到登录页面
-        if (!$this->customer->isLogged()) {
-            output_error('未登录不能执行该操作');
-        }
-    }
+    private $dir_upload = 'order_design';
 
     public function upload() {
-
-        $this->check_login();
-
         $order_id = (int)$this->request->get['order_id'];
+        $order_design_id = (int)$this->request->get['order_design_id'];
+        $title = $this->request->post['title'];
+        $description = $this->request->post['description'];
+
 
         $this->load->language('tool/upload');
 
@@ -87,9 +80,10 @@ class ControllerOrderOrderFile extends Controller {
         }
 
         if (!$json) {
-            $file = $filename . '.' . token(32);
-            //$suffix = get_extension($this->request->files['files']['name'][0]);
-            //$file = token(32).'.'.$suffix;
+            //$file = $filename . '.' . token(32);
+            $suffix = get_extension($this->request->files['files']['name'][0]);
+
+            $file = token(32).'.'.$suffix;
 
             //加上年月目录
             if (!is_dir(DIR_UPLOAD . $this->dir_upload . '\\' . date('Ym'))) {
@@ -107,9 +101,18 @@ class ControllerOrderOrderFile extends Controller {
 
             $upload_id = $this->model_tool_upload->addUpload($filename, $this->dir_upload,  $file, $file_size);
 
-            $this->load->model('order/order_file');
+            $this->load->model('order/order_design_picture');
 
-            $this->model_order_order_file->addOrderFile($order_id, $upload_id);
+            $order_design_picture = array(
+                'order_design_id' => $order_design_id,
+                'order_id' => $order_id,
+                'title' => $title,
+                'description'  => $description,
+                'upload_id'    => $upload_id,
+                'date_added' => date('Y-m-d H:i:s')
+            );
+
+            $order_design_picture_id = $this->model_order_order_design_picture->addOrderDesignPicture($order_design_picture);
 
             //$json['suc'] = $this->language->get('text_upload');
 
@@ -130,8 +133,8 @@ class ControllerOrderOrderFile extends Controller {
             echo json_encode($json, JSON_UNESCAPED_SLASHES);exit;
         }
 
-//        $this->response->addHeader('Content-Type: application/json');
-//        $this->response->setOutput(json_encode($json));
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
 
 
     }

@@ -489,33 +489,14 @@ class ControllerSaleOrder extends Controller {
 			$data['customer_group_id'] = $order_info['customer_group_id'];
 			$data['firstname'] = $order_info['firstname'];
 			$data['lastname'] = $order_info['lastname'];
-            //新增的
-            $data['order_no'] = $order_info['order_no'];
-            $data['deposit'] = $order_info['deposit'];
-            $data['exhibition_subject'] = $order_info['exhibition_subject'];
-            $data['area'] = $order_info['area'];
-            $data['length'] = $order_info['length'];
-            $data['width'] = $order_info['height'];
-            $data['height'] = $order_info['height'];
-            $data['is_squareness'] = $order_info['is_squareness'];
-            $data['exhibition_area_code'] = $order_info[''];
-            $data['exhibition_address'] = $order_info[''];
-            $data['exhibition_verify_date'] = $order_info[''];
-            $data['exhibition_enter_date'] = $order_info[''];
-            $data['exhibition_begin_date'] = $order_info[''];
-            $data['exhibition_leave_date'] = $order_info[''];
-            $data['contact_name'] = $order_info['contact_name'];
-            $data['contact_mobile'] = $order_info['contact_mobile'];
-            $data['contact_qq'] = $order_info['contact_qq'];
-            $data['remark'] = $order_info['remark'];
-
 
 			$data['email'] = $order_info['email'];
 			$data['telephone'] = $order_info['telephone'];
 			$data['fax'] = $order_info['fax'];
 			$data['account_custom_field'] = $order_info['custom_field'];
-            //新增字段
+            //新增的
             $data['order_no'] = $order_info['order_no'];
+            $data['mobile'] = $order_info['mobile'];
             $data['deposit'] = $order_info['deposit'];
             $data['exhibition_subject'] = $order_info['exhibition_subject'];
             $data['area'] = $order_info['area'];
@@ -523,12 +504,12 @@ class ControllerSaleOrder extends Controller {
             $data['width'] = $order_info['height'];
             $data['height'] = $order_info['height'];
             $data['is_squareness'] = $order_info['is_squareness'];
-            $data['exhibition_area_code'] = $order_info[''];
-            $data['exhibition_address'] = $order_info[''];
-            $data['exhibition_verify_date'] = $order_info[''];
-            $data['exhibition_enter_date'] = $order_info[''];
-            $data['exhibition_begin_date'] = $order_info[''];
-            $data['exhibition_leave_date'] = $order_info[''];
+            $data['exhibition_area_code'] = $order_info['exhibition_area_code'];
+            $data['exhibition_address'] = $order_info['exhibition_address'];
+            $data['exhibition_verify_date'] = $order_info['exhibition_verify_date'];
+            $data['exhibition_enter_date'] = $order_info['exhibition_enter_date'];
+            $data['exhibition_begin_date'] = $order_info['exhibition_begin_date'];
+            $data['exhibition_leave_date'] = $order_info['exhibition_leave_date'];
             $data['contact_name'] = $order_info['contact_name'];
             $data['contact_mobile'] = $order_info['contact_mobile'];
             $data['contact_qq'] = $order_info['contact_qq'];
@@ -581,6 +562,153 @@ class ControllerSaleOrder extends Controller {
 					'reward'     => $product['reward']
 				);
 			}
+
+            //详情展示开始
+            $data['products'] = array();
+
+            $products = $this->model_sale_order->getOrderProducts($this->request->get['order_id']);
+
+            foreach ($products as $product) {
+                $option_data = array();
+
+                $options = $this->model_sale_order->getOrderOptions($this->request->get['order_id'], $product['order_product_id']);
+
+                foreach ($options as $option) {
+                    if ($option['type'] != 'file') {
+                        $option_data[] = array(
+                            'name'  => $option['name'],
+                            'value' => $option['value'],
+                            'type'  => $option['type']
+                        );
+                    } else {
+                        $upload_info = $this->model_tool_upload->getUploadByCode($option['value']);
+
+                        if ($upload_info) {
+                            $option_data[] = array(
+                                'name'  => $option['name'],
+                                'value' => $upload_info['name'],
+                                'type'  => $option['type'],
+                                'href'  => $this->url->link('tool/upload/download', 'token=' . $this->session->data['token'] . '&code=' . $upload_info['code'], 'SSL')
+                            );
+                        }
+                    }
+                }
+
+                $data['products'][] = array(
+                    'order_product_id' => $product['order_product_id'],
+                    'product_id'       => $product['product_id'],
+                    'name'    	 	   => $product['name'],
+                    'model'    		   => $product['model'],
+                    'option'   		   => $option_data,
+                    'quantity'		   => $product['quantity'],
+                    'price'    		   => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $order_info['currency_code'], $order_info['currency_value']),
+                    'total'    		   => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $order_info['currency_code'], $order_info['currency_value']),
+                    'href'     		   => '/product/' . $product['product_id'].'.html'//$this->url->link('catalog/product/edit', 'token=' . $this->session->data['token'] . '&product_id=' . $product['product_id'], 'SSL')
+                );
+            }
+
+            $data['vouchers'] = array();
+
+            $vouchers = $this->model_sale_order->getOrderVouchers($this->request->get['order_id']);
+
+            foreach ($vouchers as $voucher) {
+                $data['vouchers'][] = array(
+                    'description' => $voucher['description'],
+                    'amount'      => $this->currency->format($voucher['amount'], $order_info['currency_code'], $order_info['currency_value']),
+                    'href'        => $this->url->link('sale/voucher/edit', 'token=' . $this->session->data['token'] . '&voucher_id=' . $voucher['voucher_id'], 'SSL')
+                );
+            }
+
+            $data['totals'] = array();
+
+            $totals = $this->model_sale_order->getOrderTotals($this->request->get['order_id']);
+
+            foreach ($totals as $total) {
+                $data['totals'][] = array(
+                    'title' => $total['title'],
+                    'text'  => $this->currency->format($total['value'], $order_info['currency_code'], $order_info['currency_value']),
+                );
+            }
+
+            $data['comment'] = nl2br($order_info['comment']);
+
+            $this->load->model('localisation/area');
+            //getAreaNameByCode
+            $area_name = $this->model_localisation_area->getAreaNameByCode($order_info['exhibition_area_code']);
+
+            // Payment Address
+            $format = '联系人：{contact_name}' . "\n".
+                '联系电话：{contact_mobile}' . "\n".
+                '联系QQ：{contact_qq}' . "\n".
+                '展览地址：{area_name} {address}' . "\n";
+
+            $find = array(
+                '{contact_name}',
+                '{contact_mobile}',
+                '{contact_qq}',
+                '{area_name}',
+                '{address}'
+            );
+
+            $replace = array(
+                'contact_name' => $order_info['contact_name'],
+                'contact_mobile'   => $order_info['contact_mobile'],
+                'contact_qq'   => $order_info['contact_qq'],
+                'area_name' => $area_name,
+                'address'  =>  $order_info['exhibition_address']
+            );
+
+            $data['order_info_base'] = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
+
+            // Shipping Address
+            if (empty($order_info['exhibition_subject'])) {
+                $format = '';
+            } else {
+                $format = '展会主题：{exhibition_subject}' . "\n" .
+                    '面积：{area}' . "\n" . ' 长宽高：{length} X {width} X {height}' . "\n" .
+                    '是否异型：{is_squareness}' . "\n" .
+                    '展台审核时间：{exhibition_verify_date}' . "\n" .
+                    '进场施工时间：{exhibition_enter_date}' . "\n" .
+                    '展会开始时间：{exhibition_begin_date}'. "\n" .
+                    '撤展时间：{exhibition_leave_date}'. "\n" .
+                    '备注：{remark}';
+            }
+
+            $find = array(
+                '{exhibition_subject}',
+                '{area}',
+                '{length}',
+                '{width}',
+                '{height}',
+                '{is_squareness}',
+                '{exhibition_verify_date}',
+                '{exhibition_enter_date}',
+                '{exhibition_begin_date}',
+                '{exhibition_leave_date}',
+                '{remark}'
+            );
+
+            $replace = array(
+                'exhibition_subject' => $order_info['exhibition_subject'],
+                'area'  => $order_info['area'],
+                'length'   => $order_info['length'],
+                'width' => $order_info['width'],
+                'height' => $order_info['height'],
+                'is_squareness'      => radioName($order_info['is_squareness']),
+                'exhibition_verify_date'  => $order_info['exhibition_verify_date'],
+                'exhibition_enter_date'      => $order_info['exhibition_enter_date'],
+                'exhibition_begin_date' => $order_info['exhibition_begin_date'],
+                'exhibition_leave_date'   => $order_info['exhibition_leave_date'],
+                'remark'   => $order_info['remark']
+            );
+
+            $data['order_exhibition'] = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
+            //详情展示结尾
+
+
+            //订单设计信息
+
+
 
 			// Vouchers
 			$data['order_vouchers'] = $this->model_sale_order->getOrderVouchers($this->request->get['order_id']);
@@ -907,6 +1035,7 @@ class ControllerSaleOrder extends Controller {
 
             //新增的
             $data['order_no'] = $order_info['order_no'];
+            $data['mobile'] = $order_info['mobile'];
             $data['deposit'] = $order_info['deposit'];
             $data['exhibition_subject'] = $order_info['exhibition_subject'];
             $data['area'] = $order_info['area'];

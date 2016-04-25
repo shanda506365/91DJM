@@ -47,6 +47,7 @@ class ControllerOrderOrder extends Controller {
                 'order_no'   => $order_no,
                 'order_name' => $product_info['name'],
                 'order_status_id' => $this->model_order_order_status->getOrderStatusByKey('no_deposit'),//1表示待付项目预付款
+                'mobile' => $this->customer->getMobile(),
                 'customer_id' => $this->customer->getId(),
                 'customer_group_id' => $this->customer->getGroupId(),
                 'invoice_prefix'    => $this->config->get('config_invoice_prefix'),

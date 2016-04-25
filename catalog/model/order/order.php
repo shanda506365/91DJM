@@ -13,6 +13,7 @@ class ModelOrderOrder extends Model
         $order = array(
             'order_no'  => $data['order_no'],
             'order_name' => $data['order_name'],
+            'mobile'      => $data['mobile'],
             'customer_id' => $data['customer_id'],
             'customer_group_id' => $data['customer_group_id'],
             'invoice_prefix'    => $data['invoice_prefix'],

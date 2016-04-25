@@ -92,6 +92,7 @@ class ModelSaleOrder extends Model {
 				'firstname'               => $order_query->row['firstname'],
 				'lastname'                => $order_query->row['lastname'],
 				'email'                   => $order_query->row['email'],
+                'mobile'                   => $order_query->row['mobile'],
 				'telephone'               => $order_query->row['telephone'],
 				'fax'                     => $order_query->row['fax'],
 				'custom_field'            => json_decode($order_query->row['custom_field'], true),

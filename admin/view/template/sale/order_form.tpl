@@ -17,6 +17,95 @@
         <h3 class="panel-title"><i class="fa fa-pencil"></i> <?php echo $text_form; ?></h3>
       </div>
       <div class="panel-body">
+
+
+        <div class="container-fluid">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title"><i class="fa fa-info-circle"></i> 订单详情</h3>
+            </div>
+            <div class="panel-body">
+              <table class="table table-bordered">
+                <thead>
+                <tr>
+                  <td style="width: 50%;" class="text-left">订单基础信息</td>
+                  <?php if ($order_exhibition) { ?>
+                  <td style="width: 50%;" class="text-left">展台资料
+                    <?php } ?></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td class="text-left"><?php echo $order_info_base; ?></td>
+                  <?php if ($order_exhibition) { ?>
+                  <td class="text-left"><?php echo $order_exhibition; ?></td>
+                  <?php } ?>
+                </tr>
+                </tbody>
+              </table>
+              <table class="table table-bordered">
+                <thead>
+                <tr>
+                  <td class="text-left"><?php echo $column_product; ?></td>
+                  <td class="text-left"><?php echo $column_model; ?></td>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($products as $product) { ?>
+                <tr>
+                  <td class="text-left"><a href="<?php echo $product['href']; ?>" target="_blank"><?php echo $product['name']; ?></a>
+                    <?php foreach ($product['option'] as $option) { ?>
+                    <br />
+                    <?php if ($option['type'] != 'file') { ?>
+                    &nbsp;<small> - <?php echo $option['name']; ?>: <?php echo $option['value']; ?></small>
+                    <?php } else { ?>
+                    &nbsp;<small> - <?php echo $option['name']; ?>: <a href="<?php echo $option['href']; ?>"><?php echo $option['value']; ?></a></small>
+                    <?php } ?>
+                    <?php } ?></td>
+                  <td class="text-left"><?php echo $product['model']; ?></td>
+                </tr>
+                <?php } ?>
+                <?php foreach ($vouchers as $voucher) { ?>
+                <tr>
+                  <td class="text-left"><a href="<?php echo $voucher['href']; ?>"><?php echo $voucher['description']; ?></a></td>
+                  <td class="text-left"></td>
+                  <td class="text-right">1</td>
+                  <td class="text-right"><?php echo $voucher['amount']; ?></td>
+                  <td class="text-right"><?php echo $voucher['amount']; ?></td>
+                </tr>
+                <?php } ?>
+                <?php foreach ($totals as $total) { ?>
+                <tr>
+                  <td colspan="4" class="text-right"><?php echo $total['title']; ?></td>
+                  <td class="text-right"><?php echo $total['text']; ?></td>
+                </tr>
+                <?php } ?>
+                </tbody>
+              </table>
+              <?php if ($comment) { ?>
+              <table class="table table-bordered">
+                <thead>
+                <tr>
+                  <td><?php echo $text_comment; ?></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td><?php echo $comment; ?></td>
+                </tr>
+                </tbody>
+              </table>
+              <?php } ?>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+
         <form class="form-horizontal">
           <ul id="order" class="nav nav-tabs nav-justified">
             <!--<li class="disabled active"><a href="#tab-customer" data-toggle="tab">1. <?php echo $tab_customer; ?></a></li>
@@ -25,224 +114,13 @@
             <li class="disabled"><a href="#tab-shipping" data-toggle="tab">4. <?php echo $tab_shipping; ?></a></li>
             <li class="disabled"><a href="#tab-total" data-toggle="tab">5. <?php echo $tab_total; ?></a></li>-->
 
-            <li class="disabled active"><a href="#tab-customer" data-toggle="tab">1. 基本信息</a></li>
-            <li class="disabled"><a href="#tab-cart" data-toggle="tab">2. 设计方案</a></li>
-            <li class="disabled"><a href="#tab-payment" data-toggle="tab">3. 工程进度</a></li>
-            <li class="disabled"><a href="#tab-shipping" data-toggle="tab">4. 费用确认</a></li>
-            <li class="disabled"><a href="#tab-total" data-toggle="tab">5. 合计</a></li>
+            <li class="active"><a href="#tab-design" data-toggle="tab">设计方案</a></li>
+            <li class=""><a href="#tab-payment" data-toggle="tab">工程进度</a></li>
+            <li class=""><a href="#tab-shipping" data-toggle="tab">费用确认</a></li>
+            <li class=""><a href="#tab-total" data-toggle="tab">合计</a></li>
           </ul>
           <div class="tab-content">
-            <div class="tab-pane active" id="tab-customer">
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-store"><?php echo $entry_store; ?></label>
-                <div class="col-sm-10">
-                  <select name="store" id="input-store" class="form-control">
-                    <?php foreach ($stores as $store) { ?>
-                    <?php if ($store['store_id'] == $store_id) { ?>
-                    <option value="<?php echo $store['href']; ?>" selected="selected"><?php echo $store['name']; ?></option>
-                    <?php } else { ?>
-                    <option value="<?php echo $store['href']; ?>"><?php echo $store['name']; ?></option>
-                    <?php } ?>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group hidden">
-                <label class="col-sm-2 control-label" for="input-currency"><?php echo $entry_currency; ?></label>
-                <div class="col-sm-10">
-                  <select name="currency" id="input-currency" class="form-control">
-                    <?php foreach ($currencies as $currency) { ?>
-                    <?php if ($currency['code'] == $currency_code) { ?>
-                    <option value="<?php echo $currency['code']; ?>" selected="selected"><?php echo $currency['title']; ?></option>
-                    <?php } else { ?>
-                    <option value="<?php echo $currency['code']; ?>"><?php echo $currency['title']; ?></option>
-                    <?php } ?>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-customer"><?php echo $entry_customer; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="customer" value="<?php echo $customer; ?>" placeholder="<?php echo $entry_customer; ?>" id="input-customer" class="form-control" />
-                  <input type="hidden" name="customer_id" value="<?php echo $customer_id; ?>" />
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-customer-group"><?php echo $entry_customer_group; ?></label>
-                <div class="col-sm-10">
-                  <select name="customer_group_id" id="input-customer-group" class="form-control">
-                    <?php foreach ($customer_groups as $customer_group) { ?>
-                    <?php if ($customer_group['customer_group_id'] == $customer_group_id) { ?>
-                    <option value="<?php echo $customer_group['customer_group_id']; ?>" selected="selected"><?php echo $customer_group['name']; ?></option>
-                    <?php } else { ?>
-                    <option value="<?php echo $customer_group['customer_group_id']; ?>"><?php echo $customer_group['name']; ?></option>
-                    <?php } ?>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group required">
-                <label class="col-sm-2 control-label" for="input-firstname"><?php echo $entry_firstname; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="firstname" value="<?php echo $firstname; ?>" id="input-firstname" class="form-control" />
-                </div>
-              </div>
-              <div class="form-group required">
-                <label class="col-sm-2 control-label" for="input-lastname"><?php echo $entry_lastname; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="lastname" value="<?php echo $lastname; ?>" id="input-lastname" class="form-control" />
-                </div>
-              </div>
-              <div class="form-group required">
-                <label class="col-sm-2 control-label" for="input-email"><?php echo $entry_email; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="email" value="<?php echo $email; ?>" id="input-email" class="form-control" />
-                </div>
-              </div>
-              <div class="form-group required">
-                <label class="col-sm-2 control-label" for="input-telephone"><?php echo $entry_telephone; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="telephone" value="<?php echo $telephone; ?>" id="input-telephone" class="form-control" />
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-fax"><?php echo $entry_fax; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="fax" value="<?php echo $fax; ?>" id="input-fax" class="form-control" />
-                </div>
-              </div>
-              <?php foreach ($custom_fields as $custom_field) { ?>
-              <?php if ($custom_field['location'] == 'account') { ?>
-              <?php if ($custom_field['type'] == 'select') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label" for="input-custom-field<?php echo $custom_field['custom_field_id']; ?>"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <select name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" id="input-custom-field<?php echo $custom_field['custom_field_id']; ?>" class="form-control">
-                    <option value=""><?php echo $text_select; ?></option>
-                    <?php foreach ($custom_field['custom_field_value'] as $custom_field_value) { ?>
-                    <?php if (isset($account_custom_field[$custom_field['custom_field_id']]) && $custom_field_value['custom_field_value_id'] == $account_custom_field[$custom_field['custom_field_id']]) { ?>
-                    <option value="<?php echo $custom_field_value['custom_field_value_id']; ?>" selected="selected"><?php echo $custom_field_value['name']; ?></option>
-                    <?php } else { ?>
-                    <option value="<?php echo $custom_field_value['custom_field_value_id']; ?>"><?php echo $custom_field_value['name']; ?></option>
-                    <?php } ?>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'radio') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <div id="input-custom-field<?php echo $custom_field['custom_field_id']; ?>">
-                    <?php foreach ($custom_field['custom_field_value'] as $custom_field_value) { ?>
-                    <div class="radio">
-                      <?php if (isset($account_custom_field[$custom_field['custom_field_id']]) && $custom_field_value['custom_field_value_id'] == $account_custom_field[$custom_field['custom_field_id']]) { ?>
-                      <label>
-                        <input type="radio" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo $custom_field_value['custom_field_value_id']; ?>" checked="checked" />
-                        <?php echo $custom_field_value['name']; ?></label>
-                      <?php } else { ?>
-                      <label>
-                        <input type="radio" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo $custom_field_value['custom_field_value_id']; ?>" />
-                        <?php echo $custom_field_value['name']; ?></label>
-                      <?php } ?>
-                    </div>
-                    <?php } ?>
-                  </div>
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'checkbox') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <div id="input-custom-field<?php echo $custom_field['custom_field_id']; ?>">
-                    <?php foreach ($custom_field['custom_field_value'] as $custom_field_value) { ?>
-                    <div class="checkbox">
-                      <?php if (isset($account_custom_field[$custom_field['custom_field_id']]) && in_array($custom_field_value['custom_field_value_id'], $account_custom_field[$custom_field['custom_field_id']])) { ?>
-                      <label>
-                        <input type="checkbox" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>][]" value="<?php echo $custom_field_value['custom_field_value_id']; ?>" checked="checked" />
-                        <?php echo $custom_field_value['name']; ?></label>
-                      <?php } else { ?>
-                      <label>
-                        <input type="checkbox" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>][]" value="<?php echo $custom_field_value['custom_field_value_id']; ?>" />
-                        <?php echo $custom_field_value['name']; ?></label>
-                      <?php } ?>
-                    </div>
-                    <?php } ?>
-                  </div>
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'text') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label" for="input-custom-field<?php echo $custom_field['custom_field_id']; ?>"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo (isset($account_custom_field[$custom_field['custom_field_id']]) ? $account_custom_field[$custom_field['custom_field_id']] : $custom_field['value']); ?>" placeholder="<?php echo $custom_field['name']; ?>" id="input-custom-field<?php echo $custom_field['custom_field_id']; ?>" class="form-control" />
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'textarea') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label" for="input-custom-field<?php echo $custom_field['custom_field_id']; ?>"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <textarea name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" rows="5" placeholder="<?php echo $custom_field['name']; ?>" id="input-custom-field<?php echo $custom_field['custom_field_id']; ?>" class="form-control"><?php echo $custom_field['value']; ?></textarea>
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'file') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <button type="button" id="button-custom-field<?php echo $custom_field['custom_field_id']; ?>" class="btn btn-default"><i class="fa fa-upload"></i> <?php echo $button_upload; ?></button>
-                  <input type="hidden" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo (isset($account_custom_field[$custom_field['custom_field_id']]) ? $account_custom_field[$custom_field['custom_field_id']] : ''); ?>" id="input-custom-field<?php echo $custom_field['custom_field_id']; ?>" />
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'date') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label" for="input-custom-field<?php echo $custom_field['custom_field_id']; ?>"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <div class="input-group date">
-                    <input type="text" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo (isset($account_custom_field[$custom_field['custom_field_id']]) ? $account_custom_field[$custom_field['custom_field_id']] : $custom_field['value']); ?>" placeholder="<?php echo $custom_field['name']; ?>" data-date-format="YYYY-MM-DD" id="input-custom-field<?php echo $custom_field['custom_field_id']; ?>" class="form-control" />
-                    <span class="input-group-btn">
-                    <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
-                    </span></div>
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'time') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label" for="input-custom-field<?php echo $custom_field['custom_field_id']; ?>"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <div class="input-group time">
-                    <input type="text" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo (isset($account_custom_field[$custom_field['custom_field_id']]) ? $account_custom_field[$custom_field['custom_field_id']] : $custom_field['value']); ?>" placeholder="<?php echo $custom_field['name']; ?>" data-date-format="HH:mm" id="input-custom-field<?php echo $custom_field['custom_field_id']; ?>" class="form-control" />
-                    <span class="input-group-btn">
-                    <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
-                    </span></div>
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'datetime') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label" for="input-custom-field<?php echo $custom_field['custom_field_id']; ?>"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <div class="input-group datetime">
-                    <input type="text" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo (isset($account_custom_field[$custom_field['custom_field_id']]) ? $account_custom_field[$custom_field['custom_field_id']] : $custom_field['value']); ?>" placeholder="<?php echo $custom_field['name']; ?>" data-date-format="YYYY-MM-DD HH:mm" id="input-custom-field<?php echo $custom_field['custom_field_id']; ?>" class="form-control" />
-                    <span class="input-group-btn">
-                    <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
-                    </span></div>
-                </div>
-              </div>
-              <?php } ?>
-              <?php } ?>
-              <?php } ?>
-              <div class="text-right">
-                <button type="button" id="button-customer" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary"><i class="fa fa-arrow-right"></i> <?php echo $button_continue; ?></button>
-              </div>
-            </div>
-            <div class="tab-pane" id="tab-cart">
+            <div class="tab-pane" id="tab-design">
               <div class="table-responsive">
                 <table class="table table-bordered">
                   <thead>
@@ -313,11 +191,11 @@
                   <?php } ?>
                 </table>
               </div>
-              <ul class="nav nav-tabs nav-justified">
+              <ul class="nav nav-tabs nav-justified hidden">
                 <li class="active"><a href="#tab-product" data-toggle="tab"><?php echo $tab_product; ?></a></li>
                 <li><a href="#tab-voucher" data-toggle="tab"><?php echo $tab_voucher; ?></a></li>
               </ul>
-              <div class="tab-content">
+              <div class="tab-content hidden">
                 <div class="tab-pane active" id="tab-product">
                   <fieldset>
                     <legend><?php echo $text_product; ?></legend>
@@ -954,9 +832,9 @@
   </div>
   <script type="text/javascript"><!--
 // Disable the tabs
-$('#order a[data-toggle=\'tab\']').on('click', function(e) {
-	return false;
-});
+//$('#order a[data-toggle=\'tab\']').on('click', function(e) {
+//	return false;
+//});
 
 var token = '';
 

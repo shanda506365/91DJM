@@ -83,7 +83,7 @@
                   <button disabled="disabled" class="btn btn-success btn-xs"><i class="fa fa-refresh"></i></button>
                   <?php } ?></td>
               </tr>
-              <tr>
+              <tr class="hidden">
                 <td><?php echo $text_reward; ?></td>
                 <td class="text-right"><?php echo $reward; ?></td>
                 <td class="text-center"><?php if ($customer && $reward) { ?>
@@ -96,7 +96,7 @@
                   <button disabled="disabled" class="btn btn-success btn-xs"><i class="fa fa-plus-circle"></i></button>
                   <?php } ?></td>
               </tr>
-              <tr>
+              <tr class="hidden">
                 <td><?php echo $text_affiliate; ?>
                   <?php if ($affiliate) { ?>
                   (<a href="<?php echo $affiliate; ?>"><?php echo $affiliate_firstname; ?> <?php echo $affiliate_lastname; ?></a>)
