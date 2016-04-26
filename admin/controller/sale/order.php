@@ -713,6 +713,7 @@ class ControllerSaleOrder extends Controller {
             //订单设计信息
             $this->load->model('order/order_design');
             $this->load->model('order/order_design_picture');
+            $data['order_designs'] = array();
             $order_designs = $this->model_order_order_design->getOrderDesignByOrderId($order_info['order_id']);
             foreach($order_designs  as $order_design) {
                 $temp = $order_design;
@@ -721,6 +722,19 @@ class ControllerSaleOrder extends Controller {
             }
 
             $data['order_design_add'] = $this->url->link('order/order_design/add', 'token=' . $this->session->data['token'] . '&order_id=' . $order_info['order_id'], 'SSL');
+
+            //订单进度图
+            $this->load->model('order/order_processing');
+            $this->load->model('order/order_processing_picture');
+            $data['order_processing'] = array();
+            $order_processing = $this->model_order_order_processing->getOrderProcessingByOrderId($order_info['order_id']);
+            foreach($order_processing  as $processing) {
+                $temp = $processing;
+                $temp['edit'] = $this->url->link('sale/order_processing/edit', 'token=' . $this->session->data['token'] . '&order_id=' . $order_info['order_id'] . '&order_processing_id=' . $processing['order_processing_id'], 'SSL');
+                $data['order_processing'][] = $temp;
+            }
+
+            $data['order_processing_add'] = $this->url->link('order/order_processing/add', 'token=' . $this->session->data['token'] . '&order_id=' . $order_info['order_id'], 'SSL');
 
 			// Vouchers
 			$data['order_vouchers'] = $this->model_sale_order->getOrderVouchers($this->request->get['order_id']);

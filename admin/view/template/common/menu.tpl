@@ -98,7 +98,7 @@
           <li><a href="<?php echo $voucher_theme; ?>"><?php echo $text_voucher_theme; ?></a></li>
         </ul>
       </li>
-      <li><a class="parent"><?php echo $text_paypal ?></a>
+      <li class="hidden"><a class="parent"><?php echo $text_paypal ?></a>
         <ul>
           <li><a href="<?php echo $paypal_search ?>"><?php echo $text_paypal_search ?></a></li>
         </ul>
