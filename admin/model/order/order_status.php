@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: 周
- * Date: 2016/4/21
- * Time: 14:14
+ * Date: 2016/4/26
+ * Time: 15:21
  */
 class ModelOrderOrderStatus extends Model
 {

@@ -476,6 +476,8 @@ class ControllerSaleOrder extends Controller {
 
 		$data['cancel'] = $this->url->link('sale/order', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
+        $data['updateTotal'] = $this->url->link('sale/order/updateTotal', 'token=' . $this->session->data['token'] . '&order_id=' . $this->request->get['order_id'], 'SSL');
+
 		if (isset($this->request->get['order_id'])) {
 			$order_info = $this->model_sale_order->getOrder($this->request->get['order_id']);
 		}
@@ -494,6 +496,8 @@ class ControllerSaleOrder extends Controller {
 			$data['telephone'] = $order_info['telephone'];
 			$data['fax'] = $order_info['fax'];
 			$data['account_custom_field'] = $order_info['custom_field'];
+
+            $data['total'] = $order_info['total'] == 0 ? '待定' : $order_info['total'];
             //新增的
             $data['order_no'] = $order_info['order_no'];
             $data['mobile'] = $order_info['mobile'];
@@ -707,8 +711,16 @@ class ControllerSaleOrder extends Controller {
 
 
             //订单设计信息
+            $this->load->model('order/order_design');
+            $this->load->model('order/order_design_picture');
+            $order_designs = $this->model_order_order_design->getOrderDesignByOrderId($order_info['order_id']);
+            foreach($order_designs  as $order_design) {
+                $temp = $order_design;
+                $temp['edit'] = $this->url->link('sale/order_design/edit', 'token=' . $this->session->data['token'] . '&order_id=' . $order_info['order_id'] . '&order_design_id=' . $order_design['order_design_id'], 'SSL');
+                $data['order_designs'][] = $temp;
+            }
 
-
+            $data['order_design_add'] = $this->url->link('order/order_design/add', 'token=' . $this->session->data['token'] . '&order_id=' . $order_info['order_id'], 'SSL');
 
 			// Vouchers
 			$data['order_vouchers'] = $this->model_sale_order->getOrderVouchers($this->request->get['order_id']);
@@ -2151,4 +2163,51 @@ class ControllerSaleOrder extends Controller {
 
 		$this->response->setOutput($this->load->view('sale/order_shipping.tpl', $data));
 	}
+    //修改订单价格
+    public function updateTotal() {
+        $order_id = (int)$this->request->get['order_id'];
+
+        $total = $this->request->post['total'];
+
+        if (is_numeric($total)) {
+            $this->load->model('sale/order');
+            $this->load->model('order/order_status');
+            $this->load->model('order/order_history');
+
+            $order_statuses = $this->config->get('config_offer_status');
+
+            $order_info = $this->model_sale_order->getOrder($order_id);
+
+
+
+            if (in_array($order_info['order_status_id'], $order_statuses)) {
+                $this->model_sale_order->updateTotal($order_id, $total);
+
+                $order_history = array(
+                    'order_id' => $order_id,
+                    'user_id' => $this->user->getId(),
+                    'order_status_id' => $this->model_order_order_status->getOrderStatusByKey('offer_pass_not_pay'),//报价完成，待付尾款
+                    'notify'        => 1,
+                    'title'         => '客服报价完成',
+                    'comment'       => '报价完成，待付尾款',
+                    'date_added' => date('Y-m-d H:i:s')
+                );
+                $this->model_order_order_history->addOrderHistory($order_history);
+
+                $json['success'] = '订单总价修改成功！';
+            } else {
+                $json['error'] = '目前的订单状态， 不能修改价格！';
+            }
+        } else {
+            $json['error'] = '价格只能为数字！';
+        }
+
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
+
+//        $url = '&order_id=' . $order_id;
+//
+//        $this->response->redirect($this->url->link('sale/order', 'token=' . $this->session->data['token'] . $url, 'SSL'));
+    }
 }

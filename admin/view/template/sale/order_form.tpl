@@ -14,10 +14,20 @@
   <div class="container-fluid">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-pencil"></i> <?php echo $text_form; ?></h3>
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> <?php echo $text_form; ?> : <?php echo $order_no; ?></h3>
       </div>
       <div class="panel-body">
 
+        <!--隐藏表单，异步登录api/login验证-->
+        <select name="store" id="input-store" class="form-control hidden">
+          <?php foreach ($stores as $store) { ?>
+          <?php if ($store['store_id'] == $store_id) { ?>
+          <option value="<?php echo $store['href']; ?>" selected="selected"><?php echo $store['name']; ?></option>
+          <?php } else { ?>
+          <option value="<?php echo $store['href']; ?>"><?php echo $store['name']; ?></option>
+          <?php } ?>
+          <?php } ?>
+        </select>
 
         <div class="container-fluid">
           <div class="panel panel-default">
@@ -115,12 +125,50 @@
             <li class="disabled"><a href="#tab-total" data-toggle="tab">5. <?php echo $tab_total; ?></a></li>-->
 
             <li class="active"><a href="#tab-design" data-toggle="tab">设计方案</a></li>
-            <li class=""><a href="#tab-payment" data-toggle="tab">工程进度</a></li>
-            <li class=""><a href="#tab-shipping" data-toggle="tab">费用确认</a></li>
+            <li class=""><a href="#tab-payment" data-toggle="tab">确认费用</a></li>
+            <li class=""><a href="#tab-shipping" data-toggle="tab">工程进度</a></li>
             <li class=""><a href="#tab-total" data-toggle="tab">合计</a></li>
           </ul>
           <div class="tab-content">
-            <div class="tab-pane" id="tab-design">
+            <!--设计方案内容开始-->
+            <div class="tab-pane active" id="tab-design">
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead>
+                  <tr>
+                    <td class="text-left">设计标题</td>
+                    <td class="text-left">设计描述</td>
+                    <td class="text-right">日期</td>
+                    <td class="text-right">操作</td>
+                  </tr>
+                  </thead>
+                  <tbody id="design">
+                  <?php if ($order_designs) { ?>
+                  <?php foreach($order_designs as $order_design) { ?>
+                  <tr>
+                    <td class="text-left"><?php echo $order_design['title']; ?></td>
+                    <td class="text-left"><?php echo $order_design['description']; ?></td>
+                    <td class="text-right"><?php echo $order_design['date_added']; ?></td>
+                    <td class="text-right"><a href="<?php echo $order_design['edit']; ?>" data-toggle="tooltip" title="编辑该方案" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+                  </tr>
+                  <?php } ?>
+                  <?php } else {  ?>
+                  <tr>
+                    <td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
+                  </tr>
+                  <?php } ?>
+                  <tr>
+                    <td class="text-right" colspan="4">
+                      <a href="<?php echo $order_design_add; ?>" data-toggle="tooltip" title="添加设计师方案" class="btn btn-success"><i class="fa fa-plus"></i></a>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+            <!--设计方案内容结束-->
+            <div class="tab-pane" id="tab-ddd">
               <div class="table-responsive">
                 <table class="table table-bordered">
                   <thead>
@@ -284,213 +332,15 @@
               </div>
             </div>
             <div class="tab-pane" id="tab-payment">
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-payment-address"><?php echo $entry_address; ?></label>
-                <div class="col-sm-10">
-                  <select name="payment_address" id="input-payment-address" class="form-control">
-                    <option value="0" selected="selected"><?php echo $text_none; ?></option>
-                    <?php foreach ($addresses as $address) { ?>
-                    <option value="<?php echo $address['address_id']; ?>"><?php echo $address['firstname'] . ' ' . $address['lastname'] . ', ' . $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
               <div class="form-group required">
-                <label class="col-sm-2 control-label" for="input-payment-firstname"><?php echo $entry_firstname; ?></label>
+                <label class="col-sm-2 control-label" for="input-total">订单总价：</label>
                 <div class="col-sm-10">
-                  <input type="text" name="firstname" value="<?php echo $payment_firstname; ?>" id="input-payment-firstname" class="form-control" />
+                  <input type="text" name="total" value="<?php echo $total; ?>" id="input-total" class="form-control" />
                 </div>
               </div>
-              <div class="form-group required">
-                <label class="col-sm-2 control-label" for="input-payment-lastname"><?php echo $entry_lastname; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="lastname" value="<?php echo $payment_lastname; ?>" id="input-payment-lastname" class="form-control" />
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-payment-company"><?php echo $entry_company; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="company" value="<?php echo $payment_company; ?>" id="input-payment-company" class="form-control" />
-                </div>
-              </div>
-              <div class="form-group required">
-                <label class="col-sm-2 control-label" for="input-payment-address-1"><?php echo $entry_address_1; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="address_1" value="<?php echo $payment_address_1; ?>" id="input-payment-address-1" class="form-control" />
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-payment-address-2"><?php echo $entry_address_2; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="address_2" value="<?php echo $payment_address_2; ?>" id="input-payment-address-2" class="form-control" />
-                </div>
-              </div>
-              <div class="form-group required">
-                <label class="col-sm-2 control-label" for="input-payment-city"><?php echo $entry_city; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="city" value="<?php echo $payment_city; ?>" id="input-payment-city" class="form-control" />
-                </div>
-              </div>
-              <div class="form-group required">
-                <label class="col-sm-2 control-label" for="input-payment-postcode"><?php echo $entry_postcode; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="postcode" value="<?php echo $payment_postcode; ?>" id="input-payment-postcode" class="form-control" />
-                </div>
-              </div>
-              <div class="form-group required">
-                <label class="col-sm-2 control-label" for="input-payment-country"><?php echo $entry_country; ?></label>
-                <div class="col-sm-10">
-                  <select name="country_id" id="input-payment-country" class="form-control">
-                    <option value=""><?php echo $text_select; ?></option>
-                    <?php foreach ($countries as $country) { ?>
-                    <?php if ($country['country_id'] == $payment_country_id) { ?>
-                    <option value="<?php echo $country['country_id']; ?>" selected="selected"><?php echo $country['name']; ?></option>
-                    <?php } else { ?>
-                    <option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
-                    <?php } ?>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group required">
-                <label class="col-sm-2 control-label" for="input-payment-zone"><?php echo $entry_zone; ?></label>
-                <div class="col-sm-10">
-                  <select name="zone_id" id="input-payment-zone" class="form-control">
-                  </select>
-                </div>
-              </div>
-              <?php foreach ($custom_fields as $custom_field) { ?>
-              <?php if ($custom_field['location'] == 'address') { ?>
-              <?php if ($custom_field['type'] == 'select') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label" for="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <select name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" id="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>" class="form-control">
-                    <option value=""><?php echo $text_select; ?></option>
-                    <?php foreach ($custom_field['custom_field_value'] as $custom_field_value) { ?>
-                    <?php if (isset($payment_custom_field[$custom_field['custom_field_id']]) && $custom_field_value['custom_field_value_id'] == $payment_custom_field[$custom_field['custom_field_id']]) { ?>
-                    <option value="<?php echo $custom_field_value['custom_field_value_id']; ?>" selected="selected"><?php echo $custom_field_value['name']; ?></option>
-                    <?php } else { ?>
-                    <option value="<?php echo $custom_field_value['custom_field_value_id']; ?>"><?php echo $custom_field_value['name']; ?></option>
-                    <?php } ?>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'radio') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <div id="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>">
-                    <?php foreach ($custom_field['custom_field_value'] as $custom_field_value) { ?>
-                    <div class="radio">
-                      <?php if (isset($payment_custom_field[$custom_field['custom_field_id']]) && $custom_field_value['custom_field_value_id'] == $payment_custom_field[$custom_field['custom_field_id']]) { ?>
-                      <label>
-                        <input type="radio" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo $custom_field_value['custom_field_value_id']; ?>" checked="checked" />
-                        <?php echo $custom_field_value['name']; ?></label>
-                      <?php } else { ?>
-                      <label>
-                        <input type="radio" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo $custom_field_value['custom_field_value_id']; ?>" />
-                        <?php echo $custom_field_value['name']; ?></label>
-                      <?php } ?>
-                    </div>
-                    <?php } ?>
-                  </div>
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'checkbox') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <div id="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>">
-                    <?php foreach ($custom_field['custom_field_value'] as $custom_field_value) { ?>
-                    <div class="checkbox">
-                      <?php if (isset($payment_custom_field[$custom_field['custom_field_id']]) && in_array($custom_field_value['custom_field_value_id'], $payment_custom_field[$custom_field['custom_field_id']])) { ?>
-                      <label>
-                        <input type="checkbox" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>][]" value="<?php echo $custom_field_value['custom_field_value_id']; ?>" checked="checked" />
-                        <?php echo $custom_field_value['name']; ?></label>
-                      <?php } else { ?>
-                      <label>
-                        <input type="checkbox" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>][]" value="<?php echo $custom_field_value['custom_field_value_id']; ?>" />
-                        <?php echo $custom_field_value['name']; ?></label>
-                      <?php } ?>
-                    </div>
-                    <?php } ?>
-                  </div>
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'text') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label" for="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <input type="text" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo (isset($payment_custom_field[$custom_field['custom_field_id']]) ? $payment_custom_field[$custom_field['custom_field_id']] : $custom_field['value']); ?>" placeholder="<?php echo $custom_field['name']; ?>" id="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>" class="form-control" />
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'textarea') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label" for="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <textarea name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" rows="5" placeholder="<?php echo $custom_field['name']; ?>" id="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>" class="form-control"><?php echo (isset($payment_custom_field[$custom_field['custom_field_id']]) ? $payment_custom_field[$custom_field['custom_field_id']] : $custom_field['value']); ?></textarea>
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'file') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <button type="button" id="button-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-default"><i class="fa fa-upload"></i> <?php echo $button_upload; ?></button>
-                  <input type="hidden" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo (isset($payment_custom_field[$custom_field['custom_field_id']]) ? $payment_custom_field[$custom_field['custom_field_id']] : ''); ?>" id="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>" />
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'date') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label" for="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <div class="input-group date">
-                    <input type="text" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo (isset($payment_custom_field[$custom_field['custom_field_id']]) ? $payment_custom_field[$custom_field['custom_field_id']] : $custom_field['value']); ?>" placeholder="<?php echo $custom_field['name']; ?>" data-date-format="YYYY-MM-DD" id="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>" class="form-control" />
-                    <span class="input-group-btn">
-                    <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
-                    </span></div>
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'time') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label" for="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <div class="input-group time">
-                    <input type="text" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo (isset($payment_custom_field[$custom_field['custom_field_id']]) ? $payment_custom_field[$custom_field['custom_field_id']] : $custom_field['value']); ?>" placeholder="<?php echo $custom_field['name']; ?>" data-date-format="HH:mm" id="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>" class="form-control" />
-                    <span class="input-group-btn">
-                    <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
-                    </span></div>
-                </div>
-              </div>
-              <?php } ?>
-              <?php if ($custom_field['type'] == 'datetime') { ?>
-              <div class="form-group custom-field custom-field<?php echo $custom_field['custom_field_id']; ?>" data-sort="<?php echo $custom_field['sort_order'] + 3; ?>">
-                <label class="col-sm-2 control-label" for="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>"><?php echo $custom_field['name']; ?></label>
-                <div class="col-sm-10">
-                  <div class="input-group datetime">
-                    <input type="text" name="custom_field[<?php echo $custom_field['custom_field_id']; ?>]" value="<?php echo (isset($payment_custom_field[$custom_field['custom_field_id']]) ? $payment_custom_field[$custom_field['custom_field_id']] : $custom_field['value']); ?>" placeholder="<?php echo $custom_field['name']; ?>" data-date-format="YYYY-MM-DD HH:mm" id="input-payment-custom-field<?php echo $custom_field['custom_field_id']; ?>" class="form-control" />
-                    <span class="input-group-btn">
-                    <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
-                    </span></div>
-                </div>
-              </div>
-              <?php } ?>
-              <?php } ?>
-              <?php } ?>
               <div class="row">
-                <div class="col-sm-6 text-left">
-                  <button type="button" onclick="$('a[href=\'#tab-cart\']').tab('show');" class="btn btn-default"><i class="fa fa-arrow-left"></i> <?php echo $button_back; ?></button>
-                </div>
                 <div class="col-sm-6 text-right">
-                  <button type="button" id="button-payment-address" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary"><i class="fa fa-arrow-right"></i> <?php echo $button_continue; ?></button>
+                  <button type="button" id="button-total" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary"><i class="fa fa-arrow-right"></i> 修改总价</button>
                 </div>
               </div>
             </div>
@@ -840,7 +690,7 @@ var token = '';
 
 // Login to the API
 $.ajax({
-	url: $('select[name=\'store\'] option:selected').val() + 'index.php?route=api/login',
+  url: $('select[name=\'store\'] option:selected').val() + 'index.php?route=api/login',
 	type: 'post',
 	data: 'key=<?php echo $api_key; ?>',
 	dataType: 'json',
@@ -2440,6 +2290,49 @@ $('#tab-shipping .form-group[data-sort]').detach().each(function() {
 	if ($(this).attr('data-sort') < -$('#tab-shipping .form-group').length) {
 		$('#tab-shipping .form-group:first').before(this);
 	}
+});
+
+$('#button-total').click(function() {
+
+  var total = $('#input-total').val();
+
+  if (isNaN(total)) {
+    alert('总价必须为数字！');
+    return false;
+  }
+
+  if (confirm('确定修改价格为' + total)==false) {
+    return false;
+  }
+
+  $.ajax({
+    url: 'index.php?route=sale/order/updateTotal&token=<?php echo $token; ?>&order_id=<?php echo $order_id; ?>',
+    type: 'post',
+    data: 'total=' + total,
+    dataType: 'json',
+    crossDomain: true,
+    success: function(json) {
+      $('.alert, .text-danger').remove();
+
+      if (json['error']) {
+        $('#content > .container-fluid').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+      }
+
+      if (json['success']) {
+        $('#content > .container-fluid').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '  <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+        // Refresh products, vouchers and totals
+        $('#button-refresh').trigger('click');
+      }
+
+      if (json['order_id']) {
+        $('input[name=\'order_id\']').val(json['order_id']);
+      }
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
 });
 </script></div>
 <?php echo $footer; ?>

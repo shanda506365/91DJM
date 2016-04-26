@@ -26,8 +26,7 @@ class ModelOrderOrderDesign extends Model
         $order_design = array(
             'order_id' => $data['order_id'],
             'title' => $data['title'],
-            'description'  => $data['description'],
-            'date_added' => isset($data['date_added']) ? $data['date_added'] : date('Y-m-d H:i:s')
+            'description'  => $data['description']
         );
         $this->db_ci->where('order_design_id', $order_design_id);
         return $this->db_ci->update('order_design', $order_design);

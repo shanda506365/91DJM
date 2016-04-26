@@ -118,6 +118,7 @@ class ControllerOrderOrder extends Controller {
                 'user_id' => 0,//0表示，客户自己
                 'order_status_id' => $this->model_order_order_status->getOrderStatusByKey('no_deposit'),
                 'title'         => '下单成功',
+                'comment'         => '下单成功',
                 'date_added'   => date('Y-m-d H:i:s')
             );
             $this->model_order_order_history->addOrderHistory($order_history);

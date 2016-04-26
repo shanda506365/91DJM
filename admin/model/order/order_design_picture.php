@@ -16,7 +16,7 @@ class ModelOrderOrderDesignPicture extends Model
             'order_id' => $data['order_id'],
             'title' => $data['title'],
             'description'  => $data['description'],
-            'upload_id'    => $data['upload_id'],
+            'picture'    => $data['picture'],
             'date_added' => isset($data['date_added']) ? $data['date_added'] : date('Y-m-d H:i:s')
         );
         $this->db_ci->insert('order_design_picture', $order_design_picture);
@@ -30,7 +30,7 @@ class ModelOrderOrderDesignPicture extends Model
             'order_id' => $data['order_id'],
             'title' => $data['title'],
             'description'  => $data['description'],
-            'upload_id'    => $data['upload_id'],
+            'picture'    => $data['picture'],
             'date_added' => isset($data['date_added']) ? $data['date_added'] : date('Y-m-d H:i:s')
         );
         $this->db_ci->where('order_design_picture_id', $order_design_picture_id);

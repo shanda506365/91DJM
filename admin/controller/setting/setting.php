@@ -321,6 +321,12 @@ class ControllerSettingSetting extends Controller {
 			$data['error_processing_status'] = '';
 		}
 
+        if (isset($this->error['offer_status'])) {
+            $data['error_offer_status'] = $this->error['offer_status'];
+        } else {
+            $data['error_offer_status'] = '';
+        }
+
 		if (isset($this->error['complete_status'])) {
 			$data['error_complete_status'] = $this->error['complete_status'];
 		} else {
@@ -843,6 +849,14 @@ class ControllerSettingSetting extends Controller {
 		} else {
 			$data['config_processing_status'] = array();
 		}
+        //新增可报价的订单状态
+        if (isset($this->request->post['config_offer_status'])) {
+            $data['config_offer_status'] = $this->request->post['config_offer_status'];
+        } elseif ($this->config->get('config_offer_status')) {
+            $data['config_offer_status'] = $this->config->get('config_offer_status');
+        } else {
+            $data['config_offer_status'] = array();
+        }
 
 		if (isset($this->request->post['config_complete_status'])) {
 			$data['config_complete_status'] = $this->request->post['config_complete_status'];
@@ -1385,6 +1399,10 @@ class ControllerSettingSetting extends Controller {
 		if (!isset($this->request->post['config_processing_status'])) {
 			$this->error['processing_status'] = $this->language->get('error_processing_status');
 		}
+
+        if (!isset($this->request->post['config_offer_status'])) {
+            $this->error['offer_status'] = '您必须至少选择1个订单可报价的状态';
+        }
 
 		if (!isset($this->request->post['config_complete_status'])) {
 			$this->error['complete_status'] = $this->language->get('error_complete_status');
