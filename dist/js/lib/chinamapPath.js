@@ -6,8 +6,8 @@
         window.paintMap= function(R) {
             
             var attr = {
-                "fill": "#f05900",
-                "stroke": "#FFFFFF",
+                "fill": "#dc214c",
+                "stroke": "#ffffff",
                 "stroke-width": 1,
                 "stroke-linejoin": "round"
             };
