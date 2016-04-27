@@ -130,6 +130,7 @@ class ModelAccountOrder extends Model {
         $this->db_ci->limit($limit, $start);
         $query = $this->db_ci->get('order');
         $rows = $query->result_array();
+
         return $rows;
 	}
 
