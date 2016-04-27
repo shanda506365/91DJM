@@ -196,7 +196,7 @@ class ControllerAccountOrder extends Controller {
         $data_page['data_banner'] = $this->model_design_banner->banner_to_json(18);
 
         //分页
-        $data_page['url_ajax_page'] = $this->link('account/order/ajax_order_filter', '', 'SSL');
+        $data_page['url_ajax_page'] = $this->url->link('account/order/ajax_order_filter', '', 'SSL');
 
         $this->response->setOutput($this->load->view('customer_orderlist.html', $data_page));
 	}
@@ -207,20 +207,26 @@ class ControllerAccountOrder extends Controller {
         $this->load->model('order/order_status');
 
         //条件
-        if (isset($this->request->post['order_status']) && $this->request->post['order_status'] > 0) {
-            $where['order_status'] = $this->request->post['order_status'];
-        }
-        if (isset($this->request->post['date_added']) && $this->request->post['date_added'] != 'all') {
-            $date_cond = $this->request->post['date_added'];
-            if ($date_cond == 'today') {
-                $where['date_added_begin'] = date('Y-m-d') . ' 00:00:00';
-                $where['date_added_end'] = date('Y-m-d') . ' 23:59:59';
-            } else if($date_cond == 'day7') {
-                $where['date_added_begin'] = date('Y-m-d', strtotime('-7 days')) . ' 00:00:00';
-                $where['date_added_end'] = date('Y-m-d') . ' 23:59:59';
-            } else if($date_cond == 'day30') {
-                $where['date_added_begin'] = date('Y-m-d', strtotime('-30 days')) . ' 00:00:00';
-                $where['date_added_end'] = date('Y-m-d') . ' 23:59:59';
+        $where = array();
+        if (isset($this->request->post['filter'])) {
+
+            $filter = objectToArray(json_decode(htmlspecialchars_decode($this->request->post['filter'])))[0];
+
+            if ($filter['order_status'] > 0) {
+                $where['order_status'] = $filter['order_status'];
+            }
+            if ($filter['data_add'] != 'all') {
+                $date_cond = $filter['data_add'];
+                if ($date_cond == 'today') {
+                    $where['date_added_begin'] = date('Y-m-d') . ' 00:00:00';
+                    $where['date_added_end'] = date('Y-m-d') . ' 23:59:59';
+                } else if($date_cond == 'day7') {
+                    $where['date_added_begin'] = date('Y-m-d', strtotime('-7 days')) . ' 00:00:00';
+                    $where['date_added_end'] = date('Y-m-d') . ' 23:59:59';
+                } else if($date_cond == 'day30') {
+                    $where['date_added_begin'] = date('Y-m-d', strtotime('-30 days')) . ' 00:00:00';
+                    $where['date_added_end'] = date('Y-m-d') . ' 23:59:59';
+                }
             }
         }
 
