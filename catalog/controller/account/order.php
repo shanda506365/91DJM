@@ -263,13 +263,28 @@ class ControllerAccountOrder extends Controller {
     }
 
 	public function info() {
+
+        $this->init();
+
+        $data_page['meta_title'] = '账户中心 - ' . $this->config->get('config_name');
+
 		$this->load->language('account/order');
 
-		if (isset($this->request->get['order_id'])) {
-			$order_id = $this->request->get['order_id'];
-		} else {
-			$order_id = 0;
-		}
+//		if (isset($this->request->get['order_id'])) {
+//			$order_id = $this->request->get['order_id'];
+//		} else {
+//			$order_id = 0;
+//		}
+
+        if (isset($this->request->get['order_no'])) {
+            $order_no = $this->request->get['order_no'];
+        } else {
+            $order_no = 0;
+        }
+
+        $this->load->model('order/order');
+        $order_info = $this->model_order_order->getOrderByNo($order_no);
+        $order_id = $order_info['order_id'];
 
 		if (!$this->customer->isLogged()) {
 			$this->session->data['redirect'] = $this->url->link('account/order/info', 'order_id=' . $order_id, 'SSL');
@@ -281,6 +296,32 @@ class ControllerAccountOrder extends Controller {
 
 		$order_info = $this->model_account_order->getOrder($order_id);
 
+        //开始生成面包屑
+        $breadcrumbs[] = array(
+            'name' => '首页',
+            'link' => $this->config->get('config_url')
+        );
+        $breadcrumbs[] = array(
+            'name' => '账户中心',
+            'link' => $this->url->link_static('account/home')
+        );
+        $breadcrumbs[] = array(
+            'name' => '我的订单',
+            'link' => $this->url->link_static('account/order')
+        );
+
+        $data_page['breadcrumbs'] = json_encode($breadcrumbs, JSON_UNESCAPED_SLASHES);
+
+
+        //广告加载
+        $this->load->model('design/banner');
+        //顶部广告
+        $data_page['data_banner'] = $this->model_design_banner->banner_to_json(18);
+
+        $this->response->setOutput($this->load->view('customer_order_form.html', $data_page));
+
+
+/*
 		if ($order_info) {
 			$this->document->setTitle($this->language->get('text_order'));
 
@@ -309,7 +350,7 @@ class ControllerAccountOrder extends Controller {
 
 			$data['breadcrumbs'][] = array(
 				'text' => $this->language->get('text_order'),
-				'href' => $this->url->link('account/order/info', 'order_id=' . $this->request->get['order_id'] . $url, 'SSL')
+				'href' => $this->url->link('account/order/info', 'order_id=' . $order_id . $url, 'SSL')
 			);
 
 			$data['heading_title'] = $this->language->get('text_order');
@@ -361,7 +402,7 @@ class ControllerAccountOrder extends Controller {
 				$data['invoice_no'] = '';
 			}
 
-			$data['order_id'] = $this->request->get['order_id'];
+			$data['order_id'] = $order_id;
 			$data['date_added'] = date($this->language->get('date_format_short'), strtotime($order_info['date_added']));
 
 			if ($order_info['payment_address_format']) {
@@ -442,12 +483,12 @@ class ControllerAccountOrder extends Controller {
 			// Products
 			$data['products'] = array();
 
-			$products = $this->model_account_order->getOrderProducts($this->request->get['order_id']);
+			$products = $this->model_account_order->getOrderProducts($order_id);
 
 			foreach ($products as $product) {
 				$option_data = array();
 
-				$options = $this->model_account_order->getOrderOptions($this->request->get['order_id'], $product['order_product_id']);
+				$options = $this->model_account_order->getOrderOptions($order_id, $product['order_product_id']);
 
 				foreach ($options as $option) {
 					if ($option['type'] != 'file') {
@@ -491,7 +532,7 @@ class ControllerAccountOrder extends Controller {
 			// Voucher
 			$data['vouchers'] = array();
 
-			$vouchers = $this->model_account_order->getOrderVouchers($this->request->get['order_id']);
+			$vouchers = $this->model_account_order->getOrderVouchers($order_id);
 
 			foreach ($vouchers as $voucher) {
 				$data['vouchers'][] = array(
@@ -503,7 +544,7 @@ class ControllerAccountOrder extends Controller {
 			// Totals
 			$data['totals'] = array();
 
-			$totals = $this->model_account_order->getOrderTotals($this->request->get['order_id']);
+			$totals = $this->model_account_order->getOrderTotals($order_id);
 
 			foreach ($totals as $total) {
 				$data['totals'][] = array(
@@ -517,7 +558,7 @@ class ControllerAccountOrder extends Controller {
 			// History
 			$data['histories'] = array();
 
-			$results = $this->model_account_order->getOrderHistories($this->request->get['order_id']);
+			$results = $this->model_account_order->getOrderHistories($order_id);
 
 			foreach ($results as $result) {
 				$data['histories'][] = array(
@@ -587,6 +628,7 @@ class ControllerAccountOrder extends Controller {
 				$this->response->setOutput($this->load->view('default/template/error/not_found.tpl', $data));
 			}
 		}
+*/
 	}
 
 	public function reorder() {
