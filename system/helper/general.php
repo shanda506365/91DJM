@@ -109,3 +109,13 @@ function radioName($type = 1) {
         return '否';
     }
 }
+//对象转数组
+function objectToArray($e){
+    $e=(array)$e;
+    foreach($e as $k=>$v){
+        if( gettype($v)=='resource' ) return;
+        if( gettype($v)=='object' || gettype($v)=='array' )
+            $e[$k]=(array)objectToArray($v);
+    }
+    return $e;
+}
