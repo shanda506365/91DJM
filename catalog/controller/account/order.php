@@ -158,7 +158,7 @@ class ControllerAccountOrder extends Controller {
                 'order_status' => $order_status['name'],
                 'date_added' => $order['date_added'],
                 'link_view' => $this->url->link_simple('account/order/info' , 'order_no=' . $order['order_no'] , 'SSL'),
-                'link_progress' => $this->url->link_simple('account/order/progress' , 'order_no=' . $order['order_no'] , 'SSL'),
+                'link_progress' => '/dist/customer_order_progress.html',//$this->url->link_simple('account/order/progress' , 'order_no=' . $order['order_no'] , 'SSL'),
             );
         }
 
@@ -246,7 +246,7 @@ class ControllerAccountOrder extends Controller {
                 'order_status' => $order_status['name'],
                 'date_added' => $order['date_added'],
                 'link_view' => $this->url->link_simple('account/order/info' , 'order_no=' . $order['order_no'] , 'SSL'),
-                'link_progress' => $this->url->link_simple('account/order/progress' , 'order_no=' . $order['order_no'] , 'SSL'),
+                'link_progress' => '/dist/customer_order_progress.html',//$this->url->link_simple('account/order/progress' , 'order_no=' . $order['order_no'] , 'SSL'),
             );
         }
 
@@ -292,9 +292,51 @@ class ControllerAccountOrder extends Controller {
 			$this->response->redirect($this->url->link('account/login', '', 'SSL'));
 		}
 
-		$this->load->model('account/order');
+        if (empty($order_info)) {
+            echo "订单号不存在";exit;
+        }
 
-		$order_info = $this->model_account_order->getOrder($order_id);
+        $order_form = array(
+            'order_id'               => $order_info['order_id'],
+            'order_no'               => $order_info['order_no'],
+            'order_name'               => $order_info['order_name'],
+            'price'                    => $order_info['total'] == 0 ? '待定' : $order_info['total'],
+            'order_status_id'        => $order_info['order_status_id'],
+            'exhibition_subject'    => $order_info['exhibition_subject'],
+            'length'                  => $order_info['length'] == 0 ? "" : $order_info['length'],
+            'width'                   => $order_info['width'] == 0 ? "" : $order_info['width'],
+            'height'                  => $order_info['height'] == 0 ? "" : $order_info['height'],
+            'area'                    => $order_info['area'] == 0 ? "" : $order_info['area'],
+            'is_squareness'         => $order_info['is_squareness'],
+            'is_squareness_name'     => radioName($order_info['is_squareness']),
+            'exhibition_verify_date' => $order_info['exhibition_verify_date'],
+            'exhibition_enter_date'  => $order_info['exhibition_enter_date'],
+            'exhibition_begin_date'  => $order_info['exhibition_begin_date'],
+            'exhibition_leave_date'  => $order_info['exhibition_leave_date'],
+            'remark'                    => $order_info['remark'],
+            'files' => array()
+        );
+
+        $this->load->model('order/order_status');
+        $order_status = $this->model_order_order_status->getOrderStatusById($order_form['order_status_id']);
+        $order_form['order_status'] = $order_status['name'];
+
+        $this->load->model('order/order_file');
+        $files = $this->model_order_order_file->getOrderFiles($order_info['order_id']);
+        foreach($files as $file) {
+            $order_form['files'][] = array(
+                'file_id' => $file['upload_id'],
+                'file_name' => $file['name'],
+                'size'  => format_bytes($file['size']),
+                'link' => ''//下载链接
+            );
+        }
+
+        $data_page['order'] = json_encode($order_form, JSON_UNESCAPED_SLASHES);
+
+        //{"order_no":"1111","order_name":"标准化套餐A方案","price":"待定","order_status":"代付定金","exhibition_subject":"222","exhibition_begin_date":"2016年04月29日","area":"222","exhibition_enter_date":"2016年04月29日","exhibition_leave_date":"2016年04月29日","exhibition_verify_date":"2016年04月29日","height":"222","is_squareness":"222","length":"222","remark":"222","width":"333","files":[{"file_id":"1","file_name":"1111.png","size":"2.0M","link":"###"},{"file_id":"1","file_name":"1111.png","size":"2.0M","link":""}]}
+
+
 
         //开始生成面包屑
         $breadcrumbs[] = array(
@@ -308,6 +350,10 @@ class ControllerAccountOrder extends Controller {
         $breadcrumbs[] = array(
             'name' => '我的订单',
             'link' => $this->url->link_static('account/order')
+        );
+        $breadcrumbs[] = array(
+            'name' => '订单详情',
+            'link' => ''
         );
 
         $data_page['breadcrumbs'] = json_encode($breadcrumbs, JSON_UNESCAPED_SLASHES);
