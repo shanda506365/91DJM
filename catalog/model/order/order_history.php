@@ -19,8 +19,15 @@ class ModelOrderOrderHistory extends Model
             'notify'        => isset($data['notify']) ? $data['notify'] : 0,
             'title'         => $data['title'],
             'comment'       => isset($data['comment']) ? $data['comment'] : '',
-            'date_added' => isset($data['date_added']) ? $data['date_added'] : date('Y-m-d H:i:s')
+            'date_added' => date('Y-m-d H:i:s')
         );
         $this->db_ci->insert('order_history', $order_history);
+    }
+
+    public function getLastOrderHistoryByOrderId($order_id) {
+        $this->db_ci->where('order_id', $order_id);
+        $this->db_ci->order_by('date_added', 'DESC');
+        $query = $this->db_ci->get('order_history');
+        return $query->first_row();
     }
 }

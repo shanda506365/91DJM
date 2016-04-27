@@ -486,6 +486,9 @@ class ControllerSaleOrder extends Controller {
 			$data['order_id'] = $this->request->get['order_id'];
 			$data['store_id'] = $order_info['store_id'];
 
+            $data['store_name'] = $order_info['store_name'];
+            $data['store_url'] = $order_info['store_url'];
+
 			$data['customer'] = $order_info['customer'];
 			$data['customer_id'] = $order_info['customer_id'];
 			$data['customer_group_id'] = $order_info['customer_group_id'];
@@ -568,6 +571,9 @@ class ControllerSaleOrder extends Controller {
 			}
 
             //详情展示开始
+
+            $this->load->model('customer/customer_designer');
+
             $data['products'] = array();
 
             $products = $this->model_sale_order->getOrderProducts($this->request->get['order_id']);
@@ -607,7 +613,8 @@ class ControllerSaleOrder extends Controller {
                     'quantity'		   => $product['quantity'],
                     'price'    		   => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $order_info['currency_code'], $order_info['currency_value']),
                     'total'    		   => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $order_info['currency_code'], $order_info['currency_value']),
-                    'href'     		   => '/product/' . $product['product_id'].'.html'//$this->url->link('catalog/product/edit', 'token=' . $this->session->data['token'] . '&product_id=' . $product['product_id'], 'SSL')
+                    'href'     		   => '/product/' . $product['product_id'].'.html',//$this->url->link('catalog/product/edit', 'token=' . $this->session->data['token'] . '&product_id=' . $product['product_id'], 'SSL')
+                    'designer_name'       => $product['customer_id'] == 0 ? $this->config->get('config_name') : $this->model_customer_customer_designer->getCustomerDesigner($product['customer_id'])['designer_name']
                 );
             }
 
@@ -735,6 +742,60 @@ class ControllerSaleOrder extends Controller {
             }
 
             $data['order_processing_add'] = $this->url->link('order/order_processing/add', 'token=' . $this->session->data['token'] . '&order_id=' . $order_info['order_id'], 'SSL');
+
+
+
+
+            // Additional Tabs
+            $data['tabs'] = array();
+
+            $this->load->model('extension/extension');
+
+            $content = $this->load->controller('payment/' . $order_info['payment_code'] . '/order');
+
+            if ($content) {
+                $this->load->language('payment/' . $order_info['payment_code']);
+
+                $data['tabs'][] = array(
+                    'code'    => $order_info['payment_code'],
+                    'title'   => $this->language->get('heading_title'),
+                    'content' => $content
+                );
+            }
+
+            $extensions = $this->model_extension_extension->getInstalled('fraud');
+
+            foreach ($extensions as $extension) {
+                if ($this->config->get($extension . '_status')) {
+                    $this->load->language('fraud/' . $extension);
+
+                    $content = $this->load->controller('fraud/' . $extension . '/order');
+
+                    if ($content) {
+                        $data['tabs'][] = array(
+                            'code'    => $extension,
+                            'title'   => $this->language->get('heading_title'),
+                            'content' => $content
+                        );
+                    }
+                }
+            }
+
+            // API login
+            $this->load->model('user/api');
+
+            $api_info = $this->model_user_api->getApi($this->config->get('config_api_id'));
+
+            if ($api_info) {
+                $data['api_id'] = $api_info['api_id'];
+                $data['api_key'] = $api_info['key'];
+                $data['api_ip'] = $this->request->server['REMOTE_ADDR'];
+            } else {
+                $data['api_id'] = '';
+                $data['api_key'] = '';
+                $data['api_ip'] = '';
+            }
+
 
 			// Vouchers
 			$data['order_vouchers'] = $this->model_sale_order->getOrderVouchers($this->request->get['order_id']);
@@ -1176,6 +1237,7 @@ class ControllerSaleOrder extends Controller {
 
 			// Uploaded files
 			$this->load->model('tool/upload');
+            $this->load->model('customer/customer_design');
 
 			$data['products'] = array();
 
@@ -1216,7 +1278,8 @@ class ControllerSaleOrder extends Controller {
 					'quantity'		   => $product['quantity'],
 					'price'    		   => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $order_info['currency_code'], $order_info['currency_value']),
 					'total'    		   => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $order_info['currency_code'], $order_info['currency_value']),
-					'href'     		   => $this->url->link('catalog/product/edit', 'token=' . $this->session->data['token'] . '&product_id=' . $product['product_id'], 'SSL')
+					'href'     		   => $this->url->link('catalog/product/edit', 'token=' . $this->session->data['token'] . '&product_id=' . $product['product_id'], 'SSL'),
+                    'designer_name'       => $product['customer_id'] == 0 ? $this->config->get('config_name') : $this->model_customer_customer_design->getCustomerDesigner($product['customer_id'])['designer_name']
 				);
 			}
 
@@ -2195,7 +2258,11 @@ class ControllerSaleOrder extends Controller {
 
 
             if (in_array($order_info['order_status_id'], $order_statuses)) {
-                $this->model_sale_order->updateTotal($order_id, $total);
+                $data = array(
+                    'total' => $total,
+                    'order_status_id' => $this->model_order_order_status->getOrderStatusByKey('offer_pass_not_pay')//报价完成，待付尾款
+                );
+                $this->model_sale_order->updateOrder($order_id, $data);
 
                 $order_history = array(
                     'order_id' => $order_id,

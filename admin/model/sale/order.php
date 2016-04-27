@@ -454,12 +454,9 @@ class ModelSaleOrder extends Model {
 
 		return $query->row['total'];
 	}
-    //管理员修改订单价格
-    public function updateTotal($order_id, $total) {
+    //管理员修改订单
+    public function updateOrder($order_id, $data) {
         $this->db_ci->where('order_id', $order_id);
-        $data = array(
-            'total' => $total
-        );
         return $this->db_ci->update('order', $data);
     }
 }

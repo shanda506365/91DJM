@@ -104,7 +104,8 @@ class ControllerOrderOrder extends Controller {
                 'model' => $product_info['model'],
                 'quantity' => 1,
                 'price' => 0,//没有实际金额
-                'total' => 0
+                'total' => 0,
+                'customer_id' => $product_info['customer_id']
             );
 
             $this->model_order_order_product->addOrderProduct($order_product);

@@ -16,7 +16,8 @@ class ModelOrderOrderProduct extends Model
             'model' => $data['model'],
             'quantity' => 1,
             'price' => $data['price'],
-            'total' => $data['total']
+            'total' => $data['total'],
+            'customer_id' => $data['customer_id']
         );
 
         return $this->db_ci->insert('order_product', $order_product);

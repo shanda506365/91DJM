@@ -58,6 +58,7 @@
                 <tr>
                   <td class="text-left"><?php echo $column_product; ?></td>
                   <td class="text-left"><?php echo $column_model; ?></td>
+                  <td class="text-left">设计师</td>
                 </tr>
                 </thead>
                 <tbody>
@@ -73,6 +74,7 @@
                     <?php } ?>
                     <?php } ?></td>
                   <td class="text-left"><?php echo $product['model']; ?></td>
+                  <td class="text-left"><?php echo $product['designer_name']; ?></td>
                 </tr>
                 <?php } ?>
                 <?php foreach ($vouchers as $voucher) { ?>
@@ -111,7 +113,7 @@
         </div>
 
 
-        <form class="form-horizontal">
+        <form class="form-horizontal" onsubmit="return false;">
           <ul id="order" class="nav nav-tabs nav-justified">
             <!--<li class="disabled active"><a href="#tab-customer" data-toggle="tab">1. <?php echo $tab_customer; ?></a></li>
             <li class="disabled"><a href="#tab-cart" data-toggle="tab">2. <?php echo $tab_product; ?></a></li>
@@ -122,7 +124,7 @@
             <li class="active"><a href="#tab-design" data-toggle="tab">设计方案</a></li>
             <li class=""><a href="#tab-payment" data-toggle="tab">确认费用</a></li>
             <li class=""><a href="#tab-processing" data-toggle="tab">工程进度</a></li>
-            <li class=""><a href="#tab-total" data-toggle="tab">合计</a></li>
+            <li class=""><a href="#tab-modify" data-toggle="tab">修改状态</a></li>
           </ul>
           <div class="tab-content">
             <!--设计方案内容开始-->
@@ -375,124 +377,121 @@
               </div>
             </div>
             <!--进度图结束-->
-            <div class="tab-pane" id="tab-total">
-              <div class="table-responsive">
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <td class="text-left"><?php echo $column_product; ?></td>
-                      <td class="text-left"><?php echo $column_model; ?></td>
-                      <td class="text-right"><?php echo $column_quantity; ?></td>
-                      <td class="text-right"><?php echo $column_price; ?></td>
-                      <td class="text-right"><?php echo $column_total; ?></td>
-                    </tr>
-                  </thead>
-                  <tbody id="total">
-                    <tr>
-                      <td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
-                    </tr>
-                  </tbody>
-                </table>
+            <div class="tab-pane" id="tab-modify">
+
+
+              <div class="panel-body">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab-history" data-toggle="tab">历史</a></li>
+                  <li><a href="#tab-additional" data-toggle="tab">其他</a></li>
+                  <?php foreach ($tabs as $tab) { ?>
+                  <li><a href="#tab-<?php echo $tab['code']; ?>" data-toggle="tab"><?php echo $tab['title']; ?></a></li>
+                  <?php } ?>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab-history">
+                    <div id="history"></div>
+                    <br />
+                    <fieldset>
+                      <legend>添加订单记录</legend>
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label" for="input-order-status">订单状态：</label>
+                          <div class="col-sm-10">
+                            <select name="order_status_id" id="input-order-status" class="form-control">
+                              <?php foreach ($order_statuses as $order_statuses) { ?>
+                              <?php if ($order_statuses['order_status_id'] == $order_status_id) { ?>
+                              <option value="<?php echo $order_statuses['order_status_id']; ?>" selected="selected"><?php echo $order_statuses['name']; ?></option>
+                              <?php } else { ?>
+                              <option value="<?php echo $order_statuses['order_status_id']; ?>"><?php echo $order_statuses['name']; ?></option>
+                              <?php } ?>
+                              <?php } ?>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group hidden">
+                          <label class="col-sm-2 control-label" for="input-override">覆盖：</label>
+                          <div class="col-sm-10">
+                            <input type="checkbox" name="override" value="1" id="input-override" checked />
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label" for="input-notify">通知客户：</label>
+                          <div class="col-sm-10">
+                            <input type="checkbox" name="notify" value="1" id="input-notify" />
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label" for="input-comment">订单附言：</label>
+                          <div class="col-sm-10">
+                            <textarea name="comment" rows="8" id="input-comment" class="form-control"></textarea>
+                          </div>
+                        </div>
+                    </fieldset>
+                    <div class="text-right">
+                      <button id="button-history" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i> 添加订单记录</button>
+                    </div>
+                  </div>
+                  <div class="tab-pane" id="tab-additional">
+                    <?php if ($account_custom_fields) { ?>
+                    <table class="table table-bordered">
+                      <thead>
+                      <tr>
+                        <td colspan="2"><?php echo $text_account_custom_field; ?></td>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <?php foreach ($account_custom_fields as $custom_field) { ?>
+                      <tr>
+                        <td><?php echo $custom_field['name']; ?></td>
+                        <td><?php echo $custom_field['value']; ?></td>
+                      </tr>
+                      <?php } ?>
+                      </tbody>
+                    </table>
+                    <?php } ?>
+                    <?php if ($payment_custom_fields) { ?>
+                    <table class="table table-bordered">
+                      <thead>
+                      <tr>
+                        <td colspan="2"><?php echo $text_payment_custom_field; ?></td>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <?php foreach ($payment_custom_fields as $custom_field) { ?>
+                      <tr>
+                        <td><?php echo $custom_field['name']; ?></td>
+                        <td><?php echo $custom_field['value']; ?></td>
+                      </tr>
+                      <?php } ?>
+                      </tbody>
+                    </table>
+                    <?php } ?>
+                    <?php if ($shipping_method && $shipping_custom_fields) { ?>
+                    <table class="table table-bordered">
+                      <thead>
+                      <tr>
+                        <td colspan="2"><?php echo $text_shipping_custom_field; ?></td>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <?php foreach ($shipping_custom_fields as $custom_field) { ?>
+                      <tr>
+                        <td><?php echo $custom_field['name']; ?></td>
+                        <td><?php echo $custom_field['value']; ?></td>
+                      </tr>
+                      <?php } ?>
+                      </tbody>
+                    </table>
+                    <?php } ?>
+                  </div>
+                  <?php foreach ($tabs as $tab) { ?>
+                  <div class="tab-pane" id="tab-<?php echo $tab['code']; ?>"><?php echo $tab['content']; ?></div>
+                  <?php } ?>
+                </div>
               </div>
-              <fieldset>
-                <legend><?php echo $text_order_detail; ?></legend>
-                <div class="form-group required">
-                  <label class="col-sm-2 control-label" for="input-shipping-method"><?php echo $entry_shipping_method; ?></label>
-                  <div class="col-sm-10">
-                    <div class="input-group">
-                      <select name="shipping_method" id="input-shipping-method" class="form-control">
-                        <option value=""><?php echo $text_select; ?></option>
-                        <?php if ($shipping_code) { ?>
-                        <option value="<?php echo $shipping_code; ?>" selected="selected"><?php echo $shipping_method; ?></option>
-                        <?php } ?>
-                      </select>
-                      <span class="input-group-btn">
-                      <button type="button" id="button-shipping-method" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary"><?php echo $button_apply; ?></button>
-                      </span></div>
-                  </div>
-                </div>
-                <div class="form-group required">
-                  <label class="col-sm-2 control-label" for="input-payment-method"><?php echo $entry_payment_method; ?></label>
-                  <div class="col-sm-10">
-                    <div class="input-group">
-                      <select name="payment_method" id="input-payment-method" class="form-control">
-                        <option value=""><?php echo $text_select; ?></option>
-                        <?php if ($payment_code) { ?>
-                        <option value="<?php echo $payment_code; ?>" selected="selected"><?php echo $payment_method; ?></option>
-                        <?php } ?>
-                      </select>
-                      <span class="input-group-btn">
-                      <button type="button" id="button-payment-method" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary"><?php echo $button_apply; ?></button>
-                      </span></div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-coupon"><?php echo $entry_coupon; ?></label>
-                  <div class="col-sm-10">
-                    <div class="input-group">
-                      <input type="text" name="coupon" value="<?php echo $coupon; ?>" id="input-coupon" class="form-control" />
-                      <span class="input-group-btn">
-                      <button type="button" id="button-coupon" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary"><?php echo $button_apply; ?></button>
-                      </span></div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-voucher"><?php echo $entry_voucher; ?></label>
-                  <div class="col-sm-10">
-                    <div class="input-group">
-                      <input type="text" name="voucher" value="<?php echo $voucher; ?>" id="input-voucher" data-loading-text="<?php echo $text_loading; ?>" class="form-control" />
-                      <span class="input-group-btn">
-                      <button type="button" id="button-voucher" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary"><?php echo $button_apply; ?></button>
-                      </span></div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-reward"><?php echo $entry_reward; ?></label>
-                  <div class="col-sm-10">
-                    <div class="input-group">
-                      <input type="text" name="reward" value="<?php echo $reward; ?>" id="input-reward" data-loading-text="<?php echo $text_loading; ?>" class="form-control" />
-                      <span class="input-group-btn">
-                      <button type="button" id="button-reward" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary"><?php echo $button_apply; ?></button>
-                      </span></div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-order-status"><?php echo $entry_order_status; ?></label>
-                  <div class="col-sm-10">
-                    <select name="order_status_id" id="input-order-status" class="form-control">
-                      <?php foreach ($order_statuses as $order_status) { ?>
-                      <?php if ($order_status['order_status_id'] == $order_status_id) { ?>
-                      <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
-                      <?php } else { ?>
-                      <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
-                      <?php } ?>
-                      <?php } ?>
-                    </select>
-                    <input type="hidden" name="order_id" value="<?php echo $order_id; ?>" />
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-comment"><?php echo $entry_comment; ?></label>
-                  <div class="col-sm-10">
-                    <textarea name="comment" rows="5" id="input-comment" class="form-control"><?php echo $comment; ?></textarea>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label" for="input-affiliate"><?php echo $entry_affiliate; ?></label>
-                  <div class="col-sm-10">
-                    <input type="text" name="affiliate" value="<?php echo $affiliate; ?>" id="input-affiliate" class="form-control" />
-                    <input type="hidden" name="affiliate_id" value="<?php echo $affiliate_id; ?>" />
-                  </div>
-                </div>
-              </fieldset>
+
+
               <div class="row">
-                <div class="col-sm-6 text-left">
-                  <button type="button" onclick="$('select[name=\'shipping_method\']').prop('disabled') ? $('a[href=\'#tab-payment\']').tab('show') : $('a[href=\'#tab-shipping\']').tab('show');" class="btn btn-default"><i class="fa fa-arrow-left"></i> <?php echo $button_back; ?></button>
-                </div>
-                <div class="col-sm-6 text-right">
-                  <button type="button" id="button-refresh" data-toggle="tooltip" title="<?php echo $button_refresh; ?>" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-warning"><i class="fa fa-refresh"></i></button>
-                  <button type="button" id="button-save" class="btn btn-primary"><i class="fa fa-check-circle"></i> <?php echo $button_save; ?></button>
-                </div>
               </div>
             </div>
           </div>
@@ -2147,6 +2146,48 @@ $('#button-total').click(function() {
 
       if (json['order_id']) {
         $('input[name=\'order_id\']').val(json['order_id']);
+      }
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
+});
+
+//订单历史的相关修改，拷贝自order_info.tpl
+$('#history').delegate('.pagination a', 'click', function(e) {
+  e.preventDefault();
+
+  $('#history').load(this.href);
+});
+
+$('#history').load('index.php?route=sale/order/history&token=<?php echo $token; ?>&order_id=<?php echo $order_id; ?>');
+
+$('#button-history').on('click', function() {
+  $.ajax({
+    url: '<?php echo $store_url; ?>index.php?route=api/order/history&token=' + token + '&order_id=<?php echo $order_id; ?>',
+    type: 'post',
+    dataType: 'json',
+    data: 'order_status_id=' + encodeURIComponent($('select[name=\'order_status_id\']').val()) + '&notify=' + ($('input[name=\'notify\']').prop('checked') ? 1 : 0) + '&override=' + ($('input[name=\'override\']').prop('checked') ? 1 : 0) + '&append=' + ($('input[name=\'append\']').prop('checked') ? 1 : 0) + '&comment=' + encodeURIComponent($('textarea[name=\'comment\']').val()),
+    beforeSend: function() {
+      $('#button-history').button('loading');
+    },
+    complete: function() {
+      $('#button-history').button('reset');
+    },
+    success: function(json) {
+      $('.alert').remove();
+
+      if (json['error']) {
+        $('#history').before('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+      }
+
+      if (json['success']) {
+        $('#history').load('index.php?route=sale/order/history&token=<?php echo $token; ?>&order_id=<?php echo $order_id; ?>');
+
+        $('#history').before('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+        $('textarea[name=\'comment\']').val('');
       }
     },
     error: function(xhr, ajaxOptions, thrownError) {
