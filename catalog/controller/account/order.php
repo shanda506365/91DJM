@@ -156,7 +156,9 @@ class ControllerAccountOrder extends Controller {
                 'order_name' => $order['order_name'],
                 'price' => $order['total'] == 0 ? '待定' : $order['total'],
                 'order_status' => $order_status['name'],
-                'date_added' => $order['date_added']
+                'date_added' => $order['date_added'],
+                'link_view' => $this->url->link_simple('account/order/info' , 'order_no=' . $order['order_no'] , 'SSL'),
+                'link_progress' => $this->url->link_simple('account/order/progress' , 'order_no=' . $order['order_no'] , 'SSL'),
             );
         }
 
@@ -215,7 +217,10 @@ class ControllerAccountOrder extends Controller {
                 $where['date_added_end'] = date('Y-m-d') . ' 23:59:59';
             } else if($date_cond == 'day7') {
                 $where['date_added_begin'] = date('Y-m-d', strtotime('-7 days')) . ' 00:00:00';
-                $where['date_added_end'] = date('Y-m-d', strtotime('-7 days')) . ' 23:59:59';
+                $where['date_added_end'] = date('Y-m-d') . ' 23:59:59';
+            } else if($date_cond == 'day30') {
+                $where['date_added_begin'] = date('Y-m-d', strtotime('-30 days')) . ' 00:00:00';
+                $where['date_added_end'] = date('Y-m-d') . ' 23:59:59';
             }
         }
 
@@ -233,7 +238,9 @@ class ControllerAccountOrder extends Controller {
                 'order_name' => $order['order_name'],
                 'price' => $order['total'] == 0 ? '待定' : $order['total'],
                 'order_status' => $order_status['name'],
-                'date_added' => $order['date_added']
+                'date_added' => $order['date_added'],
+                'link_view' => $this->url->link_simple('account/order/info' , 'order_no=' . $order['order_no'] , 'SSL'),
+                'link_progress' => $this->url->link_simple('account/order/progress' , 'order_no=' . $order['order_no'] , 'SSL'),
             );
         }
 
