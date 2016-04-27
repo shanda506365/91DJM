@@ -101,7 +101,7 @@ class ModelAccountOrder extends Model {
 		}
 	}
 
-	public function getOrders($start = 0, $limit = 20) {
+	public function getOrders($start = 0, $limit = 20, $where = array()) {
 		if ($start < 0) {
 			$start = 0;
 		}
@@ -113,6 +113,16 @@ class ModelAccountOrder extends Model {
 //		$query = $this->db->query("SELECT o.order_id, o.firstname, o.lastname, os.name as status, o.date_added, o.total, o.currency_code, o.currency_value FROM `" . DB_PREFIX . "order` o LEFT JOIN " . DB_PREFIX . "order_status os ON (o.order_status_id = os.order_status_id) WHERE o.customer_id = '" . (int)$this->customer->getId() . "' AND o.order_status_id > '0' AND o.store_id = '" . (int)$this->config->get('config_store_id') . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY o.order_id DESC LIMIT " . (int)$start . "," . (int)$limit);
 //
 //		return $query->rows;
+
+        if (isset($where['order_status_id'])) {
+            $this->db_ci->where('order_status_id', $where['order_status_id']);
+        }
+        if (isset($where['date_added_begin'])) {
+            $this->db_ci->where("date_added>='". $where['date_added_begin'] ."'");
+        }
+        if (isset($where['date_added_end'])) {
+            $this->db_ci->where("date_added<='". $where['date_added_end'] ."'");
+        }
 
         $this->db_ci->where('customer_id', (int)$this->customer->getId());
         $this->db_ci->where('store_id', (int)$this->config->get('config_store_id'));

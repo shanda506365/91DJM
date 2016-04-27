@@ -33,4 +33,10 @@ class ModelOrderOrderStatus extends Model
         $query = $this->db_ci->get('order_status');
         return $query->first_row();
     }
+
+    public function getOrderStatus() {
+        $query = $this->db_ci->get('order_status');
+        $rows = $query->result_array();
+        return $rows;
+    }
 }
