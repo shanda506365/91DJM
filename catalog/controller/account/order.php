@@ -213,7 +213,7 @@ class ControllerAccountOrder extends Controller {
             $filter = objectToArray(json_decode(htmlspecialchars_decode($this->request->post['filter'])))[0];
 
             if ($filter['order_status'] > 0) {
-                $where['order_status'] = $filter['order_status'];
+                $where['order_status_id'] = $filter['order_status'];
             }
             if ($filter['data_add'] != 'all') {
                 $date_cond = $filter['data_add'];
