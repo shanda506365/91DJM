@@ -2,7 +2,21 @@
 class ControllerAccountOrder extends Controller {
 	private $error = array();
 
+    //登录验证
+    protected function init() {
+        $cur_url = get_url();
+
+        //未登录跳转到登录页面
+        if (!$this->customer->isLogged()) {
+
+            $this->session->data['redirect'] = $cur_url;
+
+            $this->response->redirect($this->url->link('account/login', 'redirect='. urlencode($cur_url), 'SSL'));
+        }
+    }
+
 	public function index() {
+/*
 		if (!$this->customer->isLogged()) {
 			$this->session->data['redirect'] = $this->url->link('account/order', '', 'SSL');
 
@@ -103,7 +117,137 @@ class ControllerAccountOrder extends Controller {
 		} else {
 			$this->response->setOutput($this->load->view('default/template/account/order_list.tpl', $data));
 		}
+*/
+        $this->init();
+
+        $data_page['meta_title'] = '账户中心 - ' . $this->config->get('config_name');
+
+        //最近订单
+        $this->load->model('account/order');
+        $this->load->model('order/order_status');
+
+        //所有订单状态
+        //"order_status_id":"0","name":"全部"
+        $order_status_data = $this->model_order_order_status->getOrderStatus();
+        $order_status_all[] = array(
+            'order_status_id' => 0,
+            'name' => '全部'
+        );
+        foreach($order_status_data as $status) {
+            $order_status_all[] = array(
+                'order_status_id' => $status['order_status_id'],
+                'name' => $status['name']
+            );
+        }
+        $data_page['order_status'] = json_encode($order_status_all, JSON_UNESCAPED_SLASHES);
+
+        //最近3条
+        $data = $this->model_account_order->getOrders(0, 10);
+
+        $orders = array();
+        foreach ($data as $order) {
+            //{"order_no":"1111","order_name":"标准化套餐A方案","price":"待定","order_status":"代付定金"
+
+            $order_status = $this->model_order_order_status->getOrderStatusById($order['order_status_id']);
+
+            $orders[] = array(
+                'order_id' => $order['order_id'],
+                'order_no' => $order['order_no'],
+                'order_name' => $order['order_name'],
+                'price' => $order['total'] == 0 ? '待定' : $order['total'],
+                'order_status' => $order_status['name'],
+                'date_added' => $order['date_added']
+            );
+        }
+
+        $orders_data = array(
+            "suc" => true,
+            "data" => $orders,
+            "msg" => "",
+            "code" => "",
+            "total" => count($data)
+        );
+
+        $data_page['orders'] = json_encode($orders_data, JSON_UNESCAPED_SLASHES);
+
+
+        //开始生成面包屑
+        $breadcrumbs[] = array(
+            'name' => '首页',
+            'link' => $this->config->get('config_url')
+        );
+        $breadcrumbs[] = array(
+            'name' => '账户中心',
+            'link' => $this->url->link_static('account/home')
+        );
+        $breadcrumbs[] = array(
+            'name' => '我的订单',
+            'link' => $this->url->link_static('account/order')
+        );
+
+        $data_page['breadcrumbs'] = json_encode($breadcrumbs, JSON_UNESCAPED_SLASHES);
+
+
+        //广告加载
+        $this->load->model('design/banner');
+        //顶部广告
+        $data_page['data_banner'] = $this->model_design_banner->banner_to_json(18);
+
+        //分页
+        $data_page['url_ajax_page'] = $this->link('account/order/ajax_order_filter', '', 'SSL');
+
+        $this->response->setOutput($this->load->view('customer_orderlist.html', $data_page));
 	}
+
+    public function ajax_order_filter() {
+        //最近订单
+        $this->load->model('account/order');
+        $this->load->model('order/order_status');
+
+        //条件
+        if (isset($this->request->post['order_status']) && $this->request->post['order_status'] > 0) {
+            $where['order_status'] = $this->request->post['order_status'];
+        }
+        if (isset($this->request->post['date_added']) && $this->request->post['date_added'] != 'all') {
+            $date_cond = $this->request->post['date_added'];
+            if ($date_cond == 'today') {
+                $where['date_added_begin'] = date('Y-m-d') . ' 00:00:00';
+                $where['date_added_end'] = date('Y-m-d') . ' 23:59:59';
+            } else if($date_cond == 'day7') {
+                $where['date_added_begin'] = date('Y-m-d', strtotime('-7 days')) . ' 00:00:00';
+                $where['date_added_end'] = date('Y-m-d', strtotime('-7 days')) . ' 23:59:59';
+            }
+        }
+
+        $data = $this->model_account_order->getOrders(0, 10, $where);
+
+        $orders = array();
+        foreach ($data as $order) {
+            //{"order_no":"1111","order_name":"标准化套餐A方案","price":"待定","order_status":"代付定金"
+
+            $order_status = $this->model_order_order_status->getOrderStatusById($order['order_status_id']);
+
+            $orders[] = array(
+                'order_id' => $order['order_id'],
+                'order_no' => $order['order_no'],
+                'order_name' => $order['order_name'],
+                'price' => $order['total'] == 0 ? '待定' : $order['total'],
+                'order_status' => $order_status['name'],
+                'date_added' => $order['date_added']
+            );
+        }
+
+        $orders_data = array(
+            "suc" => true,
+            "data" => $orders,
+            "msg" => "",
+            "code" => "",
+            "total" => count($data)
+        );
+
+        echo json_encode($orders_data, JSON_UNESCAPED_SLASHES);
+        exit;
+    }
 
 	public function info() {
 		$this->load->language('account/order');

@@ -80,6 +80,7 @@ class ModelSaleOrder extends Model {
 
 			return array(
 				'order_id'                => $order_query->row['order_id'],
+                'order_no'                => $order_query->row['order_no'],
 				'invoice_no'              => $order_query->row['invoice_no'],
 				'invoice_prefix'          => $order_query->row['invoice_prefix'],
 				'store_id'                => $order_query->row['store_id'],
@@ -91,6 +92,7 @@ class ModelSaleOrder extends Model {
 				'firstname'               => $order_query->row['firstname'],
 				'lastname'                => $order_query->row['lastname'],
 				'email'                   => $order_query->row['email'],
+                'mobile'                   => $order_query->row['mobile'],
 				'telephone'               => $order_query->row['telephone'],
 				'fax'                     => $order_query->row['fax'],
 				'custom_field'            => json_decode($order_query->row['custom_field'], true),
@@ -131,6 +133,7 @@ class ModelSaleOrder extends Model {
 				'shipping_method'         => $order_query->row['shipping_method'],
 				'shipping_code'           => $order_query->row['shipping_code'],
 				'comment'                 => $order_query->row['comment'],
+                'deposit'                => $order_query->row['deposit'],
 				'total'                   => $order_query->row['total'],
 				'reward'                  => $reward,
 				'order_status_id'         => $order_query->row['order_status_id'],
@@ -149,7 +152,24 @@ class ModelSaleOrder extends Model {
 				'user_agent'              => $order_query->row['user_agent'],
 				'accept_language'         => $order_query->row['accept_language'],
 				'date_added'              => $order_query->row['date_added'],
-				'date_modified'           => $order_query->row['date_modified']
+				'date_modified'           => $order_query->row['date_modified'],
+                'contact_name'            => $order_query->row['contact_name'],
+                'contact_mobile'            => $order_query->row['contact_mobile'],
+                'contact_qq'            => $order_query->row['contact_qq'],
+                'designer_id'             => $order_query->row['designer_id'],
+                'exhibition_subject'    => $order_query->row['exhibition_subject'],
+                'exhibition_area_code'  => $order_query->row['exhibition_area_code'],
+                'exhibition_address'    => $order_query->row['exhibition_address'],
+                'length'                  => $order_query->row['length'],
+                'width'                   => $order_query->row['width'],
+                'height'                  => $order_query->row['height'],
+                'area'                    => $order_query->row['area'],
+                'is_squareness'         => $order_query->row['is_squareness'],
+                'exhibition_verify_date' => $order_query->row['exhibition_verify_date'],
+                'exhibition_enter_date'  => $order_query->row['exhibition_enter_date'],
+                'exhibition_begin_date'  => $order_query->row['exhibition_begin_date'],
+                'exhibition_leave_date'  => $order_query->row['exhibition_leave_date'],
+                'remark'                    => $order_query->row['remark']
 			);
 		} else {
 			return;
@@ -157,7 +177,7 @@ class ModelSaleOrder extends Model {
 	}
 
 	public function getOrders($data = array()) {
-		$sql = "SELECT o.order_id, CONCAT(o.firstname, ' ', o.lastname) AS customer, (SELECT os.name FROM " . DB_PREFIX . "order_status os WHERE os.order_status_id = o.order_status_id AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS status, o.shipping_code, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified FROM `" . DB_PREFIX . "order` o";
+		$sql = "SELECT o.order_id, o.contact_name, o.contact_mobile, CONCAT(o.firstname, ' ', o.lastname) AS customer, (SELECT os.name FROM " . DB_PREFIX . "order_status os WHERE os.order_status_id = o.order_status_id AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS status, o.shipping_code, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified FROM `" . DB_PREFIX . "order` o";
 
 		if (isset($data['filter_order_status'])) {
 			$implode = array();
@@ -434,4 +454,9 @@ class ModelSaleOrder extends Model {
 
 		return $query->row['total'];
 	}
+    //管理员修改订单
+    public function updateOrder($order_id, $data) {
+        $this->db_ci->where('order_id', $order_id);
+        return $this->db_ci->update('order', $data);
+    }
 }

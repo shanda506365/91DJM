@@ -23,6 +23,8 @@ class ControllerCommonHeader extends Controller {
 
 		$data['text_order'] = $this->language->get('text_order');
 		$data['text_processing_status'] = $this->language->get('text_processing_status');
+        $data['text_no_deposit_status'] = '未付定金';
+        $data['text_deposit_status'] = '待沟通确认订单';
 		$data['text_complete_status'] = $this->language->get('text_complete_status');
 		$data['text_return'] = $this->language->get('text_return');
 		$data['text_customer'] = $this->language->get('text_customer');
@@ -53,10 +55,17 @@ class ControllerCommonHeader extends Controller {
 
 			// Orders
 			$this->load->model('sale/order');
-
 			// Processing Orders
 			$data['processing_status_total'] = $this->model_sale_order->getTotalOrders(array('filter_order_status' => implode(',', $this->config->get('config_processing_status'))));
 			$data['processing_status'] = $this->url->link('sale/order', 'token=' . $this->session->data['token'] . '&filter_order_status=' . implode(',', $this->config->get('config_processing_status')), 'SSL');
+
+//            // 未付定金
+//            $data['no_deposit_status_total'] = $this->model_sale_order->getTotalOrders(array('filter_order_status' => implode(',', 1)));
+//            $data['no_deposit_status'] = $this->url->link('sale/order', 'token=' . $this->session->data['token'] . '&filter_order_status=' . implode(',', 1), 'SSL');
+//
+//            // 订单填写完成，待确认需求
+//            $data['deposit_status_total'] = $this->model_sale_order->getTotalOrders(array('filter_order_status' => implode(',', 3)));
+//            $data['deposit_status'] = $this->url->link('sale/order', 'token=' . $this->session->data['token'] . '&filter_order_status=' . implode(',', 3), 'SSL');
 
 			// Complete Orders
 			$data['complete_status_total'] = $this->model_sale_order->getTotalOrders(array('filter_order_status' => implode(',', $this->config->get('config_complete_status'))));

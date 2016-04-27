@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
-    <title>91DJM</title>
+    <title><?php echo $meta_title; ?></title>
     <link rel="stylesheet" type="text/css" href="css/style.min.css">     
     <link rel="stylesheet" type="text/css" href="css/bannerswip.css">
     <link rel="stylesheet" type="text/css" href="css/noless.css"> 
@@ -29,11 +29,11 @@
 
 <body>
     <div class="htmlbody container-fluid"
-    data-banner='[{"src":"images/A41.jpg","des":"\u6d4b\u8bd5\u4e00","link":"###"}]' 
-    data-breadcrumb='[{"name":"首页","link":"/"},{"name":"账户中心","link":"###"}]'
-    data-customer='{"nick_name":"用户9026879","level":"中","mobile":"13544433321","email":"","picture":"/images/icons/touxiang.png"}'
-    data-banner-floor='[{"src":"/images/C01.jpg","des":"\u6d4b\u8bd5\u4e00","link":"###"}]' 
-    data-orders='[{"order_no":"1111","order_name":"标准化套餐A方案","price":"待定","order_status":"代付定金"},{"order_no":"2222","order_name":"标准化套餐A方案","price":"待定","order_status":"代付定金"},{"order_no":"3333","order_name":"标准化套餐A方案","price":"待定","order_status":"代付定金"}]'></div>
+    data-banner='<?php echo $data_banner; ?>'
+    data-breadcrumb='<?php echo $breadcrumbs; ?>'
+    data-customer='<?php echo $customer; ?>'
+    data-banner-floor='<?php echo $data_floor; ?>'
+    data-orders='<?php echo $orders; ?>'></div>
 </body>
 
 </html>

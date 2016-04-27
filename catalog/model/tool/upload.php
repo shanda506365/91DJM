@@ -1,12 +1,13 @@
 <?php
 class ModelToolUpload extends Model {
-	public function addUpload($name, $filename, $size = 0) {
+	public function addUpload($name, $dir = '', $filename, $size = 0) {
 		$code = sha1(uniqid(mt_rand(), true));
 
 		//$this->db->query("INSERT INTO `" . DB_PREFIX . "upload` SET `name` = '" . $this->db->escape($name) . "', `filename` = '" . $this->db->escape($filename) . "', `code` = '" . $this->db->escape($code) . "', `date_added` = NOW()");
 
         $data = array(
             'name' => $name,
+            'dir' => $dir,
             'filename' => $filename,
             'size' => $size,
             'code' => $code,

@@ -764,7 +764,22 @@ class ControllerApiOrder extends Controller {
 			$order_info = $this->model_checkout_order->getOrder($order_id);
 
 			if ($order_info) {
-				$this->model_checkout_order->addOrderHistory($order_id, $this->request->post['order_status_id'], $this->request->post['comment'], $this->request->post['notify'], $this->request->post['override']);
+                //我扩展的订单历史处理，先判断修改的订单状态是不是一样的，不重复添加订单状态
+//                $this->load->model('order/order_history');
+//                $order_history = $this->model_order_order_history->getLastOrderHistoryByOrderId($order_id);
+//                if ($order_history['order_status_id'] == $this->request->post['order_status_id']) { //相同
+//                    $data = array(
+//                        'order_status_id' => $order_history['order_status_id'],
+//                        'notify'        => isset($data['notify']) ? $data['notify'] : 0,
+//                        'title'         => $data['title'],
+//                        'comment'       => isset($data['comment']) ? $data['comment'] : '',
+//                        'date_added' => date('Y-m-d H:i:s')
+//                    );
+//                    $this->model_order_order_history->updateOrderHistory($order_history['order_history_id'], $data);
+//                } else {
+//                    $this->model_checkout_order->addOrderHistory($order_id, $this->request->post['order_status_id'], $this->request->post['comment'], $this->request->post['notify'], $this->request->post['override']);
+//                }
+                $this->model_checkout_order->addOrderHistory($order_id, $this->request->post['order_status_id'], $this->request->post['comment'], $this->request->post['notify'], $this->request->post['override']);
 
 				$json['success'] = $this->language->get('text_success');
 			} else {

@@ -47,6 +47,12 @@ class Currency {
 	}
 
 	public function format($number, $currency = '', $value = '', $format = true) {
+
+        //新增一个价格为0表示待定
+        if ($number == 0) {
+            return '待定';
+        }
+
 		if ($currency && $this->has($currency)) {
 			$symbol_left   = $this->currencies[$currency]['symbol_left'];
 			$symbol_right  = $this->currencies[$currency]['symbol_right'];

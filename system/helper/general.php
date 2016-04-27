@@ -101,3 +101,11 @@ function get_url(){
     $url .= isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : urlencode($_SERVER['PHP_SELF']) . '?' . urlencode($_SERVER['QUERY_STRING']);
     return $url;
 }
+//单选的文本显示
+function radioName($type = 1) {
+    if ($type == 1) {
+        return '是';
+    } else {
+        return '否';
+    }
+}

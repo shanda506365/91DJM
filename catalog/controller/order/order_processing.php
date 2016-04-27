@@ -2,12 +2,12 @@
 /**
  * Created by PhpStorm.
  * User: 周
- * Date: 2016/4/20
- * Time: 15:54
+ * Date: 2016/4/26
+ * Time: 16:18
  */
-class ControllerOrderOrderFile extends Controller {
+class ControllerOrderOrderProcessing extends Controller {
 
-    private $dir_upload = 'order_file';
+    private $dir_upload = 'order_processing';
 
     //登录验证
     protected function check_login() {
